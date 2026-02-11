@@ -23,7 +23,7 @@
       overflow-x: hidden;
     }
 
-    /* Fundo terminal */
+    /* Fundo terminal animado */
     .terminal-bg {
       position: fixed;
       top: 0; left: 0;
@@ -36,6 +36,16 @@
       z-index: -1;
       white-space: pre;
       overflow: hidden;
+    }
+
+    .terminal-content {
+      display: inline-block;
+      animation: scrollText 90s linear infinite;
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-100%); }
     }
 
     /* Cards e botões neon */
@@ -67,17 +77,29 @@
     }
     .logo-container img {
       cursor: pointer;
-      width: 380px;
-      height: 380px;
+      width: 350px;
+      height: 350px;
       background: transparent;
       border: none;
       box-shadow: none;
+    }
+
+    /* Footer abaixo do logo */
+    .logo-footer {
+      text-align: center;
+      color: #00ff00;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div class="terminal-bg"></div>
+  <!-- Terminal -->
+  <div class="terminal-bg">
+    <div class="terminal-content" id="terminal-content"></div>
+  </div>
 
   <!-- Navbar -->
   <header class="fixed top-0 left-0 w-full bg-black shadow-md z-50 hidden" id="navbar">
@@ -96,6 +118,7 @@
   <!-- Logo central -->
   <div class="logo-container" id="logo-container">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
+    <div class="logo-footer" id="logo-footer">© 2026 JBrasil Labs. Todos os direitos reservados.</div>
   </div>
 
   <!-- Conteúdo oculto -->
@@ -105,7 +128,7 @@
     <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
       <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6"></h2>
       <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl"></p>
-      <a href="#contact" id="hero-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition"></a>
+      <!-- botão removido -->
     </section>
 
     <!-- Serviços -->
@@ -134,7 +157,7 @@
   </div>
 
   <footer class="bg-black mt-20 p-4 text-center text-green-600">
-    <p></p>
+    <p id="main-footer"></p>
   </footer>
 
   <script>
@@ -145,7 +168,6 @@
         navContact: "Contato",
         heroTitle: "Cybersegurança & Redes Corporativas",
         heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
-        heroButton: "Solicitar Consultoria",
         service1Title: "Sophos Firewall",
         service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
         service2Title: "Sophos Central Email",
@@ -174,7 +196,6 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
         navContact: "Contacto",
         heroTitle: "Ciberseguridad & Redes Corporativas",
         heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
-        heroButton: "Solicitar Consultoría",
         service1Title: "Sophos Firewall",
         service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
         service2Title: "Sophos Central Email",
@@ -184,7 +205,7 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
         contactTitle: "Contáctanos",
         contactText: "Solicita una consultoría personalizada o resuelve tus dudas.",
         contactButton: "Enviar Correo",
-        footerText: "© 2026 JBrasil Labs. Todos los derechos reservados.",
+        footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
         terminalLines: `
 JBrasilLabs@secure:~$ sudo sophos-firewall --status
 [OK] Firewall activo y monitoreando tráfico
@@ -200,7 +221,6 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
       }
     };
 
-    // Aplicar idioma
     const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
     document.getElementById('lang-switch').value = userLang;
 
@@ -210,7 +230,6 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
       document.getElementById('nav-contact').textContent = t.navContact;
       document.getElementById('hero-title').textContent = t.heroTitle;
       document.getElementById('hero-text').textContent = t.heroText;
-      document.getElementById('hero-button').textContent = t.heroButton;
       document.getElementById('service1-title').textContent = t.service1Title;
       document.getElementById('service1-text').textContent = t.service1Text;
       document.getElementById('service2-title').textContent = t.service2Title;
@@ -220,22 +239,23 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
       document.getElementById('contact-title').textContent = t.contactTitle;
       document.getElementById('contact-text').textContent = t.contactText;
       document.getElementById('contact-button').textContent = t.contactButton;
-      document.querySelector('footer p').textContent = t.footerText;
-      document.querySelector('.terminal-bg').textContent = t.terminalLines.trim();
+      document.querySelector('#logo-footer').textContent = t.footerText;
+      document.querySelector('#main-footer').textContent = t.footerText;
+
+      document.getElementById('terminal-content').textContent = t.terminalLines.trim();
     }
 
     applyTranslations(userLang);
-
     document.getElementById('lang-switch').addEventListener('change', e => {
       applyTranslations(e.target.value);
     });
 
-    // Mostrar conteúdo ao clicar no logo ou nos links
+    // Mostrar conteúdo ao clicar no logo
     const logo = document.getElementById('logo');
     const mainContent = document.getElementById('main-content');
     const navbar = document.getElementById('navbar');
     const logoContainer = document.getElementById('logo-container');
-    const navLinks = document.querySelectorAll('nav a, #hero-button');
+    const navLinks = document.querySelectorAll('nav a');
 
     function showContent() {
       logoContainer.style.display = 'none';
