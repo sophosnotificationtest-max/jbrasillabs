@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8">
@@ -148,96 +148,118 @@
     © 2026 JBrasil Labs. Todos os direitos reservados.
   </footer>
 
-  <script>
-    // Tradução completa
-    const translations = {
-      pt: {
-        heroTitle: "Cybersegurança & Redes Corporativas",
-        heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
-        service1Title: "Sophos Firewall",
-        service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
-        service2Title: "Sophos Central Email",
-        service2Text: "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
-        service3Title: "Suporte Técnico",
-        service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
-        contactTitle: "Entre em Contato",
-        contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
-        contactButton: "Enviar Email",
-        terminalLines: `
-JBrasilLabs@secure:~$ sudo sophos-firewall --status
-[OK] Firewall ativo e monitorando tráfego
-JBrasilLabs@secure:~$ sudo sophos-email --scan
-[OK] Proteção de email corporativo habilitada
-JBrasilLabs@secure:~$ sudo netstat -secure
-[OK] Rede corporativa protegida
-JBrasilLabs@secure:~$ tail -f /var/log/security.log
-[INFO] Intrusion prevention ativo
-[INFO] Threat intelligence atualizado
-[INFO] Consultoria JB Labs em execução...
-`
-      },
-      es: {
-        heroTitle: "Ciberseguridad & Redes Corporativas",
-        heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
-        service1Title: "Sophos Firewall",
-        service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
-        service2Title: "Sophos Central Email",
-        service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
-        service3Title: "Soporte Técnico",
-        service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
-        contactTitle: "Contáctanos",
-        contactText: "Solicita una consultoría personalizada o resuelve tus dudas.",
-        contactButton: "Enviar Correo",
-        terminalLines: `
-JBrasilLabs@secure:~$ sudo sophos-firewall --status
-[OK] Firewall activo y monitoreando tráfico
-JBrasilLabs@secure:~$ sudo sophos-email --scan
-[OK] Protección de correo electrónico habilitada
-JBrasilLabs@secure:~$ sudo netstat -secure
-[OK] Red corporativa protegida
-JBrasilLabs@secure:~$ tail -f /var/log/security.log
-[INFO] Prevención de intrusiones activa
-[INFO] Inteligencia de amenazas actualizada
-[INFO] Consultoría JB Labs en ejecución...
-`
-      }
-    };
-
-    // Aplicar idioma
-    function applyTranslations(lang) {
-      const t = translations[lang] || translations.pt;
-      document.getElementById('hero-title').textContent = t.heroTitle;
-      document.getElementById('hero-text').textContent = t.heroText;
-      document.getElementById('service1-title').textContent = t.service1Title;
-      document.getElementById('service1-text').textContent = t.service1Text;
-      document.getElementById('service2-title').textContent = t.service2Title;
-      document.getElementById('service2-text').textContent = t.service2Text;
-      document.getElementById('service3-title').textContent = t.service3Title;
-      document.getElementById('service3-text').textContent = t.service3Text;
-      document.getElementById('contact-title').textContent = t.contactTitle;
-      document.getElementById('contact-text').textContent = t.contactText;
-      document.getElementById('contact-button').textContent = t.contactButton;
-      document.querySelector('.terminal-bg').textContent = t.terminalLines.trim();
+ <script>
+  // Traduções com terminal estilo bash Sophos/Kali
+  const translations = {
+    pt: {
+      heroTitle: "Cybersegurança & Redes Corporativas",
+      heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
+      service1Title: "Sophos Firewall",
+      service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
+      service2Title: "Sophos Central Email",
+      service2Text: "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
+      service3Title: "Suporte Técnico",
+      service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
+      contactTitle: "Entre em Contato",
+      contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
+      contactButton: "Enviar Email",
+      terminalLines: [
+        "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
+        "[OK] Firewall ativo e monitorando tráfego",
+        "JBrasilLabs@secure:~$ sudo sophos-email --scan",
+        "[OK] Proteção de email corporativo habilitada",
+        "JBrasilLabs@secure:~$ sudo netstat -secure",
+        "[OK] Rede corporativa protegida",
+        "JBrasilLabs@secure:~$ tail -f /var/log/security.log",
+        "[INFO] Intrusion prevention ativo",
+        "[INFO] Threat intelligence atualizado",
+        "[INFO] Consultoria JB Labs em execução...",
+        "JBrasilLabs@secure:~$ sudo nmap -sV --top-ports 20",
+        "[SCAN] Serviços críticos verificados",
+        "[OK] Nenhuma vulnerabilidade encontrada",
+        "JBrasilLabs@secure:~$ sudo openvpn --status",
+        "[OK] VPN corporativa ativa",
+        "JBrasilLabs@secure:~$"
+      ]
+    },
+    es: {
+      heroTitle: "Ciberseguridad & Redes Corporativas",
+      heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
+      service1Title: "Sophos Firewall",
+      service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
+      service2Title: "Sophos Central Email",
+      service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
+      service3Title: "Soporte Técnico",
+      service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
+      contactTitle: "Contáctanos",
+      contactText: "Solicita una consultoría personalizada o envie sus dudas.",
+      contactButton: "Enviar Correo",
+      terminalLines: [
+        "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
+        "[OK] Firewall activo y monitoreando tráfico",
+        "JBrasilLabs@secure:~$ sudo sophos-email --scan",
+        "[OK] Protección de correo electrónico habilitada",
+        "JBrasilLabs@secure:~$ sudo netstat -secure",
+        "[OK] Red corporativa protegida",
+        "JBrasilLabs@secure:~$ tail -f /var/log/security.log",
+        "[INFO] Prevención de intrusiones activa",
+        "[INFO] Inteligencia de amenazas actualizada",
+        "[INFO] Consultoría JB Labs en ejecución...",
+        "JBrasilLabs@secure:~$ sudo nmap -sV --top-ports 20",
+        "[SCAN] Servicios críticos verificados",
+        "[OK] Ninguna vulnerabilidad encontrada",
+        "JBrasilLabs@secure:~$ sudo openvpn --status",
+        "[OK] VPN corporativa activa",
+        "JBrasilLabs@secure:~$"
+      ]
     }
+  };
 
-    const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
-    document.getElementById('lang-switch').value = userLang;
-    applyTranslations(userLang);
+  // Função para aplicar traduções
+  function applyTranslations(lang) {
+    const t = translations[lang] || translations.pt;
+    document.getElementById('hero-title').textContent = t.heroTitle;
+    document.getElementById('hero-text').textContent = t.heroText;
+    document.getElementById('service1-title').textContent = t.service1Title;
+    document.getElementById('service1-text').textContent = t.service1Text;
+    document.getElementById('service2-title').textContent = t.service2Title;
+    document.getElementById('service2-text').textContent = t.service2Text;
+    document.getElementById('service3-title').textContent = t.service3Title;
+    document.getElementById('service3-text').textContent = t.service3Text;
+    document.getElementById('contact-title').textContent = t.contactTitle;
+    document.getElementById('contact-text').textContent = t.contactText;
+    document.getElementById('contact-button').textContent = t.contactButton;
 
-    document.getElementById('lang-switch').addEventListener('change', e => {
-      applyTranslations(e.target.value);
-    });
+    // animação de terminal em loop
+    const terminalDiv = document.getElementById('terminal');
+    terminalDiv.textContent = "";
+    let i = 0;
+    setInterval(() => {
+      terminalDiv.textContent += t.terminalLines[i] + "\n";
+      i = (i + 1) % t.terminalLines.length;
+    }, 1500);
+  }
 
-    // Mostrar conteúdo ao clicar no logo
-    const logo = document.getElementById('logo');
-    const mainContent = document.getElementById('main-content');
-    const logoContainer = document.getElementById('logo-container');
+  // Detectar idioma
+  const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
+  document.getElementById('lang-switch').value = userLang;
+  applyTranslations(userLang);
 
-    logo.addEventListener('click', () => {
-      logoContainer.style.display = 'none';
-      mainContent.classList.add('visible-content');
-    });
-  </script>
+  document.getElementById('lang-switch').addEventListener('change', e => {
+    applyTranslations(e.target.value);
+  });
+
+  // Mostrar conteúdo ao clicar no logo
+  const logo = document.getElementById('logo');
+  const mainContent = document.getElementById('main-content');
+  const logoContainer = document.getElementById('logo-container');
+
+  logo.addEventListener('click', () => {
+    logoContainer.style.display = 'none';
+    mainContent.classList.add('visible-content');
+  });
+</script>
 
 </body>
 </html>
+
