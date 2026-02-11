@@ -1,103 +1,159 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JBrasil Labs - Consultoria em Redes e Suporte Sophos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JBrasil Labs - Cybersegurança & Redes</title>
 
-<!-- Tailwind CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
     tailwind.config = { darkMode: 'class' }
-</script>
+  </script>
 
-<!-- CSS Customizado -->
-<link rel="stylesheet" href="styles.css">
+  <!-- Fonte futurista -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
-<!-- Favicon -->
-<link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
+  <!-- Favicon -->
+  <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
-<style>
-/* Logo animado - flutuando suavemente */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-.logo-animated {
-  animation: float 3s ease-in-out infinite;
-}
-</style>
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Fundo animado estilo terminal */
+    .terminal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      color: #00f2ff;
+      font-family: monospace;
+      font-size: 14px;
+      opacity: 0.08;
+      z-index: -1;
+      white-space: pre;
+      overflow: hidden;
+      animation: scrollText 30s linear infinite;
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-100%); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px #00f2ff; }
+      50% { box-shadow: 0 0 20px #00f2ff; }
+    }
+    .glow-card {
+      border: 1px solid #00f2ff;
+      animation: pulseGlow 3s infinite;
+    }
+    .logo-animated {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .neon-button {
+      background: linear-gradient(90deg, #00f2ff, #0077ff);
+      box-shadow: 0 0 10px #00f2ff;
+    }
+    .neon-button:hover {
+      background: linear-gradient(90deg, #0077ff, #00f2ff);
+      box-shadow: 0 0 20px #00f2ff;
+    }
+  </style>
 </head>
-<body class="transition-colors duration-300 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<body class="transition-colors duration-300 bg-gray-900 text-gray-100">
 
-<!-- Navbar fixo no topo -->
-<header class="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md z-50">
+<!-- Fundo animado estilo terminal -->
+<div class="terminal-bg">
+JBrasilLabs@secure:~$ sudo sophos-firewall --status
+[OK] Firewall ativo e monitorando tráfego
+JBrasilLabs@secure:~$ sudo sophos-email --scan
+[OK] Proteção de email corporativo habilitada
+JBrasilLabs@secure:~$ sudo netstat -secure
+[OK] Rede corporativa protegida
+JBrasilLabs@secure:~$ tail -f /var/log/security.log
+[INFO] Intrusion prevention ativo
+[INFO] Threat intelligence atualizado
+[INFO] Consultoria JB Labs em execução...
+</div>
+
+<!-- Navbar -->
+<header class="fixed top-0 left-0 w-full bg-gray-900 shadow-md z-50">
   <div class="flex justify-between items-center max-w-6xl mx-auto p-4">
     <div class="flex items-center gap-3">
       <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-16 h-16 logo-animated">
-      <h2 class="text-3xl font-bold">JBrasil Labs</h2>
+      <h2 class="text-3xl font-bold text-cyan-400">JBrasil Labs</h2>
     </div>
     <nav class="flex items-center gap-6">
-      <a href="#services" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Serviços</a>
-      <a href="#about" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Sobre</a>
-      <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Contato</a>
-      <button id="toggle-dark" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700">🌙</button>
+      <a href="#services" class="hover:text-cyan-400 font-medium">Serviços</a>
+      <a href="#about" class="hover:text-cyan-400 font-medium">Sobre</a>
+      <a href="#contact" class="hover:text-cyan-400 font-medium">Contato</a>
+      <button id="toggle-dark" class="px-3 py-1 rounded bg-gray-700 text-white hover:bg-gray-600">🌙</button>
     </nav>
   </div>
 </header>
 
-<!-- Hero Section -->
-<section class="hero flex flex-col items-center justify-center text-center mt-28">
+<!-- Hero -->
+<section class="hero flex flex-col items-center justify-center text-center mt-28 px-4">
   <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-32 h-32 mb-6 logo-animated">
-  <h2 class="text-5xl font-bold mb-4">Consultoria Especializada em Redes e Segurança</h2>
+  <h2 class="text-5xl font-bold text-cyan-400 mb-4">Cybersegurança & Redes Corporativas</h2>
   <p class="text-lg mb-8 max-w-2xl">
-    Soluções confiáveis em Sophos Firewall, Sophos Central Email e suporte corporativo.
+    Proteção avançada com Sophos Firewall, Email Central e suporte técnico especializado.
   </p>
-  <a href="#contact" class="px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-500 transition font-semibold">Solicitar Consultoria</a>
+  <a href="#contact" class="px-8 py-3 neon-button text-white rounded font-semibold transition">Solicitar Consultoria</a>
 </section>
 
-<!-- Services Section -->
+<!-- Services -->
 <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 max-w-6xl mx-auto px-4">
-  <div class="card p-6 bg-gray-50 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition">
-    <h3 class="text-xl font-bold mb-2">Sophos Firewall</h3>
-    <p>Configuração, gerenciamento e suporte avançado em firewalls Sophos, garantindo segurança de rede corporativa.</p>
+  <div class="glow-card p-6 bg-gray-800 rounded hover:scale-105 transform transition">
+    <h3 class="text-xl font-bold text-cyan-300 mb-2">Sophos Firewall</h3>
+    <p>Configuração e suporte em firewalls Sophos para máxima proteção de rede.</p>
   </div>
-  <div class="card p-6 bg-gray-50 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition">
-    <h3 class="text-xl font-bold mb-2">Sophos Central Email</h3>
-    <p>Implementação e suporte completo em proteção de email corporativo, incluindo políticas de DKIM, SPF e filtragem avançada.</p>
+  <div class="glow-card p-6 bg-gray-800 rounded hover:scale-105 transform transition">
+    <h3 class="text-xl font-bold text-cyan-300 mb-2">Sophos Central Email</h3>
+    <p>Proteção de email com políticas de segurança, filtragem e autenticação avançada.</p>
   </div>
-  <div class="card p-6 bg-gray-50 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition">
-    <h3 class="text-xl font-bold mb-2">Suporte e Consultoria</h3>
-    <p>Suporte técnico remoto ou presencial para redes corporativas, troubleshooting e otimização de sistemas.</p>
+  <div class="glow-card p-6 bg-gray-800 rounded hover:scale-105 transform transition">
+    <h3 class="text-xl font-bold text-cyan-300 mb-2">Suporte Técnico</h3>
+    <p>Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura.</p>
   </div>
 </section>
 
-<!-- About Section -->
+<!-- About -->
 <section id="about" class="text-center mt-16 max-w-4xl mx-auto px-4">
-  <h2 class="text-3xl font-bold mb-4">Sobre JB Brasil Labs</h2>
+  <h2 class="text-3xl font-bold text-cyan-400 mb-4">Sobre JB Brasil Labs</h2>
   <p class="text-lg">
-    Com anos de experiência em ambientes corporativos e especialização em soluções Sophos, nossa equipe oferece serviços confiáveis, garantindo que sua infraestrutura de TI esteja segura, eficiente e atualizada.
+    Especialistas em segurança digital e redes corporativas, com foco em soluções Sophos e suporte técnico de alto nível.
   </p>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="bg-gray-100 dark:bg-gray-900 rounded mt-16 text-center p-10 mx-4">
-  <h2 class="text-3xl font-bold mb-4">Entre em Contato</h2>
+<!-- Contact -->
+<section id="contact" class="bg-gray-800 rounded mt-16 text-center p-10 mx-4">
+  <h2 class="text-3xl font-bold text-cyan-400 mb-4">Entre em Contato</h2>
   <p class="mb-4">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
-  <a href="mailto:contato@jbrasillabs.com.br" class="px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-500 transition font-semibold">Enviar Email</a>
+  <a href="mailto:contato@jbrasillabs.com.br" class="px-8 py-3 neon-button text-white rounded font-semibold transition">Enviar Email</a>
 </section>
 
 <!-- Footer -->
-<footer class="bg-gray-50 dark:bg-gray-900 mt-16 p-4 text-center">
+<footer class="bg-gray-900 mt-16 p-4 text-center text-gray-400">
   <p>&copy; 2026 JB Brasil Labs. Todos os direitos reservados.</p>
 </footer>
 
-<!-- Dark Mode Script -->
+<!-- Dark Mode Toggle -->
 <script>
-const btn = document.getElementById('toggle-dark');
-btn.addEventListener('click', () => {
-  document.documentElement.classList.toggle('dark');
-});
+  const btn = document.getElementById('toggle-dark');
+  btn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+  });
 </script>
 </body>
 </html>
