@@ -157,3 +157,83 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
 </script>
 </body>
 </html>
+<script>
+  const btn = document.getElementById('toggle-dark');
+  btn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+  });
+
+  const translations = {
+    pt: {
+      navServices: "Serviços",
+      navAbout: "Sobre",
+      navContact: "Contato",
+      heroTitle: "Cybersegurança & Redes Corporativas",
+      heroText: "Proteção avançada com Sophos Firewall, Email Central e suporte técnico especializado.",
+      heroButton: "Solicitar Consultoria",
+      service1Title: "Sophos Firewall",
+      service1Text: "Configuração e suporte em firewalls Sophos para máxima proteção de rede.",
+      service2Title: "Sophos Central Email",
+      service2Text: "Proteção de email com políticas de segurança, filtragem e autenticação avançada.",
+      service3Title: "Suporte Técnico",
+      service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura.",
+      aboutTitle: "Sobre JB Brasil Labs",
+      aboutText: "Especialistas em segurança digital e redes corporativas, com foco em soluções Sophos e suporte técnico de alto nível.",
+      contactTitle: "Entre em Contato",
+      contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
+      contactButton: "Enviar Email"
+    },
+    es: {
+      navServices: "Servicios",
+      navAbout: "Acerca de",
+      navContact: "Contacto",
+      heroTitle: "Ciberseguridad & Redes Corporativas",
+      heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
+      heroButton: "Solicitar Consultoría",
+      service1Title: "Sophos Firewall",
+      service1Text: "Configuración y soporte en firewalls Sophos para máxima protección de red.",
+      service2Title: "Sophos Central Email",
+      service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y autenticación avanzada.",
+      service3Title: "Soporte Técnico",
+      service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura.",
+      aboutTitle: "Acerca de JB Brasil Labs",
+      aboutText: "Especialistas en seguridad digital y redes corporativas, enfocados en soluciones Sophos y soporte técnico de alto nivel.",
+      contactTitle: "Contáctanos",
+      contactText: "Solicita una consultoría personalizada o resuelve tus dudas.",
+      contactButton: "Enviar Correo"
+    }
+  };
+
+  function applyTranslations(lang) {
+    const t = translations[lang] || translations.pt;
+    document.getElementById('nav-services').textContent = t.navServices;
+    document.getElementById('nav-about').textContent = t.navAbout;
+    document.getElementById('nav-contact').textContent = t.navContact;
+    document.getElementById('hero-title').textContent = t.heroTitle;
+    document.getElementById('hero-text').textContent = t.heroText;
+    document.getElementById('hero-button').textContent = t.heroButton;
+    document.getElementById('service1-title').textContent = t.service1Title;
+    document.getElementById('service1-text').textContent = t.service1Text;
+    document.getElementById('service2-title').textContent = t.service2Title;
+    document.getElementById('service2-text').textContent = t.service2Text;
+    document.getElementById('service3-title').textContent = t.service3Title;
+    document.getElementById('service3-text').textContent = t.service3Text;
+    document.getElementById('about-title').textContent = t.aboutTitle;
+    document.getElementById('about-text').textContent = t.aboutText;
+    document.getElementById('contact-title').textContent = t.contactTitle;
+    document.getElementById('contact-text').textContent = t.contactText;
+    document.getElementById('contact-button').textContent = t.contactButton;
+  }
+
+  // Detecta idioma do navegador
+  const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
+  document.getElementById('lang-switch').value = userLang;
+  applyTranslations(userLang);
+
+  // Switch manual
+  const langSwitch = document.getElementById('lang-switch');
+  langSwitch.addEventListener('change', (e) => {
+    applyTranslations(e.target.value);
+  });
+</script>
+
