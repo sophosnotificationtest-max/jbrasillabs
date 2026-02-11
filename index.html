@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
 
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
 
   <!-- Fonte futurista -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -23,7 +24,7 @@
       overflow-x: hidden;
     }
 
-    /* Fundo terminal animado */
+    /* Fundo animado estilo terminal */
     .terminal-bg {
       position: fixed;
       top: 0; left: 0;
@@ -36,33 +37,13 @@
       z-index: -1;
       white-space: pre;
       overflow: hidden;
-    }
-
-    .terminal-content {
-      display: inline-block;
       animation: scrollText 90s linear infinite;
     }
 
     @keyframes scrollText {
       0% { transform: translateY(0); }
-      100% { transform: translateY(-100%); }
+      100% { transform: translateY(-50%); }
     }
-
-    /* Cards e botões neon */
-    .glow-card { border: 1px solid #00ff00; }
-    .neon-button {
-      background: linear-gradient(90deg, #00ff00, #006600);
-      box-shadow: 0 0 10px #00ff00;
-      color: black;
-    }
-    .neon-button:hover {
-      background: linear-gradient(90deg, #006600, #00ff00);
-      box-shadow: 0 0 20px #00ff00;
-    }
-
-    /* Conteúdo oculto */
-    .hidden-content { display: none; opacity: 0; transition: opacity 1s; }
-    .visible-content { display: block; opacity: 1; transition: opacity 1s; }
 
     /* Logo central */
     .logo-container {
@@ -71,55 +52,62 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      background: transparent;
-      border: none;
-      z-index: 50;
+      z-index: 10;
     }
     .logo-container img {
-      cursor: pointer;
       width: 350px;
       height: 350px;
       background: transparent;
       border: none;
       box-shadow: none;
+      cursor: pointer;
     }
 
-    /* Footer abaixo do logo */
-    .logo-footer {
+    /* Conteúdo oculto */
+    .hidden-content { display: none; opacity: 0; transition: opacity 1s; }
+    .visible-content { display: block; opacity: 1; transition: opacity 1s; }
+
+    /* Footer simples */
+    footer {
       text-align: center;
       color: #00ff00;
       margin-top: 20px;
-      font-size: 0.9rem;
-      font-weight: bold;
+      z-index: 5;
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+    }
+
+    /* Seletor de idioma discreto */
+    #lang-switch {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.5);
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      border-radius: 4px;
+      padding: 3px 6px;
+      z-index: 20;
+      cursor: pointer;
     }
   </style>
 </head>
-<body>
+<body class="bg-black text-green-400">
 
   <!-- Terminal -->
-  <div class="terminal-bg">
-    <div class="terminal-content" id="terminal-content"></div>
-  </div>
-
-  <!-- Navbar -->
-  <header class="fixed top-0 left-0 w-full bg-black shadow-md z-50 hidden" id="navbar">
-    <div class="flex justify-end items-center max-w-6xl mx-auto p-4">
-      <nav class="flex items-center gap-6">
-        <a href="#services" id="nav-services" class="hover:text-green-300 font-medium">Serviço</a>
-        <a href="#contact" id="nav-contact" class="hover:text-green-300 font-medium">Contato</a>
-        <select id="lang-switch" class="px-2 py-1 rounded bg-green-900 text-green-200">
-          <option value="pt">PT</option>
-          <option value="es">ES</option>
-        </select>
-      </nav>
-    </div>
-  </header>
+  <div class="terminal-bg"></div>
 
   <!-- Logo central -->
   <div class="logo-container" id="logo-container">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
-    <div class="logo-footer" id="logo-footer">© 2026 JBrasil Labs. Todos os direitos reservados.</div>
   </div>
+
+  <!-- Seletor de idioma -->
+  <select id="lang-switch">
+    <option value="pt">PT</option>
+    <option value="es">ES</option>
+  </select>
 
   <!-- Conteúdo oculto -->
   <div id="main-content" class="hidden-content">
@@ -128,7 +116,6 @@
     <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
       <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6"></h2>
       <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl"></p>
-      <!-- botão removido -->
     </section>
 
     <!-- Serviços -->
@@ -156,16 +143,15 @@
 
   </div>
 
-  <footer class="bg-black mt-20 p-4 text-center text-green-600">
-    <p id="main-footer"></p>
+  <!-- Footer -->
+  <footer>
+    © 2026 JBrasil Labs. Todos os direitos reservados.
   </footer>
 
   <script>
     // Tradução completa
     const translations = {
       pt: {
-        navServices: "Serviço",
-        navContact: "Contato",
         heroTitle: "Cybersegurança & Redes Corporativas",
         heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
         service1Title: "Sophos Firewall",
@@ -177,7 +163,6 @@
         contactTitle: "Entre em Contato",
         contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
         contactButton: "Enviar Email",
-        footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
         terminalLines: `
 JBrasilLabs@secure:~$ sudo sophos-firewall --status
 [OK] Firewall ativo e monitorando tráfego
@@ -192,8 +177,6 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
 `
       },
       es: {
-        navServices: "Servicio",
-        navContact: "Contacto",
         heroTitle: "Ciberseguridad & Redes Corporativas",
         heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
         service1Title: "Sophos Firewall",
@@ -205,7 +188,6 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
         contactTitle: "Contáctanos",
         contactText: "Solicita una consultoría personalizada o resuelve tus dudas.",
         contactButton: "Enviar Correo",
-        footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
         terminalLines: `
 JBrasilLabs@secure:~$ sudo sophos-firewall --status
 [OK] Firewall activo y monitoreando tráfico
@@ -221,13 +203,9 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
       }
     };
 
-    const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
-    document.getElementById('lang-switch').value = userLang;
-
+    // Aplicar idioma
     function applyTranslations(lang) {
       const t = translations[lang] || translations.pt;
-      document.getElementById('nav-services').textContent = t.navServices;
-      document.getElementById('nav-contact').textContent = t.navContact;
       document.getElementById('hero-title').textContent = t.heroTitle;
       document.getElementById('hero-text').textContent = t.heroText;
       document.getElementById('service1-title').textContent = t.service1Title;
@@ -239,13 +217,13 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
       document.getElementById('contact-title').textContent = t.contactTitle;
       document.getElementById('contact-text').textContent = t.contactText;
       document.getElementById('contact-button').textContent = t.contactButton;
-      document.querySelector('#logo-footer').textContent = t.footerText;
-      document.querySelector('#main-footer').textContent = t.footerText;
-
-      document.getElementById('terminal-content').textContent = t.terminalLines.trim();
+      document.querySelector('.terminal-bg').textContent = t.terminalLines.trim();
     }
 
+    const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
+    document.getElementById('lang-switch').value = userLang;
     applyTranslations(userLang);
+
     document.getElementById('lang-switch').addEventListener('change', e => {
       applyTranslations(e.target.value);
     });
@@ -253,19 +231,12 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
     // Mostrar conteúdo ao clicar no logo
     const logo = document.getElementById('logo');
     const mainContent = document.getElementById('main-content');
-    const navbar = document.getElementById('navbar');
     const logoContainer = document.getElementById('logo-container');
-    const navLinks = document.querySelectorAll('nav a');
 
-    function showContent() {
+    logo.addEventListener('click', () => {
       logoContainer.style.display = 'none';
-      navbar.classList.remove('hidden');
       mainContent.classList.add('visible-content');
-    }
-
-    logo.addEventListener('click', showContent);
-    navLinks.forEach(link => link.addEventListener('click', showContent));
-
+    });
   </script>
 
 </body>
