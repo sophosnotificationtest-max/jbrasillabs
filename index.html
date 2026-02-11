@@ -1,92 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil Labs - Consultoria em Redes e Suporte Sophos</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JBrasil Labs - Consultoria em Redes e Suporte Sophos</title>
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: 'class' }
-    </script>
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { darkMode: 'class' }
+</script>
 
-    <!-- CSS Customizado -->
-    <link rel="stylesheet" href="styles.css">
+<!-- CSS Customizado -->
+<link rel="stylesheet" href="styles.css">
 
-    <!-- Favicon -->
-    <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
+<!-- Favicon -->
+<link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
+
+<style>
+/* Logo animado - flutuando suavemente */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.logo-animated {
+  animation: float 3s ease-in-out infinite;
+}
+</style>
 </head>
-<body class="transition-colors duration-300">
+<body class="transition-colors duration-300 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 
-    <!-- Navbar -->
-    <header class="bg-gray-200 dark:bg-gray-800 shadow-md">
-        <div class="flex justify-between items-center max-w-6xl mx-auto p-4">
-            <div class="flex items-center gap-3">
-                <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-14 h-14">
-                <h1 class="text-2xl font-bold">JBrasil Labs</h1>
-            </div>
-            <nav class="flex items-center gap-4">
-                <a href="#services" class="hover:text-blue-600 dark:hover:text-blue-400">Serviços</a>
-                <a href="#about" class="hover:text-blue-600 dark:hover:text-blue-400">Sobre</a>
-                <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400">Contato</a>
-                <button id="toggle-dark" class="px-3 py-1 rounded bg-gray-300 dark:bg-gray-700">🌙</button>
-            </nav>
-        </div>
-    </header>
+<!-- Navbar fixo no topo -->
+<header class="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md z-50">
+  <div class="flex justify-between items-center max-w-6xl mx-auto p-4">
+    <div class="flex items-center gap-3">
+      <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-16 h-16 logo-animated">
+      <h2 class="text-3xl font-bold">JBrasil Labs</h2>
+    </div>
+    <nav class="flex items-center gap-6">
+      <a href="#services" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Serviços</a>
+      <a href="#about" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Sobre</a>
+      <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400 font-medium">Contato</a>
+      <button id="toggle-dark" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700">🌙</button>
+    </nav>
+  </div>
+</header>
 
-    <!-- Hero Section -->
-    <section class="hero flex flex-col items-center justify-center text-center mt-10">
-        <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-24 h-24 mb-4">
-        <h2 class="text-4xl font-bold mb-4">Consultoria Especializada em Redes e Segurança</h2>
-        <p class="text-lg mb-6 max-w-2xl">
-            Soluções confiáveis em Sophos Firewall, Sophos Central Email e suporte corporativo.
-        </p>
-        <a href="#contact" class="btn-primary px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition">Solicitar Consultoria</a>
-    </section>
+<!-- Hero Section -->
+<section class="hero flex flex-col items-center justify-center text-center mt-28">
+  <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-32 h-32 mb-6 logo-animated">
+  <h2 class="text-5xl font-bold mb-4">Consultoria Especializada em Redes e Segurança</h2>
+  <p class="text-lg mb-8 max-w-2xl">
+    Soluções confiáveis em Sophos Firewall, Sophos Central Email e suporte corporativo.
+  </p>
+  <a href="#contact" class="px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-500 transition font-semibold">Solicitar Consultoria</a>
+</section>
 
-    <!-- Services Section -->
-    <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 max-w-6xl mx-auto px-4">
-        <div class="card p-6 bg-gray-100 dark:bg-gray-700 rounded shadow">
-            <h3 class="text-xl font-bold mb-2">Sophos Firewall</h3>
-            <p>Configuração, gerenciamento e suporte avançado em firewalls Sophos, garantindo segurança de rede corporativa.</p>
-        </div>
-        <div class="card p-6 bg-gray-100 dark:bg-gray-700 rounded shadow">
-            <h3 class="text-xl font-bold mb-2">Sophos Central Email</h3>
-            <p>Implementação e suporte completo em proteção de email corporativo, incluindo políticas de DKIM, SPF e filtragem avançada.</p>
-        </div>
-        <div class="card p-6 bg-gray-100 dark:bg-gray-700 rounded shadow">
-            <h3 class="text-xl font-bold mb-2">Suporte e Consultoria</h3>
-            <p>Suporte técnico remoto ou presencial para redes corporativas, troubleshooting e otimização de sistemas.</p>
-        </div>
-    </section>
+<!-- Services Section -->
+<section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 max-w-6xl mx-auto px-4">
+  <div class="card p-6 bg-gray-50 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition">
+    <h3 class="text-xl font-bold mb-2">Sophos Firewall</h3>
+    <p>Configuração, gerenciamento e suporte avançado em firewalls Sophos, garantindo segurança de rede corporativa.</p>
+  </div>
+  <div class="card p-6 bg-gray-50 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition">
+    <h3 class="text-xl font-bold mb-2">Sophos Central Email</h3>
+    <p>Implementação e suporte completo em proteção de email corporativo, incluindo políticas de DKIM, SPF e filtragem avançada.</p>
+  </div>
+  <div class="card p-6 bg-gray-50 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition">
+    <h3 class="text-xl font-bold mb-2">Suporte e Consultoria</h3>
+    <p>Suporte técnico remoto ou presencial para redes corporativas, troubleshooting e otimização de sistemas.</p>
+  </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="text-center mt-10 max-w-4xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-4">Sobre JB Brasil Labs</h2>
-        <p class="text-lg">
-            Com anos de experiência em ambientes corporativos e especialização em soluções Sophos, nossa equipe oferece serviços confiáveis, garantindo que sua infraestrutura de TI esteja segura, eficiente e atualizada.
-        </p>
-    </section>
+<!-- About Section -->
+<section id="about" class="text-center mt-16 max-w-4xl mx-auto px-4">
+  <h2 class="text-3xl font-bold mb-4">Sobre JB Brasil Labs</h2>
+  <p class="text-lg">
+    Com anos de experiência em ambientes corporativos e especialização em soluções Sophos, nossa equipe oferece serviços confiáveis, garantindo que sua infraestrutura de TI esteja segura, eficiente e atualizada.
+  </p>
+</section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="bg-gray-200 dark:bg-gray-800 rounded mt-10 text-center p-10 mx-4">
-        <h2 class="text-3xl font-bold mb-4">Entre em Contato</h2>
-        <p class="mb-4">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
-        <a href="mailto:contato@jbrasillabs.com.br" class="btn-primary mt-4 inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition">Enviar Email</a>
-    </section>
+<!-- Contact Section -->
+<section id="contact" class="bg-gray-100 dark:bg-gray-900 rounded mt-16 text-center p-10 mx-4">
+  <h2 class="text-3xl font-bold mb-4">Entre em Contato</h2>
+  <p class="mb-4">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
+  <a href="mailto:contato@jbrasillabs.com.br" class="px-8 py-3 bg-blue-600 text-white rounded hover:bg-blue-500 transition font-semibold">Enviar Email</a>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-200 dark:bg-gray-800 mt-10 p-4 text-center">
-        <p>&copy; 2026 JB Brasil Labs. Todos os direitos reservados.</p>
-    </footer>
+<!-- Footer -->
+<footer class="bg-gray-50 dark:bg-gray-900 mt-16 p-4 text-center">
+  <p>&copy; 2026 JB Brasil Labs. Todos os direitos reservados.</p>
+</footer>
 
-    <!-- Dark Mode Script -->
-    <script>
-        const btn = document.getElementById('toggle-dark');
-        btn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-        });
-    </script>
+<!-- Dark Mode Script -->
+<script>
+const btn = document.getElementById('toggle-dark');
+btn.addEventListener('click', () => {
+  document.documentElement.classList.toggle('dark');
+});
+</script>
 </body>
 </html>
