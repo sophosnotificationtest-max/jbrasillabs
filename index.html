@@ -26,6 +26,7 @@
       overflow-x: hidden;
     }
 
+    /* Fundo animado estilo terminal */
     .terminal-bg {
       position: fixed;
       top: 0; left: 0;
@@ -33,12 +34,12 @@
       background: black;
       color: #00ff00;
       font-family: monospace;
-      font-size: 14px;
+      font-size: 15px;
       opacity: 0.05;
       z-index: -1;
       white-space: pre;
       overflow: hidden;
-      animation: scrollText 60s linear infinite;
+      animation: scrollText 90s linear infinite;
     }
 
     @keyframes scrollText {
@@ -46,12 +47,8 @@
       100% { transform: translateY(-50%); }
     }
 
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 10px #00ff00; }
-      50% { box-shadow: 0 0 20px #00ff00; }
-    }
-
-    .glow-card { border: 1px solid #00ff00; animation: pulseGlow 3s infinite; }
+    /* Cards e botões neon */
+    .glow-card { border: 1px solid #00ff00; }
     .neon-button {
       background: linear-gradient(90deg, #00ff00, #006600);
       box-shadow: 0 0 10px #00ff00;
@@ -62,6 +59,7 @@
       box-shadow: 0 0 20px #00ff00;
     }
 
+    /* Conteúdo oculto inicialmente */
     .hidden-content { display: none; opacity: 0; transition: opacity 1s; }
     .visible-content { display: block; opacity: 1; transition: opacity 1s; }
 
@@ -78,18 +76,104 @@
     }
     .logo-container img {
       cursor: pointer;
-      width: 200px;
-      height: 200px;
+      width: 350px;
+      height: 350px;
       background: transparent;
       border: none;
       box-shadow: none;
-      animation: pulseGlow 2s infinite;
     }
   </style>
 </head>
 <body class="transition-colors duration-300 bg-black text-green-400">
 
-<div class="terminal-bg">
+<div class="terminal-bg"></div>
+
+<!-- Navbar -->
+<header class="fixed top-0 left-0 w-full bg-black shadow-md z-50 hidden" id="navbar">
+  <div class="flex justify-between items-center max-w-6xl mx-auto p-4">
+    <nav class="flex items-center gap-6">
+      <a href="#services" id="nav-services" class="hover:text-green-300 font-medium">Serviço</a>
+      <a href="#contact" id="nav-contact" class="hover:text-green-300 font-medium">Contato</a>
+      <button id="toggle-dark" class="px-3 py-1 rounded bg-green-900 text-green-200 hover:bg-green-700">🌙</button>
+      <select id="lang-switch" class="px-2 py-1 rounded bg-green-900 text-green-200">
+        <option value="pt">PT</option>
+        <option value="es">ES</option>
+      </select>
+    </nav>
+  </div>
+</header>
+
+<!-- Logo central -->
+<div class="logo-container" id="logo-container">
+  <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
+</div>
+
+<!-- Conteúdo oculto -->
+<div id="main-content" class="hidden-content">
+
+  <!-- Hero -->
+  <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
+    <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6"></h2>
+    <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl"></p>
+    <a href="#contact" id="hero-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition"></a>
+  </section>
+
+  <!-- Serviços -->
+  <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-6xl mx-auto px-4">
+    <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
+      <h3 id="service1-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
+      <p id="service1-text" class="text-gray-200"></p>
+    </div>
+    <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
+      <h3 id="service2-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
+      <p id="service2-text" class="text-gray-200"></p>
+    </div>
+    <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
+      <h3 id="service3-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
+      <p id="service3-text" class="text-gray-200"></p>
+    </div>
+  </section>
+
+  <!-- Contato -->
+  <section id="contact" class="bg-black rounded mt-20 text-center p-10 mx-4 glow-card">
+    <h2 id="contact-title" class="text-4xl font-bold text-green-400 mb-6"></h2>
+    <p id="contact-text" class="mb-6 text-lg text-gray-200"></p>
+    <a href="mailto:jonas.brasil@jbrasillabs.com.br" id="contact-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition"></a>
+  </section>
+
+</div>
+
+<footer class="bg-black mt-20 p-4 text-center text-green-600">
+  <p></p>
+</footer>
+
+<script>
+  // Dark mode
+  const btn = document.getElementById('toggle-dark');
+  btn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    document.body.classList.toggle('bg-black');
+  });
+
+  // Tradução completa
+  const translations = {
+    pt: {
+      navServices: "Serviço",
+      navContact: "Contato",
+      heroTitle: "Cybersegurança & Redes Corporativas",
+      heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
+      heroButton: "Solicitar Consultoria",
+      service1Title: "Sophos Firewall",
+      service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
+      service2Title: "Sophos Central Email",
+      service2Text: "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
+      service3Title: "Suporte Técnico",
+      service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
+      contactTitle: "Entre em Contato",
+      contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
+      contactButton: "Enviar Email",
+      footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
+      terminalLines: `
 JBrasilLabs@secure:~$ sudo sophos-firewall --status
 [OK] Firewall ativo e monitorando tráfego
 JBrasilLabs@secure:~$ sudo sophos-email --scan
@@ -100,7 +184,99 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
 [INFO] Intrusion prevention ativo
 [INFO] Threat intelligence atualizado
 [INFO] Consultoria JB Labs em execução...
-</div>
+`
+    },
+    es: {
+      navServices: "Servicio",
+      navContact: "Contacto",
+      heroTitle: "Ciberseguridad & Redes Corporativas",
+      heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
+      heroButton: "Solicitar Consultoría",
+      service1Title: "Sophos Firewall",
+      service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
+      service2Title: "Sophos Central Email",
+      service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
+      service3Title: "Soporte Técnico",
+      service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
+      contactTitle: "Contáctanos",
+      contactText: "Solicita una consultoría personalizada o resuelve tus dudas.",
+      contactButton: "Enviar Correo",
+      footerText: "© 2026 JBrasil Labs. Todos los derechos reservados.",
+      terminalLines: `
+JBrasilLabs@secure:~$ sudo sophos-firewall --status
+[OK] Firewall activo y monitoreando tráfico
+JBrasilLabs@secure:~$ sudo sophos-email --scan
+[OK] Protección de correo electrónico habilitada
+JBrasilLabs@secure:~$ sudo netstat -secure
+[OK] Red corporativa protegida
+JBrasilLabs@secure:~$ tail -f /var/log/security.log
+[INFO] Prevención de intrusiones activa
+[INFO] Inteligencia de amenazas actualizada
+[INFO] Consultoría JB Labs en ejecución...
+`
+    }
+  };
 
-<!-- Navbar simplificada -->
-<header class="fixed top-0 left-0 w-full bg-black shadow-md z-
+  // Função para aplicar tradução
+  function applyTranslations(lang) {
+    const t = translations[lang] || translations.pt;
+
+    // Navbar
+    document.getElementById('nav-services').textContent = t.navServices;
+    document.getElementById('nav-contact').textContent = t.navContact;
+
+    // Hero
+    document.getElementById('hero-title').textContent = t.heroTitle;
+    document.getElementById('hero-text').textContent = t.heroText;
+    document.getElementById('hero-button').textContent = t.heroButton;
+
+    // Serviços
+    document.getElementById('service1-title').textContent = t.service1Title;
+    document.getElementById('service1-text').textContent = t.service1Text;
+    document.getElementById('service2-title').textContent = t.service2Title;
+    document.getElementById('service2-text').textContent = t.service2Text;
+    document.getElementById('service3-title').textContent = t.service3Title;
+    document.getElementById('service3-text').textContent = t.service3Text;
+
+    // Contato
+    document.getElementById('contact-title').textContent = t.contactTitle;
+    document.getElementById('contact-text').textContent = t.contactText;
+    document.getElementById('contact-button').textContent = t.contactButton;
+
+    // Footer
+    document.querySelector('footer p').textContent = t.footerText;
+
+    // Terminal animado
+    document.querySelector('.terminal-bg').textContent = t.terminalLines.trim();
+  }
+
+  // Aplicar idioma detectado
+  const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
+  document.getElementById('lang-switch').value = userLang;
+  applyTranslations(userLang);
+
+  // Alterar idioma ao mudar no select
+  document.getElementById('lang-switch').addEventListener('change', e => {
+    applyTranslations(e.target.value);
+  });
+
+  // Mostrar conteúdo ao clicar no logo ou nos links
+  const logo = document.getElementById('logo');
+  const mainContent = document.getElementById('main-content');
+  const navbar = document.getElementById('navbar');
+  const logoContainer = document.getElementById('logo-container');
+  const navLinks = document.querySelectorAll('nav a, #hero-button');
+
+  function showContent() {
+    logoContainer.style.display = 'none';
+    navbar.classList.remove('hidden');
+    mainContent.classList.add('visible-content');
+  }
+
+  logo.addEventListener('click', showContent);
+  navLinks.forEach(link => link.addEventListener('click', showContent));
+
+</script>
+
+</body>
+</html>
