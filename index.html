@@ -1,159 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JBrasil Labs - Cybersegurança & Redes</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JBrasil Labs - Cybersegurança & Redes</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' }</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
-  <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
+<style>
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: black;
+  color: #00ff00;
+  margin: 0;
+  overflow-x: hidden;
+}
 
-  <style>
-    body {
-      font-family: 'Orbitron', sans-serif;
-      background-color: black;
-      color: #00ff00;
-      margin: 0;
-      overflow-x: hidden;
-    }
+.terminal-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: black;
+  color: #00ff00;
+  font-family: monospace;
+  font-size: 15px;
+  opacity: 0.05;
+  z-index: -1;
+  white-space: pre;
+  overflow: hidden;
+  animation: scrollText 90s linear infinite;
+}
 
-    /* Fundo animado estilo terminal */
-    .terminal-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: black;
-      color: #00ff00;
-      font-family: monospace;
-      font-size: 15px;
-      opacity: 0.05;
-      z-index: -1;
-      white-space: pre;
-      overflow: hidden;
-      animation: scrollText 90s linear infinite;
-    }
+@keyframes scrollText {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
 
-    @keyframes scrollText {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-50%); }
-    }
+.logo-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+.logo-container img { width: 350px; height: 350px; cursor: pointer; }
 
-    .logo-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 10;
-    }
+.hidden-content { opacity: 0; visibility: hidden; transition: opacity 1s; }
+.visible-content { opacity: 1; visibility: visible; transition: opacity 1s; }
 
-    .logo-container img {
-      width: 350px;
-      height: 350px;
-      cursor: pointer;
-    }
+footer {
+  text-align: center;
+  color: #00ff00;
+  margin-top: 20px;
+  z-index: 5;
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+}
 
-    /* Conteúdo oculto */
-    .hidden-content {
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s;
-    }
-    .visible-content {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 1s;
-    }
+#lang-switch {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.5);
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+  padding: 3px 6px;
+  z-index: 20;
+  cursor: pointer;
+}
 
-    footer {
-      text-align: center;
-      color: #00ff00;
-      margin-top: 20px;
-      z-index: 5;
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-    }
+#terminal-container {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 400px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 12px;
+  color: #00ff00;
+  background: rgba(0,0,0,0.3);
+  padding: 10px;
+  border: 1px solid #00ff00;
+  border-radius: 5px;
+  z-index: 5;
+}
 
-    #lang-switch {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.5);
-      color: #00ff00;
-      border: 1px solid #00ff00;
-      border-radius: 4px;
-      padding: 3px 6px;
-      z-index: 20;
-      cursor: pointer;
-    }
+#terminal { margin: 0; padding: 0; list-style: none; }
 
-    /* Terminal real */
-    #terminal {
-      position: fixed;
-      bottom: 50px;
-      left: 10px;
-      color: #00ff00;
-      font-family: monospace;
-      font-size: 12px;
-      white-space: pre;
-      z-index: 0;
-    }
-  </style>
+#visitor-counter { margin-bottom: 5px; font-weight: bold; }
+</style>
 </head>
 <body>
 
-  <div class="terminal-bg"></div>
+<div class="terminal-bg"></div>
 
-  <div class="logo-container" id="logo-container">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
-  </div>
+<div class="logo-container" id="logo-container">
+  <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
+</div>
 
-  <select id="lang-switch">
-    <option value="pt">PT</option>
-    <option value="es">ES</option>
-  </select>
+<select id="lang-switch">
+  <option value="pt">PT</option>
+  <option value="es">ES</option>
+</select>
 
-  <div id="main-content" class="hidden-content">
-    <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
-      <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6"></h2>
-      <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl"></p>
-    </section>
+<div id="main-content" class="hidden-content">
+  <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
+    <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6"></h2>
+    <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl"></p>
+  </section>
 
-    <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-6xl mx-auto px-4">
-      <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
-        <h3 id="service1-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
-        <p id="service1-text" class="text-gray-200"></p>
-      </div>
-      <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
-        <h3 id="service2-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
-        <p id="service2-text" class="text-gray-200"></p>
-      </div>
-      <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
-        <h3 id="service3-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
-        <p id="service3-text" class="text-gray-200"></p>
-      </div>
-    </section>
+  <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-6xl mx-auto px-4">
+    <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
+      <h3 id="service1-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
+      <p id="service1-text" class="text-gray-200"></p>
+    </div>
+    <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
+      <h3 id="service2-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
+      <p id="service2-text" class="text-gray-200"></p>
+    </div>
+    <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
+      <h3 id="service3-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
+      <p id="service3-text" class="text-gray-200"></p>
+    </div>
+  </section>
 
-    <section id="contact" class="bg-black rounded mt-20 text-center p-10 mx-4 glow-card">
-      <h2 id="contact-title" class="text-4xl font-bold text-green-400 mb-6"></h2>
-      <p id="contact-text" class="mb-6 text-lg text-gray-200"></p>
-      <a href="mailto:jonas.brasil@jbrasillabs.com.br" id="contact-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition"></a>
-    </section>
-  </div>
+  <section id="contact" class="bg-black rounded mt-20 text-center p-10 mx-4 glow-card">
+    <h2 id="contact-title" class="text-4xl font-bold text-green-400 mb-6"></h2>
+    <p id="contact-text" class="mb-6 text-lg text-gray-200"></p>
+    <a href="mailto:jonas.brasil@jbrasillabs.com.br" id="contact-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition"></a>
+  </section>
+</div>
 
-  <div id="terminal"></div>
+<div id="terminal-container">
+  <div id="visitor-counter">Visitantes conectados: 0</div>
+  <ul id="terminal"></ul>
+</div>
 
-  <footer id="footer-text">
-    © 2026 JBrasil Labs. Todos os direitos reservados.
-  </footer>
+<footer id="footer-text">© 2026 JBrasil Labs. Todos os direitos reservados.</footer>
 
 <script>
 let terminalInterval;
+let visitors = []; // lista de visitantes únicos
 
 const translations = {
   pt: {
@@ -222,6 +217,57 @@ const translations = {
   }
 };
 
+// Captura IP e país
+async function getVisitorInfo() {
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    if(!res.ok) throw new Error('API falhou');
+    const data = await res.json();
+    return { ip: data.ip, country: data.country_name || 'Desconhecido' };
+  } catch(e) {
+    return { ip: '0.0.0.0', country: 'Desconhecido' };
+  }
+}
+
+async function startTerminalAnimation(lines) {
+  const terminal = document.getElementById('terminal');
+  if(terminalInterval) clearInterval(terminalInterval);
+  terminal.innerHTML = '';
+  const displayLines = [];
+  let index = 0;
+
+  const visitor = await getVisitorInfo();
+
+  // Adiciona ao histórico se não estiver presente
+  if(!visitors.find(v => v.ip === visitor.ip)){
+    visitors.push(visitor);
+  }
+
+  terminalInterval = setInterval(() => {
+    let line = lines[index];
+
+    // 20% chance de log do visitante
+    if(Math.random() < 0.2 && visitors.length > 0){
+      const v = visitors[Math.floor(Math.random()*visitors.length)];
+      line = `[LOGIN] ${v.ip} (${v.country}) conectou à página`;
+      document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
+    }
+
+    const li = document.createElement('li');
+    li.textContent = line;
+    terminal.appendChild(li);
+    displayLines.push(li);
+
+    if(displayLines.length > 25){
+      const removed = displayLines.shift();
+      removed.remove();
+    }
+
+    index = (index + 1) % lines.length;
+    terminal.scrollTop = terminal.scrollHeight; // auto scroll
+  }, 800);
+}
+
 function applyTranslations(lang) {
   const t = translations[lang] || translations.pt;
 
@@ -238,18 +284,10 @@ function applyTranslations(lang) {
   document.getElementById('contact-button').textContent = t.contactButton;
   document.getElementById('footer-text').textContent = t.footerText;
 
-  // Terminal
-  const terminalDiv = document.getElementById('terminal');
-  terminalDiv.textContent = "";
-  if(terminalInterval) clearInterval(terminalInterval);
-  let i = 0;
-  terminalInterval = setInterval(() => {
-    terminalDiv.textContent += t.terminalLines[i] + "\n";
-    i = (i + 1) % t.terminalLines.length;
-  }, 1500);
+  startTerminalAnimation(t.terminalLines);
 }
 
-// Detectar idioma do navegador
+// Detectar idioma
 const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
 document.getElementById('lang-switch').value = userLang;
 applyTranslations(userLang);
