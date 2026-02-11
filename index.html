@@ -21,7 +21,7 @@
     body {
       font-family: 'Orbitron', sans-serif;
       background-color: black;
-      color: #00ff00; /* verde terminal */
+      color: #00ff00;
       position: relative;
       overflow-x: hidden;
     }
@@ -35,7 +35,7 @@
       color: #00ff00;
       font-family: monospace;
       font-size: 14px;
-      opacity: 0.08;
+      opacity: 0.05; /* mais suave */
       z-index: -1;
       white-space: pre;
       overflow: hidden;
@@ -86,12 +86,10 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
 <header class="fixed top-0 left-0 w-full bg-black shadow-md z-50">
   <div class="flex justify-between items-center max-w-6xl mx-auto p-4">
     <div class="flex items-center gap-3">
-      <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-16 h-16">
-      <h2 class="text-3xl font-bold text-green-400">JBrasil Labs</h2>
+      <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="w-22 h-22">
     </div>
     <nav class="flex items-center gap-6">
       <a href="#services" id="nav-services" class="hover:text-green-300 font-medium">Serviços</a>
-      <a href="#about" id="nav-about" class="hover:text-green-300 font-medium">Sobre</a>
       <a href="#contact" id="nav-contact" class="hover:text-green-300 font-medium">Contato</a>
       <button id="toggle-dark" class="px-3 py-1 rounded bg-green-900 text-green-200 hover:bg-green-700">🌙</button>
       <select id="lang-switch" class="px-2 py-1 rounded bg-green-900 text-green-200">
@@ -104,9 +102,10 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
 
 <!-- Hero -->
 <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
+  <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo Central" class="w-32 h-32 mb-8">
   <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6">Cybersegurança & Redes Corporativas</h2>
-  <p id="hero-text" class="text-2xl mb-10 max-w-3xl">
-    Proteção avançada com Sophos Firewall, Email Central e suporte técnico especializado.
+  <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl">
+    Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.
   </p>
   <a href="#contact" id="hero-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition">Solicitar Consultoria</a>
 </section>
@@ -115,30 +114,30 @@ JBrasilLabs@secure:~$ tail -f /var/log/security.log
 <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-6xl mx-auto px-4">
   <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
     <h3 id="service1-title" class="text-2xl font-bold text-green-300 mb-2">Sophos Firewall</h3>
-    <p id="service1-text">Configuração e suporte em firewalls Sophos para máxima proteção de rede.</p>
+    <p id="service1-text" class="text-gray-200">Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.</p>
   </div>
   <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
     <h3 id="service2-title" class="text-2xl font-bold text-green-300 mb-2">Sophos Central Email</h3>
-    <p id="service2-text">Proteção de email com políticas de segurança especializado Sophos Email.</p>
+    <p id="service2-text" class="text-gray-200">Proteção de email com políticas de segurança, filtragem e anti-spam avancado com solução Sophos Email Advanced.</p>
   </div>
   <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
     <h3 id="service3-title" class="text-2xl font-bold text-green-300 mb-2">Suporte Técnico</h3>
-    <p id="service3-text">Consultoria e suporte remoto ou presencial para redes corporativas e infraestruturas Sophos.</p>
+    <p id="service3-text" class="text-gray-200">Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.</p>
   </div>
 </section>
 
 <!-- About -->
 <section id="about" class="text-center mt-20 max-w-4xl mx-auto px-4">
-  <h2 id="about-title" class="text-4xl font-bold text-green-400 mb-6">Sobre JB Brasil Labs</h2>
-  <p id="about-text" class="text-xl">
-    Especialistas em segurança digital e redes corporativas, com foco em soluções Sophos e suporte técnico de alto nível.
+  <h2 id="about-title" class="text-4xl font-bold text-green-400 mb-6">JB Brasil Labs</h2>
+  <p id="about-text" class="text-xl text-gray-200">
+    Somos especialistas em segurança digital e redes corporativas, com foco em soluções Sophos e suporte técnico de alto nível.
   </p>
 </section>
 
 <!-- Contact -->
 <section id="contact" class="bg-black rounded mt-20 text-center p-10 mx-4 glow-card">
   <h2 id="contact-title" class="text-4xl font-bold text-green-400 mb-6">Entre em Contato</h2>
-  <p id="contact-text" class="mb-6 text-lg">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
+  <p id="contact-text" class="mb-6 text-lg text-gray-200">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
   <a href="mailto:jonas.brasil@jbrasillabs.com.br" id="contact-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition">Enviar Email</a>
 </section>
 
