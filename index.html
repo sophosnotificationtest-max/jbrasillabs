@@ -12,10 +12,10 @@
     </script>
 
     <!-- CSS Customizado -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="styles.css">
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
+    <link rel="icon" href="logo.png">
 </head>
 <body class="transition-colors duration-300">
 
@@ -23,7 +23,7 @@
     <header class="bg-gray-200 dark:bg-gray-800 shadow-md">
         <div class="flex justify-between items-center max-w-6xl mx-auto p-4">
             <div class="flex items-center gap-3">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="w-14 h-14">
+                <img src="logo.png" alt="Logo" class="w-14 h-14">
                 <h1 class="text-2xl font-bold">JBrasil Labs</h1>
             </div>
             <nav class="flex items-center gap-4">
@@ -36,49 +36,49 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero flex flex-col items-center justify-center text-center">
-        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="w-24 h-24 mb-4">
+    <section class="hero flex flex-col items-center justify-center text-center mt-10">
+        <img src="logo.png" alt="Logo" class="w-24 h-24 mb-4">
         <h2 class="text-4xl font-bold mb-4">Consultoria Especializada em Redes e Segurança</h2>
         <p class="text-lg mb-6 max-w-2xl">
             Soluções confiáveis em Sophos Firewall, Sophos Central Email e suporte corporativo.
         </p>
-        <a href="#contact" class="btn-primary">Solicitar Consultoria</a>
+        <a href="#contact" class="btn-primary px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition">Solicitar Consultoria</a>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="grid-3 mt-10 max-w-6xl mx-auto">
-        <div class="card">
+    <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 max-w-6xl mx-auto px-4">
+        <div class="card p-6 bg-gray-100 dark:bg-gray-700 rounded shadow">
             <h3 class="text-xl font-bold mb-2">Sophos Firewall</h3>
             <p>Configuração, gerenciamento e suporte avançado em firewalls Sophos, garantindo segurança de rede corporativa.</p>
         </div>
-        <div class="card">
+        <div class="card p-6 bg-gray-100 dark:bg-gray-700 rounded shadow">
             <h3 class="text-xl font-bold mb-2">Sophos Central Email</h3>
             <p>Implementação e suporte completo em proteção de email corporativo, incluindo políticas de DKIM, SPF e filtragem avançada.</p>
         </div>
-        <div class="card">
+        <div class="card p-6 bg-gray-100 dark:bg-gray-700 rounded shadow">
             <h3 class="text-xl font-bold mb-2">Suporte e Consultoria</h3>
             <p>Suporte técnico remoto ou presencial para redes corporativas, troubleshooting e otimização de sistemas.</p>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="text-center mt-10 max-w-4xl mx-auto">
-        <h2>Sobre JB Brasil Labs</h2>
-        <p>
+    <section id="about" class="text-center mt-10 max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-4">Sobre JB Brasil Labs</h2>
+        <p class="text-lg">
             Com anos de experiência em ambientes corporativos e especialização em soluções Sophos, nossa equipe oferece serviços confiáveis, garantindo que sua infraestrutura de TI esteja segura, eficiente e atualizada.
         </p>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="bg-gray-200 dark:bg-gray-800 rounded mt-10 text-center p-10">
-        <h2>Entre em Contato</h2>
-        <p>Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
-        <a href="mailto:contato@jbrasillabs.com.br" class="btn-primary mt-4 inline-block">Enviar Email</a>
+    <section id="contact" class="bg-gray-200 dark:bg-gray-800 rounded mt-10 text-center p-10 mx-4">
+        <h2 class="text-3xl font-bold mb-4">Entre em Contato</h2>
+        <p class="mb-4">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
+        <a href="mailto:jonas.brasil@jbrasillabs.com.br" class="btn-primary mt-4 inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 transition">Enviar Email</a>
     </section>
 
     <!-- Footer -->
     <footer class="bg-gray-200 dark:bg-gray-800 mt-10 p-4 text-center">
-        <p>&copy; 2026 JB Brasil Labs. Todos os direitos reservados.</p>
+        <p>&copy; 2026 JBrasil Labs. Todos os direitos reservados.</p>
     </footer>
 
     <!-- Dark Mode Script -->
