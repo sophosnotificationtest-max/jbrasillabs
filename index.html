@@ -1,52 +1,89 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
-    <title>JBrasil Labs | Security & Networking</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBrasil Labs - Consultoria em Redes e Sophos</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}">
 </head>
-<body>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
 
-<header class="hero">
-    <h1>JBrasil Labs</h1>
-    <p>Security • Networking • Infrastructure</p>
-    <a href="#services" class="btn">Conheça nossos serviços</a>
-</header>
+    <!-- Navbar -->
+    <header class="bg-gray-200 dark:bg-gray-800 p-6 flex justify-between items-center shadow-md">
+        <div class="flex items-center gap-3">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="w-12 h-12">
+            <h1 class="text-2xl font-bold">JBrasil Labs</h1>
+        </div>
+        <nav class="flex gap-4">
+            <a href="#services" class="hover:text-blue-600 dark:hover:text-blue-400">Serviços</a>
+            <a href="#about" class="hover:text-blue-600 dark:hover:text-blue-400">Sobre</a>
+            <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400">Contato</a>
+            <button id="toggle-dark" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">🌙</button>
+        </nav>
+    </header>
 
-<section id="services">
-    <h2>Serviços</h2>
+    <!-- Hero -->
+    <section class="text-center p-10 bg-gradient-to-r from-blue-400 to-indigo-600 text-white">
+        <h2 class="text-4xl font-bold mb-4">Consultoria Especializada em Redes e Segurança</h2>
+        <p class="text-lg mb-6">Soluções confiáveis em Sophos Firewall, Sophos Central Email e suporte corporativo.</p>
+        <a href="#contact" class="px-6 py-3 bg-white text-blue-700 font-semibold rounded hover:bg-gray-100 transition">
+            Solicitar Consultoria
+        </a>
+    </section>
 
-    <div class="card">
-        <h3>Labs & Testing</h3>
-        <p>Validação de cenários complexos de firewall, SD-WAN e segurança corporativa.</p>
-    </div>
+    <!-- Services -->
+    <section id="services" class="p-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition duration-300">
+            <h3 class="text-xl font-bold mb-2">Sophos Firewall</h3>
+            <p>Configuração, gerenciamento e suporte avançado em firewalls Sophos, garantindo segurança de rede corporativa.</p>
+        </div>
+        <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition duration-300">
+            <h3 class="text-xl font-bold mb-2">Sophos Central Email</h3>
+            <p>Implementação e suporte completo em proteção de email corporativo, incluindo políticas de DKIM, SPF e filtragem avançada.</p>
+        </div>
+        <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded shadow hover:scale-105 transform transition duration-300">
+            <h3 class="text-xl font-bold mb-2">Suporte e Consultoria</h3>
+            <p>Suporte técnico remoto ou presencial para redes corporativas, troubleshooting e otimização de sistemas.</p>
+        </div>
+    </section>
 
-    <div class="card">
-        <h3>Consultoria</h3>
-        <p>Projetos personalizados em arquitetura de rede e segurança empresarial.</p>
-    </div>
+    <!-- About -->
+    <section id="about" class="p-10 text-center">
+        <h2 class="text-3xl font-bold mb-4">Sobre JB Brasil Labs</h2>
+        <p class="max-w-2xl mx-auto">
+            Com anos de experiência em ambientes corporativos e especialização em soluções Sophos, nossa equipe oferece serviços confiáveis, garantindo que sua infraestrutura de TI esteja segura, eficiente e atualizada.
+        </p>
+    </section>
 
-    <div class="card">
-        <h3>Implementações</h3>
-        <p>Deploy profissional de soluções Sophos e ambientes corporativos.</p>
-    </div>
-</section>
+    <!-- Contact -->
+    <section id="contact" class="p-10 bg-gray-200 dark:bg-gray-800 text-center rounded mt-10">
+        <h2 class="text-3xl font-bold mb-4">Entre em Contato</h2>
+        <p class="mb-4">Solicite uma consultoria personalizada ou tire suas dúvidas.</p>
+        <a href="mailto:contato@jbrasillabs.com.br" class="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-800 transition">
+            Enviar Email
+        </a>
+    </section>
 
-<section class="specialties">
-    <h2>Especializações</h2>
-    <ul>
-        <li>Sophos Firewall & Central</li>
-        <li>SD-WAN</li>
-        <li>Segurança Perimetral</li>
-        <li>Arquitetura de Redes</li>
-        <li>IPv6 & DNAT</li>
-    </ul>
-</section>
+    <!-- Footer -->
+    <footer class="bg-gray-200 dark:bg-gray-800 p-6 text-center mt-10">
+        <p>&copy; 2026 JB Brasil Labs. Todos os direitos reservados.</p>
+    </footer>
 
-<footer>
-    <p>© 2026 JBrasil Labs - Todos os direitos reservados</p>
-</footer>
+    <!-- Dark Mode Script -->
+    <script>
+        const btn = document.getElementById('toggle-dark');
+        btn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+    </script>
 
 </body>
 </html>
