@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JBrasil Labs - Cybersegurança & SOC</title>
+<title>JBrasil Labs - Cybersegurança & Redes</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config = { darkMode: 'class' }</script>
@@ -12,66 +12,45 @@
 <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
 <style>
-body {
-  font-family: 'Orbitron', sans-serif;
-  background: black;
-  color: #00ff00;
-  margin: 0;
-  overflow-x: hidden;
-}
+body { font-family: 'Orbitron', sans-serif; background:black; color:#00ff00; margin:0; overflow-x:hidden; }
 
 .logo-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  z-index: 10;
+  position: fixed; top:50%; left:50%; transform: translate(-50%, -50%);
+  text-align:center; z-index:10;
 }
-.logo-container img {
-  width: 350px;
-  height: 350px;
-  cursor: pointer;
-}
+.logo-container img { width:350px; height:350px; cursor:pointer; }
 
-.hidden-content { opacity: 0; visibility: hidden; transition: opacity 1s; }
-.visible-content { opacity: 1; visibility: visible; transition: opacity 1s; }
+.hidden-content { opacity:0; visibility:hidden; transition:opacity 1s; }
+.visible-content { opacity:1; visibility:visible; transition:opacity 1s; }
 
-#lang-switch {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.5);
-  color: #00ff00;
-  border: 1px solid #00ff00;
-  border-radius: 4px;
-  padding: 3px 6px;
-  z-index: 20;
-  cursor: pointer;
-}
+footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; bottom:10px; right:10px; font-family:monospace; font-size:14px; }
+
+#lang-switch { position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#00ff00; border:1px solid #00ff00; border-radius:4px; padding:3px 6px; z-index:20; cursor:pointer; }
 
 #terminal {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  bottom: 10px;
-  width: 40%;
-  overflow-y: auto;
-  font-family: monospace;
-  font-size: 12px;
-  color: #00ff00;
-  z-index: 20;
-  background: rgba(0,0,0,0.2);
-  padding: 10px;
-  border-radius: 4px;
+  position:fixed; bottom:10px; left:10px; font-family:monospace;
+  font-size:12px; color:#00ff00; z-index:0; pointer-events:none;
+  width:calc(100% - 20px); max-height:300px; overflow:hidden;
 }
 
-.terminal-line {
-  line-height: 1.2em;
+.terminal-line { opacity:0; transform: translateY(100%); animation:moveUp 8s linear forwards; }
+
+@keyframes moveUp {
+  0% { transform:translateY(100%); opacity:0; }
+  10%, 90% { opacity:1; }
+  100% { transform:translateY(-100%); opacity:0; }
+}
+
+.terminal-bg {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:black; color:#00ff00; font-family:monospace;
+  font-size:15px; opacity:0.05; z-index:-1; white-space:pre; overflow:hidden;
 }
 </style>
 </head>
 <body>
+
+<div class="terminal-bg" id="terminal-bg"></div>
 
 <div class="logo-container" id="logo-container">
   <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
@@ -82,15 +61,15 @@ body {
   <option value="es">ES</option>
 </select>
 
-<div id="terminal"></div>
+<ul id="terminal"></ul>
 
-<div id="main-content" class="hidden-content px-4">
-  <section class="hero flex flex-col items-center justify-center text-center mt-20">
+<div id="main-content" class="hidden-content">
+  <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
     <h2 id="hero-title" class="text-6xl font-extrabold text-green-400 mb-6"></h2>
     <p id="hero-text" class="text-xl text-gray-200 mb-10 max-w-3xl"></p>
   </section>
 
-  <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-6xl mx-auto">
+  <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 max-w-6xl mx-auto px-4">
     <div class="glow-card p-6 bg-black rounded hover:scale-105 transform transition">
       <h3 id="service1-title" class="text-2xl font-bold text-green-300 mb-2"></h3>
       <p id="service1-text" class="text-gray-200"></p>
@@ -105,7 +84,7 @@ body {
     </div>
   </section>
 
-  <section id="contact" class="bg-black rounded mt-20 text-center p-10 glow-card">
+  <section id="contact" class="bg-black rounded mt-20 text-center p-10 mx-4 glow-card">
     <h2 id="contact-title" class="text-4xl font-bold text-green-400 mb-6"></h2>
     <p id="contact-text" class="mb-6 text-lg text-gray-200"></p>
     <a href="mailto:jonas.brasil@jbrasillabs.com.br" id="contact-button" class="px-10 py-4 neon-button rounded font-bold text-lg transition"></a>
@@ -113,114 +92,44 @@ body {
 </div>
 
 <script>
-let terminalInterval;
-let visitorData = null;
+let terminal = document.getElementById('terminal');
 
+// Traduções
 const translations = {
   pt: {
-    heroTitle: "Cybersegurança & Redes",
-    heroText: "Consultoria especializada em infraestrutura, firewall, e-mail e segurança corporativa.",
-    service1Title: "Firewall & Segurança",
-    service1Text: "Implementação e hardening de ambientes Sophos e redes corporativas.",
-    service2Title: "Infraestrutura",
-    service2Text: "Projetos, segmentação, VLAN, IPv6 e alta disponibilidade.",
-    service3Title: "Consultoria Técnica",
-    service3Text: "Troubleshooting avançado e suporte especializado.",
-    contactTitle: "Contato",
-    contactText: "Entre em contato para projetos e consultoria.",
-    contactButton: "Enviar Email",
-    terminalLines: [
-      "Inicializando módulos de segurança...",
-      "Firewall carregado",
-      "IDS ativo",
-      "Monitorando conexões..."
-    ]
+    heroTitle: "Cybersegurança & Redes Corporativas",
+    heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
+    service1Title: "Sophos Firewall",
+    service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
+    service2Title: "Sophos Central Email",
+    service2Text: "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
+    service3Title: "Suporte Técnico",
+    service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
+    contactTitle: "Entre em Contato",
+    contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
+    contactButton: "Enviar Email"
   },
   es: {
-    heroTitle: "Ciberseguridad & Redes",
-    heroText: "Consultoría especializada en infraestructura, firewall y seguridad empresarial.",
-    service1Title: "Firewall & Seguridad",
-    service1Text: "Implementación y hardening de entornos corporativos.",
-    service2Title: "Infraestructura",
-    service2Text: "Proyectos, VLAN, IPv6 y alta disponibilidad.",
-    service3Title: "Consultoría Técnica",
-    service3Text: "Soporte especializado y troubleshooting avanzado.",
-    contactTitle: "Contacto",
-    contactText: "Contáctenos para proyectos y consultoría.",
-    contactButton: "Enviar Email",
-    terminalLines: [
-      "Iniciando módulos de seguridad...",
-      "Firewall cargado",
-      "IDS activo",
-      "Monitoreando conexiones..."
-    ]
+    heroTitle: "Ciberseguridad & Redes Corporativas",
+    heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
+    service1Title: "Sophos Firewall",
+    service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
+    service2Title: "Sophos Central Email",
+    service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
+    service3Title: "Soporte Técnico",
+    service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
+    contactTitle: "Contáctanos",
+    contactText: "Solicita una consultoría personalizada o envie sus dudas.",
+    contactButton: "Enviar Correo"
   }
 };
 
-// Timestamp SOC
-function getUTCTimestamp(){
-  const d = new Date();
-  return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+
-         String(d.getUTCDate()).padStart(2,'0')+' '+
-         String(d.getUTCHours()).padStart(2,'0')+':' +
-         String(d.getUTCMinutes()).padStart(2,'0')+':' +
-         String(d.getUTCSeconds()).padStart(2,'0') + ' UTC';
-}
+// Detecta idioma
+const userLang = navigator.language.startsWith('es')?'es':'pt';
+document.getElementById('lang-switch').value = userLang;
+applyTranslations(userLang);
+document.getElementById('lang-switch').addEventListener('change', e=>applyTranslations(e.target.value));
 
-// Busca IP e país
-async function getVisitorInfo() {
-  try {
-    const res = await fetch('https://geolocation-db.com/json/');
-    const data = await res.json();
-    return {
-      ip: data.IPv4 || 'IP não detectado',
-      country: data.country_name || 'Desconhecido'
-    };
-  } catch {
-    return {
-      ip: 'IP não detectado',
-      country: 'Desconhecido'
-    };
-  }
-}
-
-// Envia log para server_drive.py
-function sendLog(entry){
-  fetch('https://jbrasillabs-1.onrender.com/log',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({entry})
-  }).catch(e=>console.log('Erro enviando log:',e));
-}
-
-// Inicializa terminal SOC
-async function startTerminal(lines){
-  const terminal = document.getElementById('terminal');
-  terminal.innerHTML='';
-
-  visitorData = await getVisitorInfo();
-
-  // Primeira linha de acesso
-  const loginLine = `${getUTCTimestamp()} | ACCESS | ${visitorData.ip} | ${visitorData.country}`;
-  const divLogin = document.createElement('div');
-  divLogin.textContent = loginLine;
-  divLogin.className='terminal-line';
-  terminal.appendChild(divLogin);
-  sendLog(loginLine);
-
-  let index = 0;
-  terminalInterval = setInterval(()=>{
-    const line = `${getUTCTimestamp()} | INFO | ${lines[index]}`;
-    const div = document.createElement('div');
-    div.textContent = line;
-    div.className = 'terminal-line';
-    terminal.appendChild(div);
-    if(terminal.children.length > 40) terminal.removeChild(terminal.children[0]);
-    index = (index + 1) % lines.length;
-  }, 1500);
-}
-
-// Aplica traduções
 function applyTranslations(lang){
   const t = translations[lang] || translations.pt;
   document.getElementById('hero-title').textContent = t.heroTitle;
@@ -234,31 +143,52 @@ function applyTranslations(lang){
   document.getElementById('contact-title').textContent = t.contactTitle;
   document.getElementById('contact-text').textContent = t.contactText;
   document.getElementById('contact-button').textContent = t.contactButton;
-  startTerminal(t.terminalLines);
 }
 
-// Detecta idioma
-const userLang = navigator.language.startsWith('es')?'es':'pt';
-document.getElementById('lang-switch').value=userLang;
-applyTranslations(userLang);
-document.getElementById('lang-switch').addEventListener('change', e=>applyTranslations(e.target.value));
-
 // Logo clicável
-document.getElementById('logo').addEventListener('click', ()=>{
+document.getElementById('logo').addEventListener('click', async ()=>{
   document.getElementById('logo-container').style.display='none';
   document.getElementById('main-content').classList.add('visible-content');
+
+  // Deixa terminal de fundo mais opaco
+  document.getElementById('terminal-bg').style.opacity = 0.2;
+
+  // Envia IP e país para o server
+  const visitor = await getVisitorInfo();
+  sendLog(`[VISITOR] ${visitor.ip} (${visitor.country}) entrou na página`);
+  const div = document.createElement('div');
+  div.textContent = `[SOC] ${visitor.ip} (${visitor.country})`;
+  div.className = 'terminal-line';
+  terminal.appendChild(div);
 });
 
-// Email click SOC
+async function getVisitorInfo(){
+  try{
+    const res = await fetch('https://geolocation-db.com/json/');
+    const data = await res.json();
+    return {ip:data.IPv4||'192.168.0.1', country:data.country_name||'Desconhecido'};
+  }catch{
+    return {ip:`192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+            country:['Brazil','Argentina','Mexico','Chile','Colombia'][Math.floor(Math.random()*5)]};
+  }
+}
+
+function sendLog(entry){
+  fetch('https://jbrasillabs-1.onrender.com/log',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entry})
+  }).catch(e=>console.log('Erro enviando log:',e));
+}
+
+// Click no botão de email
 document.getElementById('contact-button').addEventListener('click', ()=>{
-  const line = `${getUTCTimestamp()} | EMAIL CLICK | Usuário clicou no botão de contato`;
   const div = document.createElement('div');
-  div.textContent = line;
+  div.textContent='[SOC] Usuário clicou no email';
   div.className='terminal-line';
-  document.getElementById('terminal').appendChild(div);
-  sendLog(line);
+  terminal.appendChild(div);
+  sendLog(div.textContent);
 });
 </script>
-
 </body>
 </html>
