@@ -92,7 +92,7 @@ footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; b
 </div>
 
 <script>
-const terminal = document.getElementById('terminal');
+let terminal = document.getElementById('terminal');
 
 // Traduções PT/ES
 const translations = {
@@ -145,7 +145,9 @@ function applyTranslations(lang){
   document.getElementById('contact-button').textContent = t.contactButton;
 }
 
-// Função para buscar IP e país do visitante
+// -----------------------------
+// Funções SOC / Log
+// -----------------------------
 async function getVisitorInfo(){
   try{
     const res = await fetch('https://geolocation-db.com/json/');
@@ -157,7 +159,6 @@ async function getVisitorInfo(){
   }
 }
 
-// Função para enviar log ao servidor Flask
 function sendLog(entry){
   fetch('https://jbrasillabs-1.onrender.com/log',{
     method:'POST',
@@ -166,29 +167,33 @@ function sendLog(entry){
   }).catch(e=>console.log('Erro enviando log:',e));
 }
 
-// Click no logo: mostra conteúdo e registra visita
+// -----------------------------
+// Logo clicável para mostrar conteúdo
+// -----------------------------
 document.getElementById('logo').addEventListener('click', async ()=>{
   document.getElementById('logo-container').style.display='none';
   document.getElementById('main-content').classList.add('visible-content');
   document.getElementById('terminal-bg').style.opacity = 0.2;
 
   const visitor = await getVisitorInfo();
-  const logEntry = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
+  const msg = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
+  sendLog(msg);
+
   const div = document.createElement('div');
-  div.textContent = logEntry;
+  div.textContent = msg;
   div.className = 'terminal-line';
   terminal.appendChild(div);
-  sendLog(logEntry);
 });
 
 // Click no botão de email
 document.getElementById('contact-button').addEventListener('click', ()=>{
-  const logEntry = '[SOC] Usuário clicou no email';
+  const msg = '[SOC] Usuário clicou no email';
+  sendLog(msg);
+
   const div = document.createElement('div');
-  div.textContent = logEntry;
+  div.textContent = msg;
   div.className = 'terminal-line';
   terminal.appendChild(div);
-  sendLog(logEntry);
 });
 </script>
 </body>
