@@ -20,6 +20,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Fundo animado estilo terminal */
 .terminal-bg {
   position: fixed;
   top: 0; left: 0;
@@ -48,15 +49,18 @@ body {
 .visible-content { opacity: 1; visibility: visible; transition: opacity 1s; }
 
 footer {
-  text-align: center;
+  text-align: right;
   color: #00ff00;
-  margin-top: 20px;
+  margin: 0;
   z-index: 5;
   position: fixed;
   bottom: 10px;
-  width: 100%;
+  right: 10px;
+  font-family: monospace;
+  font-size: 14px;
 }
 
+/* Seletor idioma */
 #lang-switch {
   position: fixed;
   top: 10px;
@@ -70,24 +74,16 @@ footer {
   cursor: pointer;
 }
 
-#terminal-container {
+/* Terminal animado no canto esquerdo */
+#terminal {
   position: fixed;
   bottom: 10px;
   left: 10px;
-  width: 400px;
-  height: 250px;
-  overflow: hidden; /* sem scroll */
   font-family: monospace;
   font-size: 12px;
   color: #00ff00;
-  background: rgba(0,0,0,0.3);
-  padding: 10px;
-  border: 1px solid #00ff00;
-  border-radius: 5px;
-  z-index: 5;
+  z-index: 20;
 }
-
-#terminal { margin: 0; padding: 0; list-style: none; position: relative; }
 
 .terminal-line {
   position: relative;
@@ -102,8 +98,6 @@ footer {
   90% { opacity: 1; }
   100% { transform: translateY(-100%); opacity: 0; }
 }
-
-#visitor-counter { margin-bottom: 5px; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -118,6 +112,8 @@ footer {
   <option value="pt">PT</option>
   <option value="es">ES</option>
 </select>
+
+<ul id="terminal"></ul>
 
 <div id="main-content" class="hidden-content">
   <section class="hero flex flex-col items-center justify-center text-center mt-40 px-4">
@@ -147,12 +143,7 @@ footer {
   </section>
 </div>
 
-<div id="terminal-container">
-  <div id="visitor-counter">Visitantes conectados: 0</div>
-  <ul id="terminal"></ul>
-</div>
-
-<footer id="footer-text">© 2026 JBrasil Labs. Todos os direitos reservados.</footer>
+<footer id="visitor-counter">Visitantes conectados: 0</footer>
 
 <script>
 let terminalInterval;
@@ -203,7 +194,7 @@ const translations = {
     contactTitle: "Contáctanos",
     contactText: "Solicita una consultoría personalizada o envie sus dudas.",
     contactButton: "Enviar Correo",
-    footerText: "© 2026 JBrasil Labs. Todos los derechos reservados.",
+    footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
     terminalLines: [
       "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
       "[OK] Firewall activo y monitoreando tráfico",
@@ -258,13 +249,12 @@ async function startTerminalAnimation(lines){
       document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
     }
 
-    const li = document.createElement('li');
-    li.textContent = line;
-    li.className = 'terminal-line';
-    terminal.appendChild(li);
+    const div = document.createElement('div');
+    div.textContent = line;
+    div.className = 'terminal-line';
+    terminal.appendChild(div);
 
-    // remove linhas antigas
-    if(terminal.children.length > 20){
+    if(terminal.children.length > 50){
       terminal.removeChild(terminal.children[0]);
     }
 
@@ -285,7 +275,7 @@ function applyTranslations(lang){
   document.getElementById('contact-title').textContent = t.contactTitle;
   document.getElementById('contact-text').textContent = t.contactText;
   document.getElementById('contact-button').textContent = t.contactButton;
-  document.getElementById('footer-text').textContent = t.footerText;
+  document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
 
   startTerminalAnimation(t.terminalLines);
 }
@@ -296,11 +286,10 @@ document.getElementById('lang-switch').value = userLang;
 applyTranslations(userLang);
 document.getElementById('lang-switch').addEventListener('change', e=>applyTranslations(e.target.value));
 
-// Mostra conteúdo ao clicar no logo
+// Logo clicável
 const logo = document.getElementById('logo');
 const mainContent = document.getElementById('main-content');
 const logoContainer = document.getElementById('logo-container');
-
 logo.addEventListener('click', ()=>{
   logoContainer.style.display='none';
   mainContent.classList.add('visible-content');
