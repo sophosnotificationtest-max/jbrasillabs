@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload, MediaIoBaseDownload
+from googleapiclient.http import MediaIoBaseUpload
 from google.oauth2 import service_account
 import io
 import os
@@ -8,7 +8,8 @@ import os
 app = Flask(__name__)
 
 SERVICE_ACCOUNT_FILE = 'tactile-vial-373717-4b5adeb02171.json'
-FILE_NAME = 'logs.txt'  # arquivo já existente no Drive
+FOLDER_ID = '1ajsiTAC1bBkeyN0ixaGd9w25RmR42FHR'
+FILE_NAME = 'logs.txt'
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 # Autenticação
@@ -18,38 +19,29 @@ credentials = service_account.Credentials.from_service_account_file(
 drive_service = build('drive', 'v3', credentials=credentials)
 
 def write_log_to_drive(entry):
+    """Anexa log no arquivo logs.txt dentro da pasta do Drive"""
     try:
-        # Procura o arquivo pelo nome
+        # Procura o arquivo na pasta
         results = drive_service.files().list(
-            q=f"name='{FILE_NAME}'",
+            q=f"name='{FILE_NAME}' and '{FOLDER_ID}' in parents",
             spaces='drive',
             fields='files(id, name)'
         ).execute()
         files = results.get('files', [])
 
-        if not files:
-            print(f"[Erro Drive] Arquivo {FILE_NAME} não encontrado. Certifique-se que ele existe e a conta de serviço tem acesso.")
-            return
+        content = (entry + '\n').encode('utf-8')
+        media = MediaIoBaseUpload(io.BytesIO(content), mimetype='text/plain')
 
-        file_id = files[0]['id']
-        content = entry + '\n'
-
-        # Baixa conteúdo atual
-        request_download = drive_service.files().get_media(fileId=file_id)
-        fh = io.BytesIO()
-        downloader = MediaIoBaseDownload(fh, request_download)
-        done = False
-        while not done:
-            status, done = downloader.next_chunk()
-
-        fh.seek(0)
-        combined_content = fh.read() + content.encode('utf-8')
-
-        # Atualiza arquivo
-        media = MediaIoBaseUpload(io.BytesIO(combined_content), mimetype='text/plain')
-        drive_service.files().update(fileId=file_id, media_body=media).execute()
-        print(f"[Drive] Log atualizado: {entry}")
-
+        if files:
+            # Atualiza arquivo existente
+            file_id = files[0]['id']
+            drive_service.files().update(fileId=file_id, media_body=media).execute()
+            print(f"[Drive] Log atualizado: {entry}")
+        else:
+            # Cria arquivo novo
+            file_metadata = {'name': FILE_NAME, 'parents':[FOLDER_ID]}
+            drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+            print(f"[Drive] Log criado: {entry}")
     except Exception as e:
         print(f"[Erro Drive] {e}")
 
@@ -57,7 +49,7 @@ def write_log_to_drive(entry):
 def receive_log():
     data = request.json
     if not data or 'entry' not in data:
-        return jsonify({'status':'error','message':'entry missing'}), 400
+        return jsonify({'status':'error', 'message':'entry missing'}), 400
     entry = data['entry']
     print(f"[Render] Log recebido: {entry}")
     write_log_to_drive(entry)
