@@ -27,13 +27,13 @@ footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; b
 
 #lang-switch { position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#00ff00; border:1px solid #00ff00; border-radius:4px; padding:3px 6px; z-index:20; cursor:pointer; }
 
-#terminal { position:fixed; bottom:10px; left:10px; font-family:monospace; font-size:12px; color:#00ff00; z-index:20; }
+#terminal { position:fixed; bottom:10px; left:10px; font-family:monospace; font-size:12px; color:#00ff00; z-index:20; max-height:70vh; overflow:hidden; }
 
-.terminal-line { position:relative; transform:translateY(100%); opacity:0; animation:moveUp 8s linear forwards; }
+.terminal-line { opacity:0; transform:translateY(100%); animation:moveUp 8s linear forwards; }
 
 @keyframes moveUp {
   0% { transform:translateY(100%); opacity:0; }
-  10%, 90% { opacity:1; }
+  10%,90% { opacity:1; }
   100% { transform:translateY(-100%); opacity:0; }
 }
 </style>
@@ -86,38 +86,89 @@ let terminalInterval, visitors=[], emailHits=parseInt(localStorage.getItem('emai
 let totalVisits=parseInt(localStorage.getItem('totalVisits')||'0')+1;
 localStorage.setItem('totalVisits', totalVisits);
 
-const translations = { /* MESMO JSON DE TRADUCOES PT/ES do código anterior */ };
+// Traduções PT/ES
+const translations = {
+  pt: {
+    heroTitle:"Cybersegurança & Redes Corporativas",
+    heroText:"Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
+    service1Title:"Sophos Firewall",
+    service1Text:"Configuração, implementação, migração e suporte em firewalls Sophos.",
+    service2Title:"Sophos Central Email",
+    service2Text:"Proteção de email corporativo avançada.",
+    service3Title:"Suporte Técnico",
+    service3Text:"Consultoria e suporte remoto ou presencial para redes corporativas.",
+    contactTitle:"Entre em Contato",
+    contactText:"Solicite uma consultoria personalizada ou tire suas dúvidas.",
+    contactButton:"Enviar Email",
+    terminalLines:[
+      "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
+      "[OK] Firewall ativo",
+      "JBrasilLabs@secure:~$ sudo sophos-email --scan",
+      "[OK] Email protegido",
+      "JBrasilLabs@secure:~$ sudo netstat -secure",
+      "[OK] Rede protegida"
+    ]
+  },
+  es: {
+    heroTitle:"Ciberseguridad & Redes Corporativas",
+    heroText:"Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
+    service1Title:"Sophos Firewall",
+    service1Text:"Configuración, implementación, migración y soporte en firewalls Sophos.",
+    service2Title:"Sophos Central Email",
+    service2Text:"Protección de correo electrónico avanzada.",
+    service3Title:"Soporte Técnico",
+    service3Text:"Consultoría y soporte remoto o presencial para redes corporativas.",
+    contactTitle:"Contáctanos",
+    contactText:"Solicita una consultoría personalizada o envie sus dudas.",
+    contactButton:"Enviar Correo",
+    terminalLines:[
+      "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
+      "[OK] Firewall activo",
+      "JBrasilLabs@secure:~$ sudo sophos-email --scan",
+      "[OK] Email protegido",
+      "JBrasilLabs@secure:~$ sudo netstat -secure",
+      "[OK] Red protegida"
+    ]
+  }
+};
 
-async function getVisitorInfo() {
-  try {
+// Captura visitante
+async function getVisitorInfo(){
+  try{
     const res = await fetch('https://geolocation-db.com/json/');
     const data = await res.json();
     return { ip:data.IPv4||'192.168.0.1', country:data.country_name||'Desconhecido' };
-  } catch {
+  }catch{
     return { ip:`192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
              country:['Brazil','Argentina','Mexico','Chile','Colombia'][Math.floor(Math.random()*5)] };
   }
 }
 
+// Terminal infinito
 async function startTerminalAnimation(lines){
-  const terminal = document.getElementById('terminal');
+  const terminal=document.getElementById('terminal');
   if(terminalInterval) clearInterval(terminalInterval);
   terminal.innerHTML='';
 
-  const visitor = await getVisitorInfo();
-  if(!visitors.find(v=>v.ip===visitor.ip)) visitors.push(visitor);
-  updateFooter();
+  // Atualiza visitantes a cada 10s
+  setInterval(async()=>{
+    const visitor = await getVisitorInfo();
+    if(!visitors.find(v=>v.ip===visitor.ip)){
+      visitors.push(visitor);
+      updateFooter();
+    }
+  },10000);
 
   let index=0;
   terminalInterval=setInterval(()=>{
     let line = lines[index];
     if(Math.random()<0.25 && visitors.length>0){
-      const v=visitors[Math.floor(Math.random()*visitors.length)];
-      line = `[LOGIN] ${v.ip} (${v.country}) conectou à página`;
+      const v = visitors[Math.floor(Math.random()*visitors.length)];
+      line=`[LOGIN] ${v.ip} (${v.country}) conectou à página`;
       sendLog(line);
       updateFooter();
     }
-    const div=document.createElement('div');
+    const div=document.createElement('li');
     div.textContent=line;
     div.className='terminal-line';
     terminal.appendChild(div);
@@ -126,13 +177,15 @@ async function startTerminalAnimation(lines){
   },800);
 }
 
+// Atualiza footer
 function updateFooter(){
-  document.getElementById('visitor-counter').textContent =
+  document.getElementById('visitor-counter').textContent=
     `Visitantes conectados: ${visitors.length} | Total visitas: ${totalVisits} | Cliques email: ${emailHits}`;
 }
 
+// Tradução
 function applyTranslations(lang){
-  const t=translations[lang]||translations.pt;
+  const t = translations[lang]||translations.pt;
   document.getElementById('hero-title').textContent=t.heroTitle;
   document.getElementById('hero-text').textContent=t.heroText;
   document.getElementById('service1-title').textContent=t.service1Title;
@@ -164,7 +217,7 @@ document.getElementById('logo').addEventListener('click', ()=>{
 document.getElementById('contact-button').addEventListener('click', ()=>{
   emailHits++;
   localStorage.setItem('emailHits', emailHits);
-  const div=document.createElement('div');
+  const div=document.createElement('li');
   div.textContent='[EMAIL CLICK] Usuário clicou no email!';
   div.className='terminal-line';
   document.getElementById('terminal').appendChild(div);
@@ -184,4 +237,3 @@ function sendLog(entry){
 
 </body>
 </html>
-
