@@ -7,34 +7,64 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config = { darkMode: 'class' }</script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
 <style>
-body { font-family: 'Orbitron', sans-serif; background: black; color: #00ff00; margin: 0; overflow-x: hidden; }
-#matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
-.logo-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; transition: 0.8s; }
-.logo-container img { width: 300px; cursor: pointer; filter: drop-shadow(0 0 15px #00ff00); }
-.hidden-content { opacity: 0; visibility: hidden; pointer-events: none; }
-.visible-content { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 1.5s; }
-.glow-card { border: 1px solid #00ff0033; background: rgba(0,0,0,0.9); transition: 0.3s; backdrop-filter: blur(5px); }
-.glow-card:hover { border-color: #00ff00; box-shadow: 0 0 25px rgba(0,255,0,0.4); transform: translateY(-5px); }
-.neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; text-decoration: none; display: inline-block; }
-.neon-button:hover { background: #00ff00; color: black; box-shadow: 0 0 30px #00ff00; }
-#terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; max-height: 300px; overflow-y: auto; width: 95%; }
-.terminal-line { font-size: 13px; margin-bottom: 5px; animation: fadeInUp 0.5s forwards; background: rgba(0,0,0,0.7); padding: 4px 8px; border-left: 3px solid #00ff00; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-#lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; border-radius: 4px; }
-footer { text-align: center; font-size: 12px; color: #00ff00; padding: 40px 0; width: 100%; }
+    body { font-family: 'Orbitron', sans-serif; background: black; color: #00ff00; margin: 0; overflow-x: hidden; }
+    #matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
+    
+    /* Header Arcade Style */
+    #arcade-header { width: 100%; height: 180px; background: #050505; border-bottom: 2px solid #00ff00; position: relative; overflow: hidden; cursor: crosshair; }
+    #game-canvas { width: 100%; height: 100%; }
+    .arcade-ui { position: absolute; top: 10px; left: 10px; font-family: 'Press Start 2P', cursive; font-size: 10px; pointer-events: none; }
+
+    /* Requadro de Boas-Vindas Estilizado */
+    .welcome-box { 
+        border: 2px solid #00ff00; 
+        padding: 40px; 
+        background: rgba(0, 20, 0, 0.8); 
+        box-shadow: inset 0 0 15px #00ff00, 0 0 20px #00ff0055;
+        position: relative;
+        max-width: 800px;
+        margin: 40px auto;
+    }
+    .welcome-box::before { content: "SECURE ACCESS"; position: absolute; top: -12px; left: 20px; background: black; padding: 0 10px; font-size: 10px; color: #00ff00; }
+
+    .logo-container { position: fixed; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; transition: 0.8s; }
+    .logo-container img { width: 280px; cursor: pointer; filter: drop-shadow(0 0 15px #00ff00); }
+    
+    .hidden-content { display: none; opacity: 0; }
+    .visible-content { display: block; opacity: 1; animation: fadeIn 1s forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .glow-card { border: 1px solid #00ff0033; background: rgba(0,0,0,0.9); transition: 0.3s; backdrop-filter: blur(5px); }
+    .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 25px rgba(0,255,0,0.4); transform: translateY(-5px); }
+    
+    .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; text-decoration: none; display: inline-block; }
+    .neon-button:hover { background: #00ff00; color: black; box-shadow: 0 0 30px #00ff00; }
+    
+    #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; max-height: 200px; overflow-y: auto; width: 95%; pointer-events: none; }
+    .terminal-line { font-size: 12px; margin-bottom: 5px; background: rgba(0,0,0,0.7); padding: 4px 8px; border-left: 3px solid #00ff00; }
+    
+    #lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <canvas id="matrix-canvas"></canvas>
 
+<div id="arcade-header">
+    <div class="arcade-ui">
+        SCORE: <span id="score">0</span> | LIVES: <span id="lives">3</span><br>
+        <span style="font-size: 8px; color: #aaa;">DEFENDA O SISTEMA - CLIQUE NOS VÍRUS</span>
+    </div>
+    <canvas id="game-canvas"></canvas>
+</div>
+
 <div class="logo-container" id="logo-wrap">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
-    <p class="mt-4 animate-pulse text-xs tracking-widest">
+    <p class="mt-4 animate-pulse text-xs tracking-widest uppercase">Pressione o logo para autenticar</p>
 </div>
 
 <select id="lang-switch">
@@ -44,27 +74,79 @@ footer { text-align: center; font-size: 12px; color: #00ff00; padding: 40px 0; w
 
 <div id="terminal"></div>
 
-<div id="main-content" class="hidden-content pt-20">
-    <section class="flex flex-col items-center text-center px-4 mt-20">
-        <h2 id="hero-title" class="text-4xl md:text-6xl font-bold text-green-400 mb-6 uppercase tracking-tighter"></h2>
-        <p id="hero-text" class="text-lg md:text-xl text-gray-300 max-w-2xl"></p>
-    </section>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 mt-16">
-        <div class="glow-card p-8 rounded"><h3 id="service1-title" class="text-green-300 font-bold mb-4 text-xl"></h3><p id="service1-text" class="text-gray-400 leading-relaxed"></p></div>
-        <div class="glow-card p-8 rounded"><h3 id="service2-title" class="text-green-300 font-bold mb-4 text-xl"></h3><p id="service2-text" class="text-gray-400 leading-relaxed"></p></div>
-        <div class="glow-card p-8 rounded"><h3 id="service3-title" class="text-green-300 font-bold mb-4 text-xl"></h3><p id="service3-text" class="text-gray-400 leading-relaxed"></p></div>
+<div id="main-content" class="hidden-content">
+    <div class="welcome-box text-center">
+        <h2 id="hero-title" class="text-3xl md:text-5xl font-bold text-green-400 mb-6 uppercase"></h2>
+        <p id="hero-text" class="text-lg text-gray-300"></p>
     </div>
 
-    <div class="text-center mt-24 pb-10">
-        <h2 id="contact-title" class="text-4xl text-green-400 mb-6 font-bold"></h2>
-        <p id="contact-text" class="text-gray-300 mb-10 text-lg"></p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 mt-10">
+        <div class="glow-card p-8 rounded"><h3 id="service1-title" class="text-green-300 font-bold mb-4 text-xl"></h3><p id="service1-text" class="text-gray-400 text-sm leading-relaxed"></p></div>
+        <div class="glow-card p-8 rounded"><h3 id="service2-title" class="text-green-300 font-bold mb-4 text-xl"></h3><p id="service2-text" class="text-gray-400 text-sm leading-relaxed"></p></div>
+        <div class="glow-card p-8 rounded"><h3 id="service3-title" class="text-green-300 font-bold mb-4 text-xl"></h3><p id="service3-text" class="text-gray-400 text-sm leading-relaxed"></p></div>
+    </div>
+
+    <div class="text-center mt-20 pb-10">
+        <h2 id="contact-title" class="text-3xl text-green-400 mb-4 font-bold"></h2>
+        <p id="contact-text" class="text-gray-300 mb-8"></p>
         <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="neon-button rounded"></a>
     </div>
     <footer id="footer-text"></footer>
 </div>
 
 <script>
+// --- ARCADE GAME LOGIC ---
+const gCanvas = document.getElementById('game-canvas');
+const gCtx = gCanvas.getContext('2d');
+let score = 0, lives = 3, enemies = [];
+
+function resizeGame() { gCanvas.width = gCanvas.offsetWidth; gCanvas.height = gCanvas.offsetHeight; }
+window.addEventListener('resize', resizeGame); resizeGame();
+
+class Enemy {
+    constructor() {
+        this.x = Math.random() * gCanvas.width;
+        this.y = -20;
+        this.speed = 1 + Math.random() * 2;
+        this.size = 15;
+    }
+    draw() {
+        gCtx.fillStyle = "#ff0000";
+        gCtx.font = "14px monospace";
+        gCtx.fillText("👾", this.x, this.y);
+        this.y += this.speed;
+    }
+}
+
+gCanvas.addEventListener('mousedown', (e) => {
+    const rect = gCanvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    enemies.forEach((en, i) => {
+        if (Math.hypot(en.x - mx, en.y - my) < 25) {
+            enemies.splice(i, 1);
+            score += 10;
+            document.getElementById('score').innerText = score;
+        }
+    });
+});
+
+function gameLoop() {
+    gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+    if (Math.random() < 0.03) enemies.push(new Enemy());
+    enemies.forEach((en, i) => {
+        en.draw();
+        if (en.y > gCanvas.height) {
+            enemies.splice(i, 1);
+            lives--;
+            document.getElementById('lives').innerText = lives;
+            if(lives <= 0) { lives = 3; score = 0; document.getElementById('score').innerText = 0; }
+        }
+    });
+    requestAnimationFrame(gameLoop);
+}
+gameLoop();
+
 // --- MATRIX BACKGROUND ---
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
@@ -88,22 +170,22 @@ setInterval(drawMatrix, 35);
 // --- TRANSLATIONS ---
 const translations = {
     pt: {
-        "hero-title": "Cybersegurança & Redes Corporativas",
-        "hero-text": "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado na marca.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
-        "service2-title": "Sophos Central Email", "service2-text": "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
-        "service3-title": "Suporte Técnico", "service3-text": "Consultoria e suporte remoto para redes corporativas e infraestrutura para toda Latino América.",
-        "contact-title": "Entre em Contato", "contact-text": "Solicite uma consultoria personalizada ou tire suas dúvidas.",
-        "contact-button": "Enviar Email", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
+        "hero-title": "Bem-vindo à JBrasil Labs",
+        "hero-text": "Especialistas em Sophos Firewall e proteção de dados corporativos para toda a América Latina.",
+        "service1-title": "Sophos Firewall", "service1-text": "Configuração, migração e suporte especializado para garantir a integridade da sua rede.",
+        "service2-title": "Sophos Email", "service2-text": "Proteção avançada contra phishing e ameaças via Sophos Email Advanced.",
+        "service3-title": "Suporte Premium", "service3-text": "Consultoria remota 24/7 com foco em infraestruturas críticas e segurança.",
+        "contact-title": "Conecte-se", "contact-text": "Inicie um protocolo de comunicação agora.",
+        "contact-button": "Abrir Ticket", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
     },
     es: {
-        "hero-title": "Ciberseguridad & Redes Corporativas",
-        "hero-text": "Protección avanzada con Sophos Firewall, Sophos Central Email e soporte técnico especializado en la marca.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuración, implementación y soporte para firewalls Sophos.",
-        "service2-title": "Sophos Central Email", "service2-text": "Protección de correo electrónico con políticas avanzadas y filtrado con Sophos Email Advanced.",
-        "service3-title": "Soporte Técnico", "service3-text": "Consultoría y soporte remoto para redes e infraestructura en toda Latinoamérica.",
-        "contact-title": "Contáctanos", "contact-text": "Solicite una consultoría personalizada o resuelva sus dudas.",
-        "contact-button": "Enviar Correo", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
+        "hero-title": "Bienvenidos a JBrasil Labs",
+        "hero-text": "Expertos en Sophos Firewall y protección de datos corporativos para toda Latinoamérica.",
+        "service1-title": "Sophos Firewall", "service1-text": "Configuración, migración y soporte especializado para su red corporativa.",
+        "service2-title": "Sophos Email", "service2-text": "Protección avanzada contra phishing con Sophos Email Advanced.",
+        "service3-title": "Soporte Premium", "service3-text": "Consultoría remota para infraestructuras críticas y seguridad de red.",
+        "contact-title": "Conectarse", "contact-text": "Inicie un protocolo de comunicación ahora.",
+        "contact-button": "Abrir Ticket", "footer-text": "© 2026 JBrasil Labs. Todos los derechos reservados."
     }
 };
 
@@ -111,9 +193,7 @@ function applyLang(lang) {
     const t = translations[lang];
     Object.keys(t).forEach(id => { const el = document.getElementById(id); if(el) el.textContent = t[id]; });
 }
-const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
-document.getElementById('lang-switch').value = userLang;
-applyLang(userLang);
+applyLang(navigator.language.startsWith('es') ? 'es' : 'pt');
 document.getElementById('lang-switch').addEventListener('change', (e) => applyLang(e.target.value));
 
 // --- LOG & SOC ---
@@ -124,41 +204,30 @@ function logTerminal(msg) {
     const terminal = document.getElementById('terminal');
     terminal.appendChild(p);
     terminal.scrollTop = terminal.scrollHeight;
-    setTimeout(() => p.remove(), 10000); // mantém 10s antes de sumir
 }
 
 document.getElementById('main-logo').addEventListener('click', async () => {
     document.getElementById('logo-wrap').style.opacity = '0';
     setTimeout(() => {
         document.getElementById('logo-wrap').style.display = 'none';
-        document.getElementById('main-content').classList.remove('hidden-content');
-        document.getElementById('main-content').classList.add('visible-content');
+        document.getElementById('main-content').className = 'visible-content';
     }, 800);
 
-    const p = document.createElement('p');
-    p.className = 'terminal-line';
-    p.textContent = "> Analisando IP...";
-    const terminal = document.getElementById('terminal');
-    terminal.appendChild(p);
-    terminal.scrollTop = terminal.scrollHeight;
+    logTerminal("SISTEMA AUTORIZADO...");
+    logTerminal("IDENTIFICANDO TERMINAL...");
 
-    // chama o backend para obter IP e país
-    const info = await fetch('https://jbrasillabs-1.onrender.com/geoip')
-        .then(res => res.json())
-        .then(data => data.entry)
-        .catch(() => "Desconhecido");
-
-    p.textContent = `> [SOC] ACCESS GRANTED: ${info}`;
-    terminal.scrollTop = terminal.scrollHeight;
-
-    // envia log ao backend
-    await fetch('https://jbrasillabs-1.onrender.com/log', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ entry: info })
-    });
+    try {
+        const info = await fetch('https://jbrasillabs-1.onrender.com/geoip').then(r => r.json());
+        logTerminal(`[SOC] ACCESS GRANTED: ${info.entry}`);
+        fetch('https://jbrasillabs-1.onrender.com/log', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ entry: info.entry })
+        });
+    } catch {
+        logTerminal("[SOC] ACCESS GRANTED: ORIGEM OMITIDA");
+    }
 });
 </script>
 </body>
 </html>
-
