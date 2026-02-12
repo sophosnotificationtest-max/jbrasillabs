@@ -1,11 +1,13 @@
 # Servidor web
-flask==2.3.2
+Flask==2.3.2
+Flask-Cors==3.1.1
 gunicorn==21.2.0
 
 # Requisições HTTP
 requests==2.31.0
 
-# Google Drive API
-google-api-python-client
-google-auth-httplib2
-google-auth-oauthlib
+# Google APIs
+google-api-python-client==2.97.0
+google-auth==2.23.0
+google-auth-httplib2==0.1.0
+google-auth-oauthlib==1.1.0
