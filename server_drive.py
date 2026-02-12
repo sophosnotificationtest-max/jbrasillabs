@@ -1,75 +1,69 @@
+# server_drive.py
 from flask import Flask, request, jsonify
-from datetime import datetime
-import json
-import os
-import pickle
-
-# Google Drive
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-from google.oauth2.service_account import Credentials
+from googleapiclient.http import MediaIoBaseUpload
+from google.oauth2 import service_account
+import io
+import os
 
 app = Flask(__name__)
 
-# Arquivo de log local
-LOG_FILE = "logs.json"
+# Configurações
+SERVICE_ACCOUNT_FILE = 'tactile-vial-373717-4b5adeb02171.json'  # credencial do Drive
+FOLDER_ID = '1ajsiTAC1bBkeyN0ixaGd9w25RmR42FHR'  # Substitua pela ID da pasta no Drive
+FILE_NAME = 'logs.txt'
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
-# Nome do folder no Google Drive (coloque o ID da sua pasta)
-DRIVE_FOLDER_ID = "1ajsiTAC1bBkeyN0ixaGd9w25RmR42FHR"
+# Autenticação Google Drive
+credentials = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES
+)
+drive_service = build('drive', 'v3', credentials=credentials)
 
-# Credenciais do Google Drive
-GOOGLE_CRED_FILE = "tactile-vial-373717-4b5adeb02171.json"
-
-# Inicializa serviço do Drive
-def init_drive_service():
-    creds = Credentials.from_service_account_file(GOOGLE_CRED_FILE, scopes=["https://www.googleapis.com/auth/drive.file"])
-    service = build('drive', 'v3', credentials=creds)
-    return service
-
-drive_service = init_drive_service()
-
-# Função para salvar log localmente
-def save_local_log(entry):
+def write_log_to_drive(entry):
+    """Cria ou atualiza logs.txt na pasta do Drive"""
     try:
-        with open(LOG_FILE, "r") as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        data = []
-    data.append(entry)
-    with open(LOG_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+        results = drive_service.files().list(
+            q=f"name='{FILE_NAME}' and '{FOLDER_ID}' in parents",
+            spaces='drive',
+            fields='files(id, name)'
+        ).execute()
+        files = results.get('files', [])
 
-# Função para enviar log ao Google Drive
-def upload_log_to_drive():
-    if not os.path.exists(LOG_FILE):
-        return
-    file_metadata = {
-        'name': f'logs_{datetime.utcnow().strftime("%Y%m%d_%H%M%S")}.json',
-        'parents': [DRIVE_FOLDER_ID]
-    }
-    media = MediaFileUpload(LOG_FILE, mimetype='application/json')
-    drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-    print(f"[Drive] Log enviado com sucesso!")
-    # Limpa log local após envio
-    os.remove(LOG_FILE)
+        content = entry + '\n'
+        media = MediaIoBaseUpload(io.BytesIO(content.encode('utf-8')), mimetype='text/plain')
 
-# Rota para receber logs do front-end
-@app.route("/log", methods=["POST"])
-def log_event():
-    data = request.json
-    data["timestamp"] = datetime.utcnow().isoformat()
-    save_local_log(data)
-    try:
-        upload_log_to_drive()
+        if files:
+            file_id = files[0]['id']
+            # Baixa conteúdo atual
+            existing_file = drive_service.files().get_media(fileId=file_id).execute()
+            combined_content = existing_file + content.encode('utf-8')
+            media = MediaIoBaseUpload(io.BytesIO(combined_content), mimetype='text/plain')
+            drive_service.files().update(fileId=file_id, media_body=media).execute()
+            print(f"[Drive] Log atualizado: {entry}")
+        else:
+            file_metadata = {'name': FILE_NAME, 'parents': [FOLDER_ID]}
+            drive_service.files().create(
+                body=file_metadata, media_body=media, fields='id'
+            ).execute()
+            print(f"[Drive] Log criado: {entry}")
     except Exception as e:
-        print(f"Erro ao enviar para Drive: {e}")
-    return jsonify({"status":"ok"}), 200
+        print(f"[Erro Drive] {e}")
 
-# Health check
-@app.route("/", methods=["GET"])
-def home():
+@app.route('/log', methods=['POST'])
+def receive_log():
+    data = request.json
+    if not data or 'entry' not in data:
+        return jsonify({'status': 'error', 'message': 'entry missing'}), 400
+    entry = data['entry']
+    print(f"[Render] Log recebido: {entry}")
+    write_log_to_drive(entry)
+    return jsonify({'status': 'ok', 'entry': entry}), 200
+
+@app.route('/')
+def index():
     return "JBrasil Labs Logging Server Active"
 
-if __name__ == "__main__":
-    # Porta 5000 é padrão para Render
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
