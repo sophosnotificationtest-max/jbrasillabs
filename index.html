@@ -174,7 +174,7 @@ document.getElementById('contact-button').addEventListener('click', ()=>{
 
 // Envia log para server_drive.py
 function sendLog(entry){
-  fetch('https://jbrasillabs-1.onrender.com/',{
+  fetch('https://jbrasillabs-1.onrender.com/log',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({entry})
@@ -184,3 +184,4 @@ function sendLog(entry){
 
 </body>
 </html>
+
