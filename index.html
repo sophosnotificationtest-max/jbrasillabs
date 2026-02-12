@@ -21,7 +21,7 @@ body { font-family: 'Orbitron', sans-serif; background: black; color: #00ff00; m
 .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 25px rgba(0,255,0,0.4); transform: translateY(-5px); }
 .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; text-decoration: none; display: inline-block; }
 .neon-button:hover { background: #00ff00; color: black; box-shadow: 0 0 30px #00ff00; }
-#terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; pointer-events: none; max-height: 50vh; overflow-y: auto; width: calc(100% - 30px); }
+#terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; max-height: 300px; overflow-y: auto; width: 95%; }
 .terminal-line { font-size: 13px; margin-bottom: 5px; animation: fadeInUp 0.5s forwards; background: rgba(0,0,0,0.7); padding: 4px 8px; border-left: 3px solid #00ff00; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 #lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; border-radius: 4px; }
@@ -69,15 +69,13 @@ footer { text-align: center; font-size: 12px; color: #00ff00; padding: 40px 0; w
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-const chars = "01010101SECUREJBLABS01";
+const chars = "01010101SECUREJBRLABS01";
 const fontSize = 16;
 const columns = canvas.width / fontSize;
 const drops = Array(Math.floor(columns)).fill(1);
 function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#0F0";
-    ctx.font = fontSize + "px monospace";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0F0"; ctx.font = fontSize + "px monospace";
     for (let i = 0; i < drops.length; i++) {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -92,9 +90,9 @@ const translations = {
     pt: {
         "hero-title": "Cybersegurança & Redes Corporativas",
         "hero-text": "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuração, implementação e suporte em firewalls Sophos para máxima proteção.",
-        "service2-title": "Sophos Central Email", "service2-text": "Proteção contra spam e ameaças avançadas com solução Sophos Email Advanced.",
-        "service3-title": "Suporte Técnico", "service3-text": "Consultoria remota ou presencial para redes e infraestrutura em toda Latino América.",
+        "service1-title": "Sophos Firewall", "service1-text": "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
+        "service2-title": "Sophos Central Email", "service2-text": "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
+        "service3-title": "Suporte Técnico", "service3-text": "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
         "contact-title": "Entre em Contato", "contact-text": "Solicite uma consultoria personalizada ou tire suas dúvidas.",
         "contact-button": "Enviar Email", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
     },
@@ -102,8 +100,8 @@ const translations = {
         "hero-title": "Ciberseguridad & Redes Corporativas",
         "hero-text": "Protección avanzada con Sophos Firewall, Sophos Central Email e soporte técnico especializado.",
         "service1-title": "Sophos Firewall", "service1-text": "Configuración, implementación y soporte para firewalls Sophos.",
-        "service2-title": "Sophos Central Email", "service2-text": "Protección contra amenazas de correo electrónico con Sophos Central.",
-        "service3-title": "Soporte Técnico", "service3-text": "Consultoría remota para redes e infraestructura en toda Latinoamérica.",
+        "service2-title": "Sophos Central Email", "service2-text": "Protección de correo electrónico con políticas avanzadas y filtrado con Sophos Email Advanced.",
+        "service3-title": "Soporte Técnico", "service3-text": "Consultoría remota o presencial para redes e infraestructura en toda Latinoamérica.",
         "contact-title": "Contáctanos", "contact-text": "Solicite una consultoría personalizada o resuelva sus dudas.",
         "contact-button": "Enviar Correo", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
     }
@@ -118,28 +116,17 @@ document.getElementById('lang-switch').value = userLang;
 applyLang(userLang);
 document.getElementById('lang-switch').addEventListener('change', (e) => applyLang(e.target.value));
 
-// --- GEO IP & LOG LOGIC ---
-async function getVisitorInfo() {
-    try {
-        const res = await fetch('https://jbrasillabs-1.onrender.com/geoip');
-        const data = await res.json();
-        return data.entry; // ex: "138.118.28.133 (Brazil)"
-    } catch {
-        return "Analisando IP...";
-    }
-}
-
-async function sendToSOC(info) {
-    try {
-        await fetch('https://jbrasillabs-1.onrender.com/log', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ entry: info })
-        });
-    } catch(e) { console.error("SOC Offline"); }
-}
-
 // --- LOG & SOC ---
+function logTerminal(msg) {
+    const p = document.createElement('p');
+    p.className = 'terminal-line';
+    p.textContent = `> ${msg}`;
+    const terminal = document.getElementById('terminal');
+    terminal.appendChild(p);
+    terminal.scrollTop = terminal.scrollHeight;
+    setTimeout(() => p.remove(), 10000); // mantém 10s antes de sumir
+}
+
 document.getElementById('main-logo').addEventListener('click', async () => {
     document.getElementById('logo-wrap').style.opacity = '0';
     setTimeout(() => {
@@ -148,9 +135,6 @@ document.getElementById('main-logo').addEventListener('click', async () => {
         document.getElementById('main-content').classList.add('visible-content');
     }, 800);
 
-    logTerminal("SISTEMA INICIADO: JB LABS SOC v2.0");
-
-    // Mostra "Analisando IP..." primeiro
     const p = document.createElement('p');
     p.className = 'terminal-line';
     p.textContent = "> Analisando IP...";
@@ -158,22 +142,22 @@ document.getElementById('main-logo').addEventListener('click', async () => {
     terminal.appendChild(p);
     terminal.scrollTop = terminal.scrollHeight;
 
-    // Busca IP real
-    const info = await getVisitorInfo();
-    p.textContent = `> [SOC] ACCESS GRANTED: ${info}`;
-    sendToSOC(info);
-});
+    // chama o backend para obter IP e país
+    const info = await fetch('https://jbrasillabs-1.onrender.com/geoip')
+        .then(res => res.json())
+        .then(data => data.entry)
+        .catch(() => "Desconhecido");
 
-function logTerminal(msg) {
-    const p = document.createElement('p');
-    p.className = 'terminal-line';
-    p.textContent = `> ${msg}`;
-    const terminal = document.getElementById('terminal');
-    terminal.appendChild(p);
+    p.textContent = `> [SOC] ACCESS GRANTED: ${info}`;
     terminal.scrollTop = terminal.scrollHeight;
-    setTimeout(() => p.remove(), 6000);
-}
+
+    // envia log ao backend
+    await fetch('https://jbrasillabs-1.onrender.com/log', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ entry: info })
+    });
+});
 </script>
 </body>
 </html>
-
