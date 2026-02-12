@@ -16,7 +16,7 @@
         /* HUD Superior */
         .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 10px; color: #00ff00; pointer-events: none; text-shadow: 0 0 10px #00ff00; line-height: 2.5; }
         
-        /* Controles e Especialidade */
+        /* Controles */
         .controls { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; cursor: default; }
         .action-btn { 
             border: 1px solid #00ff00; 
@@ -27,33 +27,40 @@
             background: rgba(0,255,0,0.1); 
             transition: 0.3s;
             cursor: pointer;
+            width: 240px;
             text-align: center;
-            width: 220px;
         }
         .action-btn:hover { background: #00ff00; color: #000; box-shadow: 0 0 20px #00ff00; }
-        .sophos-tag { font-family: 'Orbitron'; font-size: 10px; color: #4e9eff; letter-spacing: 2px; text-transform: uppercase; border-right: 3px solid #4e9eff; padding-right: 10px; }
 
-        /* Tela de Início */
-        #start-screen { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 300; transition: opacity 0.5s; width: 90%; }
-        #main-logo { width: 550px; max-width: 90%; filter: drop-shadow(0 0 30px #00ff00); cursor: pointer; margin-bottom: 30px; }
+        /* Tela de Início - Centralização Absoluta */
+        #start-screen { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            text-align: center; z-index: 300; transition: opacity 0.5s; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; 
+        }
+        #main-logo { 
+            width: 600px; max-width: 90%; filter: drop-shadow(0 0 30px #00ff00); 
+            cursor: pointer; margin-bottom: 30px; animation: logo-pulse 3s infinite ease-in-out;
+        }
         .start-prompt { font-family: 'Press Start 2P', cursive; font-size: 16px; color: #00ff00; animation: blink 1s infinite; cursor: pointer; }
-        .sub-text { color: #888; font-size: 12px; margin-top: 15px; letter-spacing: 4px; }
+        .sub-text { color: #4e9eff; font-size: 12px; margin-top: 15px; letter-spacing: 4px; font-weight: bold; }
 
-        /* Rodapé de Identificação */
+        /* Rodapé */
         #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,20,0,0.8); border-top: 1px solid #00ff0033; padding: 10px 20px; z-index: 100; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-        .branding { font-size: 11px; color: #00ff00; font-weight: bold; letter-spacing: 1px; }
+        .sophos-tag { font-family: 'Orbitron'; font-size: 10px; color: #4e9eff; letter-spacing: 2px; }
 
         /* Terminal */
         #terminal { position: fixed; bottom: 50px; left: 15px; font-family: monospace; z-index: 150; color: #00ff00; width: 45%; max-height: 100px; overflow: hidden; pointer-events: none; }
         .terminal-line { background: rgba(0,0,0,0.8); margin-bottom: 2px; padding: 3px 8px; font-size: 10px; border-left: 2px solid #00ff00; }
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes logo-pulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px #00ff00); } 50% { transform: scale(1.02); filter: drop-shadow(0 0 50px #00ff00); } }
     </style>
 </head>
 <body>
 
 <div id="footer-bar">
-    <div class="branding">JBRASIL LABS // NETWORK DEFENSE</div>
+    <div style="font-size: 11px; color: #00ff00;">JBRASIL LABS // NETWORK DEFENSE UNIT</div>
     <div class="sophos-tag">SOPHOS CERTIFIED SPECIALIST</div>
 </div>
 
@@ -61,12 +68,12 @@
 
 <div class="controls" id="ui-controls" style="display: none;">
     <button class="action-btn" onclick="window.open('mailto:jonas.brasil@jbrasillabs.com.br')">CONTACT EXPERT</button>
-    <button class="action-btn" style="font-size: 7px; opacity: 0.7;" onclick="systemReboot()">SYSTEM RESET</button>
+    <button class="action-btn" style="font-size: 7px; opacity: 0.6;" onclick="systemReboot()">MANUAL RESET</button>
 </div>
 
 <div class="hud" id="hud" style="display: none;">
     CORE_SCORE: <span id="score">0000</span><br>
-    BREACHES: <span id="leaks">0</span>/10
+    BREACHES: <span id="leaks">0</span>/30
 </div>
 
 <div id="game-container">
@@ -76,7 +83,7 @@
 <div id="start-screen">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
     <div class="start-prompt" id="start-btn">INITIALIZE SYSTEM</div>
-    <div class="sub-text">SOPHOS CYBERSECURITY SOLUTIONS</div>
+    <div class="sub-text">SOPHOS PLATINUM PARTNER</div>
 </div>
 
 <script>
@@ -91,8 +98,11 @@ window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.cli
 
 function drawShip(x, y) {
     ctx.save(); ctx.translate(x, y);
-    ctx.strokeStyle = "#00ff00"; ctx.lineWidth = 2; ctx.shadowBlur = 15; ctx.shadowColor = "#00ff00";
+    ctx.strokeStyle = "#00ff00"; ctx.lineWidth = 2; ctx.shadowBlur = 20; ctx.shadowColor = "#00ff00";
     ctx.beginPath(); ctx.moveTo(0, -25); ctx.lineTo(-20, 15); ctx.lineTo(0, 5); ctx.lineTo(20, 15); ctx.closePath(); ctx.stroke();
+    // Efeito de motor
+    ctx.fillStyle = "rgba(0, 255, 0, " + (Math.random() * 0.5 + 0.2) + ")";
+    ctx.fillRect(-5, 12, 10, 5);
     ctx.restore();
 }
 
@@ -100,7 +110,8 @@ class Enemy {
     constructor() {
         this.x = Math.random() * (canvas.width - 60) + 30;
         this.y = -40;
-        this.speed = 2.5 + (score / 1000);
+        // Velocidade inicial menor, aumenta +0.1 a cada 100 pontos
+        this.speed = 1.5 + (score / 1000); 
     }
     draw() { ctx.font = "28px Arial"; ctx.fillText("👾", this.x - 14, this.y); }
 }
@@ -119,7 +130,10 @@ function gameLoop() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     if(gameActive) {
         drawShip(mouseX, mouseY);
-        if(Math.random() < 0.07) enemies.push(new Enemy());
+        // Chance de spawn aumenta levemente com o score
+        let spawnChance = 0.04 + (score / 10000);
+        if(Math.random() < Math.min(spawnChance, 0.15)) enemies.push(new Enemy());
+
         bullets.forEach((b, bi) => {
             b.y -= b.speed; b.draw();
             if(b.y < 0) bullets.splice(bi, 1);
@@ -135,7 +149,7 @@ function gameLoop() {
             if(e.y > canvas.height) {
                 enemies.splice(i, 1); leaks++;
                 document.getElementById('leaks').innerText = leaks;
-                if(leaks >= 10) systemReboot();
+                if(leaks >= 30) systemReboot();
             }
         });
     }
@@ -144,11 +158,11 @@ function gameLoop() {
 
 function systemReboot() {
     gameActive = false;
-    logTerminal("[!] DEFENSE BREACHED. REBOOTING UNIT...");
+    logTerminal("[!] CRITICAL BREACH: SYSTEM SHUTDOWN");
     document.getElementById('hud').style.display = 'none';
     document.getElementById('ui-controls').style.display = 'none';
     const startScreen = document.getElementById('start-screen');
-    startScreen.style.display = 'block'; startScreen.style.opacity = '1';
+    startScreen.style.display = 'flex'; startScreen.style.opacity = '1';
     leaks = 0; score = 0; enemies = []; bullets = [];
     document.getElementById('score').innerText = "0000";
     document.getElementById('leaks').innerText = "0";
@@ -170,18 +184,18 @@ const startAction = () => {
         document.getElementById('hud').style.display = 'block';
         document.getElementById('ui-controls').style.display = 'flex';
         gameActive = true;
-        logTerminal("SOPHOS INTERCEPTOR READY.");
+        logTerminal("SOPHOS INTERCEPTOR INITIALIZED...");
     }, 500);
 
     fetch('https://jbrasillabs-1.onrender.com/geoip')
         .then(r => r.json())
         .then(data => {
-            logTerminal(`[SOC] SESSION DETECTED: ${data.entry}`);
+            logTerminal(`[SOC] SOURCE: ${data.entry}`);
             fetch('https://jbrasillabs-1.onrender.com/log', {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ entry: data.entry })
             });
-        }).catch(() => logTerminal("[!] SOPHOS SECURE NODE ACTIVE"));
+        }).catch(() => logTerminal("[!] NODE ACTIVE: SECURE MODE"));
 };
 
 document.getElementById('main-logo').addEventListener('click', startAction);
