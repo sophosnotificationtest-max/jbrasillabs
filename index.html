@@ -3,197 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil Labs - Cybersegurança & Redes</title>
+    <title>JBrasil Labs - Cyber Defense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Orbitron', sans-serif; background: #000; color: #00ff00; margin: 0; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; }
         
-        /* Arcade Header */
-        #arcade-header { width: 100%; height: 200px; background: #050505; border-bottom: 2px solid #00ff00; position: relative; overflow: hidden; cursor: crosshair; }
+        /* Jogo em Tela Cheia */
+        #game-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: crosshair; }
         #game-canvas { width: 100%; height: 100%; }
-        .arcade-ui { position: absolute; top: 15px; left: 15px; font-family: 'Press Start 2P', cursive; font-size: 10px; color: #00ff00; line-height: 1.8; pointer-events: none; z-index: 20; text-shadow: 0 0 5px #000; }
+
+        /* HUD do Jogo (Placar) */
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 12px; color: #00ff00; pointer-events: none; text-shadow: 0 0 10px #00ff00; }
         
-        /* Footer Fixo na Direita */
-        #footer-fixed { position: fixed; bottom: 15px; right: 15px; font-size: 10px; color: #006600; z-index: 100; font-family: monospace; letter-spacing: 1px; pointer-events: none; }
+        /* Footer Fixo */
+        #footer-fixed { position: fixed; bottom: 15px; right: 15px; font-size: 10px; color: #004400; z-index: 100; font-family: monospace; pointer-events: none; }
 
-        /* Requadro de Boas-Vindas */
-        .welcome-box { border: 2px solid #00ff00; padding: 40px; background: rgba(0, 15, 0, 0.9); box-shadow: inset 0 0 20px #00ff0033, 0 0 30px #00ff0022; position: relative; max-width: 800px; margin: 60px auto; text-align: center; }
-        .welcome-box::after { content: "ESTADO: PROTEGIDO"; position: absolute; bottom: -10px; right: 20px; background: #000; padding: 0 10px; font-size: 9px; color: #00ff00; border: 1px solid #00ff00; }
+        /* Logo Inicial / Start */
+        #start-screen { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 200; transition: 0.8s; }
+        #main-logo { width: 300px; cursor: pointer; filter: drop-shadow(0 0 20px #00ff00); transition: 0.3s; }
+        #main-logo:hover { transform: scale(1.05); }
+        .start-prompt { margin-top: 20px; font-family: 'Press Start 2P', cursive; font-size: 14px; color: #00ff00; animation: blink 1s infinite; cursor: pointer; }
 
-        /* Logo e Entrada */
-        .logo-container { position: fixed; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; transition: 0.8s; }
-        .logo-container img { width: 280px; cursor: pointer; filter: drop-shadow(0 0 15px #00ff00); transition: 0.3s; }
-        .logo-container img:hover { transform: scale(1.05); filter: drop-shadow(0 0 25px #00ff00); }
+        /* Conteúdo do Site (Aparece após o Start) */
+        #main-content { position: relative; z-index: 50; padding-top: 100px; opacity: 0; visibility: hidden; transition: 2s; pointer-events: none; }
+        .visible-content { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+
+        .welcome-box { border: 2px solid #00ff00; padding: 30px; background: rgba(0, 10, 0, 0.85); box-shadow: 0 0 30px #00ff0033; max-width: 700px; margin: 0 auto; text-align: center; }
         
-        .hidden-content { display: none; opacity: 0; }
-        .visible-content { display: block; opacity: 1; animation: fadeIn 1.2s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Terminal estilo Hacker */
+        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 150; color: #00ff00; width: 50%; max-height: 150px; overflow: hidden; pointer-events: none; }
+        .terminal-line { background: rgba(0,0,0,0.7); margin-bottom: 2px; padding: 2px 8px; font-size: 11px; border-left: 2px solid #00ff00; }
 
-        /* Estilos de Componentes */
-        .glow-card { border: 1px solid #00ff0022; background: rgba(5, 5, 5, 0.8); transition: 0.4s; backdrop-filter: blur(10px); }
-        .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 20px rgba(0,255,0,0.2); transform: translateY(-5px); }
-        .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 40px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; display: inline-block; background: transparent; }
-        .neon-button:hover { background: #00ff00; color: #000; box-shadow: 0 0 30px #00ff00; }
-        
-        /* Terminal Inferior */
-        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: 'Courier New', monospace; z-index: 60; color: #00ff00; max-height: 180px; overflow-y: auto; width: 60%; pointer-events: none; }
-        .terminal-line { font-size: 12px; margin-bottom: 4px; background: rgba(0,0,0,0.85); padding: 5px 10px; border-left: 3px solid #00ff00; animation: scanline 0.2s ease-out; }
-        @keyframes scanline { from { opacity: 0; } to { opacity: 1; } }
-
-        #lang-switch { position: fixed; top: 20px; right: 20px; background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 6px 12px; z-index: 110; cursor: pointer; border-radius: 2px; font-family: 'Orbitron'; font-size: 11px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="footer-fixed">© 2026 JBrasil Labs. Todos os direitos reservados.</div>
-
-<div id="arcade-header">
-    <div class="arcade-ui">
-        DEFESA ATIVA: <span id="score">0</span> pts<br>
-        SISTEMA: <span id="lives">3</span> VIDAS<br>
-        <span style="font-size: 8px; color: #008800; margin-top: 10px; display: block;">[ESPAÇO] PARA DISPARAR PULSO</span>
-    </div>
-    <canvas id="game-canvas"></canvas>
-</div>
-
-<div class="logo-container" id="logo-wrap">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
-    <p class="mt-6 animate-pulse text-xs tracking-[0.3em] uppercase">Autenticar Sistema</p>
-</div>
-
-<select id="lang-switch">
-    <option value="pt">PT-BR</option>
-    <option value="es">ESPAÑOL</option>
-</select>
+<div id="footer-fixed">© 2026 JBRASIL LABS. ALL RIGHTS RESERVED.</div>
 
 <div id="terminal"></div>
 
-<div id="main-content" class="hidden-content pt-10 pb-32">
+<div class="hud" id="hud" style="display: none;">
+    SCORE: <span id="score">0000</span><br>
+    SHIELD: <span id="lives">III</span>
+</div>
+
+<div id="game-container">
+    <canvas id="game-canvas"></canvas>
+</div>
+
+<div id="start-screen">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
+    <div class="start-prompt" id="start-btn">PRESS START</div>
+</div>
+
+<div id="main-content" class="container mx-auto px-6">
     <div class="welcome-box">
-        <h2 id="hero-title" class="text-3xl md:text-5xl font-bold text-green-400 mb-6 uppercase tracking-tight"></h2>
-        <p id="hero-text" class="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"></p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 mt-12">
-        <div class="glow-card p-10 rounded-sm">
-            <h3 id="service1-title" class="text-green-300 font-bold mb-4 text-xl tracking-widest uppercase"></h3>
-            <p id="service1-text" class="text-gray-500 text-sm leading-relaxed"></p>
+        <h2 id="hero-title" class="text-2xl font-bold mb-4 uppercase text-green-400"></h2>
+        <p id="hero-text" class="text-sm text-gray-400 mb-8"></p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+            <div class="border border-green-900 p-4 bg-black/50">
+                <h3 id="service1-title" class="text-green-500 text-xs font-bold mb-2"></h3>
+                <p id="service1-text" class="text-[10px] text-gray-500"></p>
+            </div>
+            <div class="border border-green-900 p-4 bg-black/50">
+                <h3 id="service2-title" class="text-green-500 text-xs font-bold mb-2"></h3>
+                <p id="service2-text" class="text-[10px] text-gray-500"></p>
+            </div>
+            <div class="border border-green-900 p-4 bg-black/50">
+                <h3 id="service3-title" class="text-green-500 text-xs font-bold mb-2"></h3>
+                <p id="service3-text" class="text-[10px] text-gray-500"></p>
+            </div>
         </div>
-        <div class="glow-card p-10 rounded-sm">
-            <h3 id="service2-title" class="text-green-300 font-bold mb-4 text-xl tracking-widest uppercase"></h3>
-            <p id="service2-text" class="text-gray-500 text-sm leading-relaxed"></p>
+        <div class="mt-8">
+            <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="text-xs border border-green-500 px-6 py-2 hover:bg-green-500 hover:text-black transition"></a>
         </div>
-        <div class="glow-card p-10 rounded-sm">
-            <h3 id="service3-title" class="text-green-300 font-bold mb-4 text-xl tracking-widest uppercase"></h3>
-            <p id="service3-text" class="text-gray-500 text-sm leading-relaxed"></p>
-        </div>
-    </div>
-
-    <div class="text-center mt-24">
-        <h2 id="contact-title" class="text-3xl text-green-400 mb-6 font-bold uppercase"></h2>
-        <p id="contact-text" class="text-gray-400 mb-10"></p>
-        <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="neon-button"></a>
     </div>
 </div>
 
 <script>
-// --- LÓGICA DO JOGO ---
-const gCanvas = document.getElementById('game-canvas');
-const gCtx = gCanvas.getContext('2d');
-let score = 0, lives = 3, enemies = [], bullets = [];
-let mX = window.innerWidth / 2;
+// --- CORE DO JOGO ---
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+let score = 0, lives = 3, enemies = [], bullets = [], gameActive = false;
+let mouseX = window.innerWidth / 2;
 
-function resize() { gCanvas.width = window.innerWidth; gCanvas.height = 200; }
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize); resize();
 
-window.addEventListener('mousemove', (e) => { mX = e.clientX; });
+window.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
 
 class Enemy {
     constructor() {
-        this.x = Math.random() * (gCanvas.width - 60) + 30;
-        this.y = -20;
-        this.speed = 0.8 + Math.random() * 1.5;
+        this.x = Math.random() * (canvas.width - 40) + 20;
+        this.y = -30;
+        this.speed = 1.5 + (score / 500); // Fica mais rápido com o tempo
     }
-    update() { this.y += this.speed; }
     draw() {
-        gCtx.font = "24px serif";
-        gCtx.fillText("👾", this.x - 12, this.y);
+        ctx.font = "30px serif";
+        ctx.fillText("👾", this.x - 15, this.y);
     }
 }
 
 class Bullet {
-    constructor(x) { this.x = x; this.y = 190; this.speed = 10; }
-    update() { this.y -= this.speed; }
+    constructor(x) { this.x = x; this.y = canvas.height - 50; this.speed = 12; }
     draw() {
-        gCtx.fillStyle = "#00ff00";
-        gCtx.fillRect(this.x - 1, this.y, 3, 15);
+        ctx.fillStyle = "#00ff00";
+        ctx.fillRect(this.x - 1, this.y, 3, 20);
     }
 }
 
+// Disparo
 window.addEventListener('keydown', (e) => { 
-    if(e.code === "Space") { e.preventDefault(); bullets.push(new Bullet(mX)); }
+    if(e.code === "Space" && gameActive) { 
+        e.preventDefault(); 
+        bullets.push(new Bullet(mouseX)); 
+    } 
 });
-gCanvas.addEventListener('mousedown', () => bullets.push(new Bullet(mX)));
+canvas.addEventListener('mousedown', () => { if(gameActive) bullets.push(new Bullet(mouseX)); });
 
-function game() {
-    gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-    
-    if(Math.random() < 0.02) enemies.push(new Enemy());
+function gameLoop() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; // Efeito de rastro
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    if(!gameActive) { requestAnimationFrame(gameLoop); return; }
+
+    if(Math.random() < 0.03) enemies.push(new Enemy());
 
     bullets.forEach((b, bi) => {
-        b.update(); b.draw();
+        b.y -= b.speed;
+        b.draw();
         if(b.y < 0) bullets.splice(bi, 1);
         enemies.forEach((e, ei) => {
-            if(Math.hypot(e.x - b.x, e.y - b.y) < 25) {
+            if(Math.hypot(e.x - b.x, e.y - b.y) < 30) {
                 enemies.splice(ei, 1); bullets.splice(bi, 1);
-                score += 10; document.getElementById('score').innerText = score;
+                score += 10;
+                document.getElementById('score').innerText = score.toString().padStart(4, '0');
             }
         });
     });
 
     enemies.forEach((e, i) => {
-        e.update(); e.draw();
-        if(e.y > 200) {
-            enemies.splice(i, 1); lives--;
-            document.getElementById('lives').innerText = lives;
-            if(lives <= 0) { lives = 3; score = 0; document.getElementById('score').innerText = "0"; logTerminal("[!] BRECHA DETECTADA - SISTEMA REINICIADO"); }
+        e.y += e.speed;
+        e.draw();
+        if(e.y > canvas.height) {
+            enemies.splice(i, 1);
+            lives--;
+            updateLivesHUD();
+            if(lives <= 0) gameOver();
         }
     });
-    requestAnimationFrame(game);
+    requestAnimationFrame(gameLoop);
 }
-game();
 
-// --- TRADUÇÕES ---
+function updateLivesHUD() {
+    document.getElementById('lives').innerText = "I".repeat(Math.max(0, lives));
+}
+
+function gameOver() {
+    logTerminal("[!] CRITICAL FAILURE: SISTEMA COMPROMETIDO");
+    lives = 3; score = 0; 
+    document.getElementById('score').innerText = "0000";
+    updateLivesHUD();
+}
+
+// --- LOGS E TRANSLATIONS ---
 const translations = {
     pt: {
         "hero-title": "JBrasil Labs - Cybersegurança",
-        "hero-text": "Proteção de dados e infraestrutura Sophos para o mercado corporativo latino-americano.",
-        "service1-title": "Sophos Firewall", "service1-text": "Implementação e suporte para máxima segurança perimetral.",
-        "service2-title": "Sophos Email", "service2-text": "Filtragem avançada e proteção contra phishing.",
-        "service3-title": "Suporte SOC", "service3-text": "Monitoramento e suporte remoto especializado 24/7.",
-        "contact-title": "Entrar em Contato", "contact-text": "Pronto para proteger sua rede?",
-        "contact-button": "Enviar E-mail"
+        "hero-text": "Proteção de dados e infraestrutura Sophos avançada.",
+        "service1-title": "SOPHOS FIREWALL", "service1-text": "Suporte e Migração.",
+        "service2-title": "SOPHOS EMAIL", "service2-text": "Anti-Phishing & Spam.",
+        "service3-title": "SOPORTE SOC", "service3-text": "Consultoria Remota 24/7.",
+        "contact-button": "CONTATO@JBRASILLABS"
     },
     es: {
-        "hero-title": "JBrasil Labs - Ciberseguridad",
-        "hero-text": "Protección de datos e infraestructura Sophos para el mercado corporativo latinoamericano.",
-        "service1-title": "Sophos Firewall", "service1-text": "Implementación y soporte para máxima seguridad perimetral.",
-        "service2-title": "Sophos Email", "service2-text": "Filtrado avanzado y protección contra phishing.",
-        "service3-title": "Soporte SOC", "service3-text": "Monitoreo y soporte remoto especializado 24/7.",
-        "contact-title": "Contactar", "contact-text": "¿Listo para proteger su red?",
-        "contact-button": "Enviar Correo"
+        "hero-title": "JBrasil Labs - Seguridad",
+        "hero-text": "Protección de datos e infraestructura Sophos.",
+        "service1-title": "SOPHOS FIREWALL", "service1-text": "Soporte y Migración.",
+        "service2-title": "SOPHOS EMAIL", "service2-text": "Anti-Phishing & Spam.",
+        "service3-title": "SOPORTE SOC", "service3-text": "Consultoría Remota 24/7.",
+        "contact-button": "CONTACTO@JBRASILLABS"
     }
 };
 
-function applyLang(l) {
-    const t = translations[l];
-    Object.keys(t).forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t[id]; });
-}
-applyLang(navigator.language.startsWith('es') ? 'es' : 'pt');
-document.getElementById('lang-switch').addEventListener('change', (e) => applyLang(e.target.value));
-
-// --- LOGS E ENTRADA ---
 function logTerminal(msg) {
     const p = document.createElement('p');
     p.className = 'terminal-line';
@@ -204,28 +199,45 @@ function logTerminal(msg) {
     setTimeout(() => p.remove(), 10000);
 }
 
-document.getElementById('main-logo').addEventListener('click', async () => {
-    document.getElementById('logo-wrap').style.opacity = '0';
+// --- START ACTION ---
+document.getElementById('main-logo').addEventListener('click', startSystem);
+document.getElementById('start-btn').addEventListener('click', startSystem);
+
+async function startSystem() {
+    if(gameActive) return;
+    
+    document.getElementById('start-screen').style.opacity = '0';
     setTimeout(() => {
-        document.getElementById('logo-wrap').style.display = 'none';
+        document.getElementById('start-screen').style.display = 'none';
         document.getElementById('main-content').classList.add('visible-content');
+        document.getElementById('hud').style.display = 'block';
+        gameActive = true;
     }, 800);
 
-    logTerminal("AUTENTICANDO CREDENCIAIS...");
-    logTerminal("CONSULTANDO BASE GEO-IP...");
+    logTerminal("INITIALIZING DEFENSE PROTOCOLS...");
+    logTerminal("CONNECTING TO SOC...");
 
     try {
         const info = await fetch('https://jbrasillabs-1.onrender.com/geoip').then(r => r.json());
-        logTerminal(`[SOC] ACESSO PERMITIDO: ${info.entry}`);
+        logTerminal(`[OK] ACCESS GRANTED: ${info.entry}`);
         fetch('https://jbrasillabs-1.onrender.com/log', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ entry: info.entry })
         });
     } catch {
-        logTerminal("[SOC] ACESSO PERMITIDO: IDENTIDADE OCULTA");
+        logTerminal("[!] OFFLINE MODE ACTIVATED");
     }
-});
+}
+
+function applyLang() {
+    const lang = navigator.language.startsWith('es') ? 'es' : 'pt';
+    const t = translations[lang];
+    Object.keys(t).forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t[id]; });
+}
+
+applyLang();
+gameLoop();
 </script>
 </body>
 </html>
