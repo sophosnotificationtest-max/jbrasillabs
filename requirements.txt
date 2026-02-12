@@ -1,4 +1,11 @@
+# Servidor web
 flask==2.3.2
 gunicorn==21.2.0
+
+# Requisições HTTP
 requests==2.31.0
 
+# Google Drive API
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
