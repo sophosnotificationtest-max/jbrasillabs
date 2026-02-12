@@ -13,19 +13,39 @@
 
 <style>
 body { font-family: 'Orbitron', sans-serif; background:black; color:#00ff00; margin:0; overflow-x:hidden; }
+
 .logo-container {
   position: fixed; top:50%; left:50%; transform: translate(-50%, -50%);
   text-align:center; z-index:10;
 }
 .logo-container img { width:350px; height:350px; cursor:pointer; }
+
 .hidden-content { opacity:0; visibility:hidden; transition:opacity 1s; }
 .visible-content { opacity:1; visibility:visible; transition:opacity 1s; }
+
 footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; bottom:10px; right:10px; font-family:monospace; font-size:14px; }
+
 #lang-switch { position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#00ff00; border:1px solid #00ff00; border-radius:4px; padding:3px 6px; z-index:20; cursor:pointer; }
-#terminal { position:fixed; bottom:10px; left:10px; font-family:monospace; font-size:12px; color:#00ff00; z-index:0; pointer-events:none; width:calc(100% - 20px); max-height:300px; overflow:hidden; }
+
+#terminal {
+  position:fixed; bottom:10px; left:10px; font-family:monospace;
+  font-size:12px; color:#00ff00; z-index:0; pointer-events:none;
+  width:calc(100% - 20px); max-height:300px; overflow:hidden;
+}
+
 .terminal-line { opacity:0; transform: translateY(100%); animation:moveUp 8s linear forwards; }
-@keyframes moveUp { 0% { transform:translateY(100%); opacity:0; } 10%, 90% { opacity:1; } 100% { transform:translateY(-100%); opacity:0; } }
-.terminal-bg { position: fixed; top:0; left:0; width:100%; height:100%; background:black; color:#00ff00; font-family:monospace; font-size:15px; opacity:0.05; z-index:-1; white-space:pre; overflow:hidden; }
+
+@keyframes moveUp {
+  0% { transform:translateY(100%); opacity:0; }
+  10%, 90% { opacity:1; }
+  100% { transform:translateY(-100%); opacity:0; }
+}
+
+.terminal-bg {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background:black; color:#00ff00; font-family:monospace;
+  font-size:15px; opacity:0.05; z-index:-1; white-space:pre; overflow:hidden;
+}
 </style>
 </head>
 <body>
@@ -74,7 +94,7 @@ footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; b
 <script>
 let terminal = document.getElementById('terminal');
 
-// Traduções PT/ES
+// Traduções
 const translations = {
   pt: {
     heroTitle: "Cybersegurança & Redes Corporativas",
@@ -125,7 +145,7 @@ function applyTranslations(lang){
   document.getElementById('contact-button').textContent = t.contactButton;
 }
 
-// Função para pegar IP + país
+// Obtem IP e país do visitante
 async function getVisitorInfo(){
   try{
     const res = await fetch('https://geolocation-db.com/json/');
@@ -137,28 +157,36 @@ async function getVisitorInfo(){
   }
 }
 
-// Função de envio de log para o backend
+// Função para enviar log e capturar erros
 function sendLog(entry){
   fetch('https://jbrasillabs-1.onrender.com/log',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({entry})
-  }).catch(e=>console.log('Erro enviando log:',e));
+  })
+  .then(async res=>{
+    const data = await res.json();
+    if(!res.ok){
+      console.error('[Erro Sheet/Drive]', res.status, data);
+    } else {
+      console.log('[SOC Log OK]', data);
+    }
+  })
+  .catch(e=>console.error('[Erro Fetch]', e));
 }
 
-// Ao clicar no logo
+// Logo clicável - abre conteúdo e envia log
 document.getElementById('logo').addEventListener('click', async ()=>{
   document.getElementById('logo-container').style.display='none';
   document.getElementById('main-content').classList.add('visible-content');
   document.getElementById('terminal-bg').style.opacity = 0.2;
 
   const visitor = await getVisitorInfo();
-  sendLog(`[VISITOR] ${visitor.ip} (${visitor.country}) entrou na página`);
-
   const div = document.createElement('div');
-  div.textContent = `[SOC] ${visitor.ip} (${visitor.country})`;
+  div.textContent = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
   div.className = 'terminal-line';
   terminal.appendChild(div);
+  sendLog(div.textContent);
 });
 
 // Click no botão de email
