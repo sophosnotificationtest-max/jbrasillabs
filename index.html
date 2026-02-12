@@ -32,12 +32,6 @@ body {
   z-index: -1;
   white-space: pre;
   overflow: hidden;
-  animation: scrollText 90s linear infinite;
-}
-
-@keyframes scrollText {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-50%); }
 }
 
 .logo-container {
@@ -81,8 +75,8 @@ footer {
   bottom: 10px;
   left: 10px;
   width: 400px;
-  max-height: 300px;
-  overflow-y: auto;
+  height: 250px;
+  overflow: hidden; /* sem scroll */
   font-family: monospace;
   font-size: 12px;
   color: #00ff00;
@@ -93,7 +87,21 @@ footer {
   z-index: 5;
 }
 
-#terminal { margin: 0; padding: 0; list-style: none; }
+#terminal { margin: 0; padding: 0; list-style: none; position: relative; }
+
+.terminal-line {
+  position: relative;
+  transform: translateY(100%);
+  opacity: 0;
+  animation: moveUp 8s linear forwards;
+}
+
+@keyframes moveUp {
+  0% { transform: translateY(100%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
+}
 
 #visitor-counter { margin-bottom: 5px; font-weight: bold; }
 </style>
@@ -148,7 +156,7 @@ footer {
 
 <script>
 let terminalInterval;
-let visitors = []; // lista de visitantes únicos
+let visitors = [];
 
 const translations = {
   pt: {
@@ -217,37 +225,34 @@ const translations = {
   }
 };
 
-// Captura IP e país
 async function getVisitorInfo() {
   try {
-    const res = await fetch('https://ipapi.co/json/');
+    const res = await fetch('https://geolocation-db.com/json/');
     if(!res.ok) throw new Error('API falhou');
     const data = await res.json();
-    return { ip: data.ip, country: data.country_name || 'Desconhecido' };
-  } catch(e) {
-    return { ip: '0.0.0.0', country: 'Desconhecido' };
+    return { ip: data.IPv4 || '192.168.0.1', country: data.country_name || 'Desconhecido' };
+  } catch {
+    return { 
+      ip: `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+      country: ['Brazil','Argentina','Mexico','Chile','Colombia'][Math.floor(Math.random()*5)]
+    };
   }
 }
 
-async function startTerminalAnimation(lines) {
+async function startTerminalAnimation(lines){
   const terminal = document.getElementById('terminal');
   if(terminalInterval) clearInterval(terminalInterval);
   terminal.innerHTML = '';
-  const displayLines = [];
-  let index = 0;
 
   const visitor = await getVisitorInfo();
+  if(!visitors.find(v => v.ip === visitor.ip)) visitors.push(visitor);
+  document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
 
-  // Adiciona ao histórico se não estiver presente
-  if(!visitors.find(v => v.ip === visitor.ip)){
-    visitors.push(visitor);
-  }
-
-  terminalInterval = setInterval(() => {
+  let index = 0;
+  terminalInterval = setInterval(()=>{
     let line = lines[index];
 
-    // 20% chance de log do visitante
-    if(Math.random() < 0.2 && visitors.length > 0){
+    if(Math.random() < 0.25 && visitors.length > 0){
       const v = visitors[Math.floor(Math.random()*visitors.length)];
       line = `[LOGIN] ${v.ip} (${v.country}) conectou à página`;
       document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
@@ -255,22 +260,20 @@ async function startTerminalAnimation(lines) {
 
     const li = document.createElement('li');
     li.textContent = line;
+    li.className = 'terminal-line';
     terminal.appendChild(li);
-    displayLines.push(li);
 
-    if(displayLines.length > 25){
-      const removed = displayLines.shift();
-      removed.remove();
+    // remove linhas antigas
+    if(terminal.children.length > 20){
+      terminal.removeChild(terminal.children[0]);
     }
 
     index = (index + 1) % lines.length;
-    terminal.scrollTop = terminal.scrollHeight; // auto scroll
   }, 800);
 }
 
-function applyTranslations(lang) {
+function applyTranslations(lang){
   const t = translations[lang] || translations.pt;
-
   document.getElementById('hero-title').textContent = t.heroTitle;
   document.getElementById('hero-text').textContent = t.heroText;
   document.getElementById('service1-title').textContent = t.service1Title;
@@ -287,22 +290,19 @@ function applyTranslations(lang) {
   startTerminalAnimation(t.terminalLines);
 }
 
-// Detectar idioma
+// Detecta idioma
 const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
 document.getElementById('lang-switch').value = userLang;
 applyTranslations(userLang);
+document.getElementById('lang-switch').addEventListener('change', e=>applyTranslations(e.target.value));
 
-document.getElementById('lang-switch').addEventListener('change', e => {
-  applyTranslations(e.target.value);
-});
-
-// Mostrar conteúdo ao clicar no logo
+// Mostra conteúdo ao clicar no logo
 const logo = document.getElementById('logo');
 const mainContent = document.getElementById('main-content');
 const logoContainer = document.getElementById('logo-container');
 
-logo.addEventListener('click', () => {
-  logoContainer.style.display = 'none';
+logo.addEventListener('click', ()=>{
+  logoContainer.style.display='none';
   mainContent.classList.add('visible-content');
 });
 </script>
