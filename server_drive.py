@@ -15,7 +15,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 def append_log(entry):
     try:
-        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
         service = build('sheets', 'v4', credentials=credentials)
         timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
         values = [[timestamp, entry]]
@@ -44,6 +46,15 @@ def receive_log():
 
     append_log(entry)
     return jsonify({'status': 'ok'}), 200
+
+# NOVA ROTA PARA FRONT-END OBTER IP
+@app.route('/visitor', methods=['GET'])
+def visitor_info():
+    real_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    return jsonify({
+        'ip': real_ip,
+        'source': 'Detectado pelo Servidor'
+    }), 200
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
