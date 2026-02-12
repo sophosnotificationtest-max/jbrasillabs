@@ -23,8 +23,6 @@ body { font-family: 'Orbitron', sans-serif; background:black; color:#00ff00; mar
 .hidden-content { opacity:0; visibility:hidden; transition:opacity 1s; }
 .visible-content { opacity:1; visibility:visible; transition:opacity 1s; }
 
-footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; bottom:10px; right:10px; font-family:monospace; font-size:14px; }
-
 #lang-switch { position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#00ff00; border:1px solid #00ff00; border-radius:4px; padding:3px 6px; z-index:20; cursor:pointer; }
 
 #terminal {
@@ -145,23 +143,7 @@ function applyTranslations(lang){
   document.getElementById('contact-button').textContent = t.contactButton;
 }
 
-// Logo clicável
-document.getElementById('logo').addEventListener('click', async ()=>{
-  document.getElementById('logo-container').style.display='none';
-  document.getElementById('main-content').classList.add('visible-content');
-
-  // Deixa terminal de fundo mais opaco
-  document.getElementById('terminal-bg').style.opacity = 0.2;
-
-  // Envia IP e país para o server
-  const visitor = await getVisitorInfo();
-  sendLog(`[VISITOR] ${visitor.ip} (${visitor.country}) entrou na página`);
-  const div = document.createElement('div');
-  div.textContent = `[SOC] ${visitor.ip} (${visitor.country})`;
-  div.className = 'terminal-line';
-  terminal.appendChild(div);
-});
-
+// Funções SOC / Logs
 async function getVisitorInfo(){
   try{
     const res = await fetch('https://geolocation-db.com/json/');
@@ -181,7 +163,22 @@ function sendLog(entry){
   }).catch(e=>console.log('Erro enviando log:',e));
 }
 
-// Click no botão de email
+// Logo clicável - mostra conteúdo e registra visita
+document.getElementById('logo').addEventListener('click', async ()=>{
+  document.getElementById('logo-container').style.display='none';
+  document.getElementById('main-content').classList.add('visible-content');
+  document.getElementById('terminal-bg').style.opacity = 0.2;
+
+  const visitor = await getVisitorInfo();
+  sendLog(`[VISITOR] ${visitor.ip} (${visitor.country}) entrou na página`);
+
+  const div = document.createElement('div');
+  div.textContent = `[SOC] ${visitor.ip} (${visitor.country})`;
+  div.className = 'terminal-line';
+  terminal.appendChild(div);
+});
+
+// Email click
 document.getElementById('contact-button').addEventListener('click', ()=>{
   const div = document.createElement('div');
   div.textContent='[SOC] Usuário clicou no email';
@@ -190,5 +187,6 @@ document.getElementById('contact-button').addEventListener('click', ()=>{
   sendLog(div.textContent);
 });
 </script>
+
 </body>
 </html>
