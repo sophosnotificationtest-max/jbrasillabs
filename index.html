@@ -12,28 +12,75 @@
 <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
 <style>
-body { font-family: 'Orbitron', sans-serif; background:black; color:#00ff00; margin:0; overflow-x:hidden; }
+body {
+  font-family: 'Orbitron', sans-serif;
+  background:black;
+  color:#00ff00;
+  margin:0;
+  overflow-x:hidden;
+}
 
 .logo-container {
-  position: fixed; top:50%; left:50%; transform: translate(-50%, -50%);
-  text-align:center; z-index:10;
+  position: fixed;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  text-align:center;
+  z-index:10;
 }
-.logo-container img { width:350px; height:350px; cursor:pointer; }
+.logo-container img {
+  width:350px;
+  height:350px;
+  cursor:pointer;
+}
 
 .hidden-content { opacity:0; visibility:hidden; transition:opacity 1s; }
 .visible-content { opacity:1; visibility:visible; transition:opacity 1s; }
 
-footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; bottom:10px; right:10px; font-family:monospace; font-size:14px; }
-
-#lang-switch { position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#00ff00; border:1px solid #00ff00; border-radius:4px; padding:3px 6px; z-index:20; cursor:pointer; }
-
-#terminal {
-  position:fixed; bottom:10px; left:10px; font-family:monospace;
-  font-size:12px; color:#00ff00; z-index:0; pointer-events:none;
-  width:calc(100% - 20px); max-height:300px; overflow:hidden;
+footer {
+  text-align:right;
+  color:#00ff00;
+  margin:0;
+  z-index:5;
+  position:fixed;
+  bottom:10px;
+  right:10px;
+  font-family:monospace;
+  font-size:14px;
 }
 
-.terminal-line { opacity:0; transform: translateY(100%); animation:moveUp 8s linear forwards; }
+#lang-switch {
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:rgba(0,0,0,0.5);
+  color:#00ff00;
+  border:1px solid #00ff00;
+  border-radius:4px;
+  padding:3px 6px;
+  z-index:20;
+  cursor:pointer;
+}
+
+#terminal {
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  font-family:monospace;
+  font-size:12px;
+  color:#00ff00;
+  z-index:0;
+  pointer-events:none;
+  width:calc(100% - 20px);
+  max-height:300px;
+  overflow:hidden;
+}
+
+.terminal-line {
+  opacity:0;
+  transform: translateY(100%);
+  animation:moveUp 8s linear forwards;
+}
 
 @keyframes moveUp {
   0% { transform:translateY(100%); opacity:0; }
@@ -42,9 +89,19 @@ footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; b
 }
 
 .terminal-bg {
-  position: fixed; top:0; left:0; width:100%; height:100%;
-  background:black; color:#00ff00; font-family:monospace;
-  font-size:15px; opacity:0.05; z-index:-1; white-space:pre; overflow:hidden;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  color:#00ff00;
+  font-family:monospace;
+  font-size:15px;
+  opacity:0.05;
+  z-index:-1;
+  white-space:pre;
+  overflow:hidden;
 }
 </style>
 </head>
@@ -93,7 +150,6 @@ footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; b
 
 <script>
 const terminal = document.getElementById('terminal');
-const terminalBg = document.getElementById('terminal-bg');
 
 // Traduções
 const translations = {
@@ -126,10 +182,10 @@ const translations = {
 };
 
 // Detecta idioma
-const userLang = navigator.language.startsWith('es')?'es':'pt';
+const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
 document.getElementById('lang-switch').value = userLang;
 applyTranslations(userLang);
-document.getElementById('lang-switch').addEventListener('change', e=>applyTranslations(e.target.value));
+document.getElementById('lang-switch').addEventListener('change', e => applyTranslations(e.target.value));
 
 function applyTranslations(lang){
   const t = translations[lang] || translations.pt;
@@ -146,64 +202,49 @@ function applyTranslations(lang){
   document.getElementById('contact-button').textContent = t.contactButton;
 }
 
-// -----------------------------
-// Captura IP e país do visitante
-// -----------------------------
+// Funções para log SOC
 async function getVisitorInfo(){
   try{
     const res = await fetch('https://geolocation-db.com/json/');
     const data = await res.json();
-    return {ip:data.IPv4||'192.168.0.1', country:data.country_name||'Desconhecido'};
-  }catch{
-    return {ip:`192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
-            country:['Brazil','Argentina','Mexico','Chile','Colombia'][Math.floor(Math.random()*5)]};
+    return { ip:data.IPv4 || '192.168.0.1', country:data.country_name || 'Desconhecido' };
+  } catch {
+    return { ip:`192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+             country:['Brazil','Argentina','Mexico','Chile','Colombia'][Math.floor(Math.random()*5)] };
   }
 }
 
-// -----------------------------
-// Envia log para o servidor Flask
-// -----------------------------
 function sendLog(entry){
   fetch('https://jbrasillabs-1.onrender.com/log',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({entry})
-  }).catch(e=>console.log('[Erro Log]', e));
+  }).catch(e=>console.log('Erro enviando log:', e));
 }
 
-// -----------------------------
-// Logo clicável
-// -----------------------------
+// Evento logo clicável
 document.getElementById('logo').addEventListener('click', async ()=>{
-  document.getElementById('logo-container').style.display='none';
+  document.getElementById('logo-container').style.display = 'none';
   document.getElementById('main-content').classList.add('visible-content');
+  document.getElementById('terminal-bg').style.opacity = 0.2;
 
-  // Deixa terminal de fundo mais opaco
-  terminalBg.style.opacity = 0.2;
-
-  // Envia log do visitante
   const visitor = await getVisitorInfo();
-  const entry = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
-  sendLog(entry);
-
-  // Mostra no terminal
+  const logText = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
   const div = document.createElement('div');
-  div.textContent = entry;
+  div.textContent = logText;
   div.className = 'terminal-line';
   terminal.appendChild(div);
+  sendLog(logText);
 });
 
-// -----------------------------
-// Click no botão de email
-// -----------------------------
+// Click no botão email
 document.getElementById('contact-button').addEventListener('click', ()=>{
-  const entry = '[SOC] Usuário clicou no email';
-  sendLog(entry);
-
+  const logText = '[SOC] Usuário clicou no email';
   const div = document.createElement('div');
-  div.textContent = entry;
+  div.textContent = logText;
   div.className = 'terminal-line';
   terminal.appendChild(div);
+  sendLog(logText);
 });
 </script>
 </body>
