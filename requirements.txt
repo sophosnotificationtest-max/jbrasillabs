@@ -1,6 +1,6 @@
 # Servidor web
 Flask==2.3.2
-Flask-Cors==3.1.1
+Flask-Cors==3.1.0
 gunicorn==21.2.0
 
 # Requisições HTTP
@@ -11,3 +11,5 @@ google-api-python-client==2.97.0
 google-auth==2.23.0
 google-auth-httplib2==0.1.0
 google-auth-oauthlib==1.1.0
+
+
