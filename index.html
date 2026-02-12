@@ -7,47 +7,62 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; cursor: none; }
         
-        /* Jogo em Tela Cheia */
-        #game-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; cursor: crosshair; }
+        /* Jogo Fullscreen */
+        #game-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #game-canvas { width: 100%; height: 100%; }
 
-        /* HUD do Jogo (Placar) */
-        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 12px; color: #00ff00; pointer-events: none; text-shadow: 0 0 10px #00ff00; }
+        /* HUD */
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 10px; color: #00ff00; pointer-events: none; text-shadow: 0 0 10px #00ff00; line-height: 2; }
         
-        /* Footer Fixo */
+        /* Copyright */
         #footer-fixed { position: fixed; bottom: 15px; right: 15px; font-size: 10px; color: #004400; z-index: 100; font-family: monospace; pointer-events: none; }
 
-        /* Logo Inicial / Start */
-        #start-screen { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 200; transition: 0.8s; }
-        #main-logo { width: 300px; cursor: pointer; filter: drop-shadow(0 0 20px #00ff00); transition: 0.3s; }
-        #main-logo:hover { transform: scale(1.05); }
-        .start-prompt { margin-top: 20px; font-family: 'Press Start 2P', cursive; font-size: 14px; color: #00ff00; animation: blink 1s infinite; cursor: pointer; }
+        /* Tela de Início / Game Over */
+        #start-screen { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 200; transition: opacity 0.8s; visibility: visible; }
+        #main-logo { width: 280px; filter: drop-shadow(0 0 20px #00ff00); cursor: pointer; }
+        .start-prompt { margin-top: 20px; font-family: 'Press Start 2P', cursive; font-size: 12px; color: #00ff00; animation: blink 1s infinite; cursor: pointer; }
 
-        /* Conteúdo do Site (Aparece após o Start) */
-        #main-content { position: relative; z-index: 50; padding-top: 100px; opacity: 0; visibility: hidden; transition: 2s; pointer-events: none; }
+        /* Conteúdo do Site */
+        #main-content { position: relative; z-index: 50; padding-top: 80px; opacity: 0; visibility: hidden; transition: 1.5s; pointer-events: none; }
         .visible-content { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
 
-        .welcome-box { border: 2px solid #00ff00; padding: 30px; background: rgba(0, 10, 0, 0.85); box-shadow: 0 0 30px #00ff0033; max-width: 700px; margin: 0 auto; text-align: center; }
+        .welcome-box { border: 2px solid #00ff00; padding: 30px; background: rgba(0, 15, 0, 0.9); box-shadow: 0 0 40px #00ff0022; max-width: 800px; margin: 0 auto; text-align: center; backdrop-filter: blur(5px); }
         
-        /* Terminal estilo Hacker */
-        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 150; color: #00ff00; width: 50%; max-height: 150px; overflow: hidden; pointer-events: none; }
-        .terminal-line { background: rgba(0,0,0,0.7); margin-bottom: 2px; padding: 2px 8px; font-size: 11px; border-left: 2px solid #00ff00; }
+        /* Botão de Contato Destacado */
+        .contact-btn-highlight { 
+            border: 2px solid #00ff00; 
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            padding: 15px 40px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            display: inline-block;
+            box-shadow: 0 0 15px #00ff00;
+            animation: pulse-border 2s infinite;
+        }
+        .contact-btn-highlight:hover { background: #00ff00; color: #000; box-shadow: 0 0 40px #00ff00; transform: scale(1.1); }
+
+        /* Terminal */
+        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 150; color: #00ff00; width: 45%; max-height: 120px; overflow: hidden; pointer-events: none; }
+        .terminal-line { background: rgba(0,0,0,0.8); margin-bottom: 2px; padding: 2px 8px; font-size: 10px; border-left: 2px solid #00ff00; }
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 10px #00ff00; } 50% { box-shadow: 0 0 30px #00ff00; } 100% { box-shadow: 0 0 10px #00ff00; } }
     </style>
 </head>
 <body>
 
-<div id="footer-fixed">© 2026 JBRASIL LABS. ALL RIGHTS RESERVED.</div>
+<div id="footer-fixed">© 2026 JBRASIL LABS.</div>
 
 <div id="terminal"></div>
 
 <div class="hud" id="hud" style="display: none;">
     SCORE: <span id="score">0000</span><br>
-    SHIELD: <span id="lives">III</span>
+    STATUS: <span id="lives" style="color: #00ff00;">ONLINE</span>
 </div>
 
 <div id="game-container">
@@ -56,136 +71,178 @@
 
 <div id="start-screen">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
-    <div class="start-prompt" id="start-btn">PRESS START</div>
+    <div class="start-prompt" id="start-btn">INITIALIZE SYSTEM</div>
 </div>
 
 <div id="main-content" class="container mx-auto px-6">
     <div class="welcome-box">
-        <h2 id="hero-title" class="text-2xl font-bold mb-4 uppercase text-green-400"></h2>
-        <p id="hero-text" class="text-sm text-gray-400 mb-8"></p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-            <div class="border border-green-900 p-4 bg-black/50">
-                <h3 id="service1-title" class="text-green-500 text-xs font-bold mb-2"></h3>
-                <p id="service1-text" class="text-[10px] text-gray-500"></p>
+        <h2 id="hero-title" class="text-3xl font-bold mb-4 text-green-400"></h2>
+        <p id="hero-text" class="text-sm text-gray-400 mb-10"></p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-10">
+            <div class="border border-green-900/50 p-6 bg-black/80 hover:border-green-500 transition">
+                <h3 id="service1-title" class="text-green-400 text-xs font-bold mb-2"></h3>
+                <p id="service1-text" class="text-[11px] text-gray-500 leading-relaxed"></p>
             </div>
-            <div class="border border-green-900 p-4 bg-black/50">
-                <h3 id="service2-title" class="text-green-500 text-xs font-bold mb-2"></h3>
-                <p id="service2-text" class="text-[10px] text-gray-500"></p>
+            <div class="border border-green-900/50 p-6 bg-black/80 hover:border-green-500 transition">
+                <h3 id="service2-title" class="text-green-400 text-xs font-bold mb-2"></h3>
+                <p id="service2-text" class="text-[11px] text-gray-500 leading-relaxed"></p>
             </div>
-            <div class="border border-green-900 p-4 bg-black/50">
-                <h3 id="service3-title" class="text-green-500 text-xs font-bold mb-2"></h3>
-                <p id="service3-text" class="text-[10px] text-gray-500"></p>
+            <div class="border border-green-900/50 p-6 bg-black/80 hover:border-green-500 transition">
+                <h3 id="service3-title" class="text-green-400 text-xs font-bold mb-2"></h3>
+                <p id="service3-text" class="text-[11px] text-gray-500 leading-relaxed"></p>
             </div>
         </div>
-        <div class="mt-8">
-            <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="text-xs border border-green-500 px-6 py-2 hover:bg-green-500 hover:text-black transition"></a>
-        </div>
+
+        <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="contact-btn-highlight"></a>
     </div>
 </div>
 
 <script>
-// --- CORE DO JOGO ---
+// --- JOGO COM NAVE ---
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 let score = 0, lives = 3, enemies = [], bullets = [], gameActive = false;
-let mouseX = window.innerWidth / 2;
+let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
 
 function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize); resize();
 
-window.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
+window.addEventListener('mousemove', (e) => { 
+    mouseX = e.clientX; 
+    mouseY = e.clientY; 
+});
+
+// Desenho da Nave Interceptora
+function drawShip(x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.strokeStyle = "#00ff00";
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#00ff00";
+    
+    // Corpo da Nave
+    ctx.beginPath();
+    ctx.moveTo(0, -20); // Ponta
+    ctx.lineTo(-15, 10); // Asa Esquerda
+    ctx.lineTo(0, 0);    // Centro
+    ctx.lineTo(15, 10);  // Asa Direita
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Motores
+    ctx.fillStyle = "#00ff00";
+    ctx.fillRect(-5, 5, 10, 2);
+    ctx.restore();
+}
 
 class Enemy {
     constructor() {
         this.x = Math.random() * (canvas.width - 40) + 20;
         this.y = -30;
-        this.speed = 1.5 + (score / 500); // Fica mais rápido com o tempo
+        this.speed = 2 + (score / 1000);
     }
     draw() {
-        ctx.font = "30px serif";
-        ctx.fillText("👾", this.x - 15, this.y);
+        ctx.font = "24px Orbitron";
+        ctx.fillStyle = "#ff0000";
+        ctx.shadowBlur = 5;
+        ctx.fillText("👾", this.x - 12, this.y);
     }
 }
 
 class Bullet {
-    constructor(x) { this.x = x; this.y = canvas.height - 50; this.speed = 12; }
+    constructor(x, y) { this.x = x; this.y = y - 20; this.speed = 15; }
     draw() {
         ctx.fillStyle = "#00ff00";
-        ctx.fillRect(this.x - 1, this.y, 3, 20);
+        ctx.shadowBlur = 15;
+        ctx.fillRect(this.x - 1, this.y, 2, 15);
     }
 }
 
-// Disparo
-window.addEventListener('keydown', (e) => { 
-    if(e.code === "Space" && gameActive) { 
-        e.preventDefault(); 
-        bullets.push(new Bullet(mouseX)); 
-    } 
-});
-canvas.addEventListener('mousedown', () => { if(gameActive) bullets.push(new Bullet(mouseX)); });
+window.addEventListener('keydown', (e) => { if(e.code === "Space" && gameActive) shoot(); });
+canvas.addEventListener('mousedown', () => { if(gameActive) shoot(); });
+
+function shoot() { bullets.push(new Bullet(mouseX, mouseY)); }
 
 function gameLoop() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; // Efeito de rastro
+    ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if(!gameActive) { requestAnimationFrame(gameLoop); return; }
+    if(gameActive) {
+        drawShip(mouseX, mouseY);
 
-    if(Math.random() < 0.03) enemies.push(new Enemy());
+        if(Math.random() < 0.04) enemies.push(new Enemy());
 
-    bullets.forEach((b, bi) => {
-        b.y -= b.speed;
-        b.draw();
-        if(b.y < 0) bullets.splice(bi, 1);
-        enemies.forEach((e, ei) => {
-            if(Math.hypot(e.x - b.x, e.y - b.y) < 30) {
-                enemies.splice(ei, 1); bullets.splice(bi, 1);
-                score += 10;
-                document.getElementById('score').innerText = score.toString().padStart(4, '0');
+        bullets.forEach((b, bi) => {
+            b.y -= b.speed;
+            b.draw();
+            if(b.y < 0) bullets.splice(bi, 1);
+            enemies.forEach((e, ei) => {
+                if(Math.hypot(e.x - b.x, e.y - b.y) < 30) {
+                    enemies.splice(ei, 1); bullets.splice(bi, 1);
+                    score += 10;
+                    document.getElementById('score').innerText = score.toString().padStart(4, '0');
+                }
+            });
+        });
+
+        enemies.forEach((e, i) => {
+            e.y += e.speed;
+            e.draw();
+            if(e.y > canvas.height) {
+                enemies.splice(i, 1);
+                lives--;
+                updateHUD();
+                if(lives <= 0) systemReboot();
             }
         });
-    });
-
-    enemies.forEach((e, i) => {
-        e.y += e.speed;
-        e.draw();
-        if(e.y > canvas.height) {
-            enemies.splice(i, 1);
-            lives--;
-            updateLivesHUD();
-            if(lives <= 0) gameOver();
-        }
-    });
+    }
     requestAnimationFrame(gameLoop);
 }
 
-function updateLivesHUD() {
-    document.getElementById('lives').innerText = "I".repeat(Math.max(0, lives));
+function updateHUD() {
+    const el = document.getElementById('lives');
+    if(lives === 2) el.style.color = "yellow";
+    if(lives === 1) el.style.color = "red";
+    el.innerText = lives > 0 ? "ONLINE" : "CRITICAL";
 }
 
-function gameOver() {
-    logTerminal("[!] CRITICAL FAILURE: SISTEMA COMPROMETIDO");
-    lives = 3; score = 0; 
-    document.getElementById('score').innerText = "0000";
-    updateLivesHUD();
+// --- REBOOT DO SISTEMA ---
+function systemReboot() {
+    gameActive = false;
+    logTerminal("[!] CRITICAL FAILURE: SYSTEM BREACHED");
+    
+    // Esconde o conteúdo e o HUD
+    document.getElementById('main-content').classList.remove('visible-content');
+    document.getElementById('hud').style.display = 'none';
+    
+    // Mostra a tela de início novamente
+    setTimeout(() => {
+        const startScreen = document.getElementById('start-screen');
+        startScreen.style.display = 'block';
+        startScreen.style.opacity = '1';
+        document.getElementById('start-btn').innerText = "REBOOT SYSTEM";
+        
+        // Reseta status
+        lives = 3;
+        score = 0;
+        enemies = [];
+        bullets = [];
+        updateHUD();
+        document.getElementById('lives').style.color = "#00ff00";
+    }, 1000);
 }
 
-// --- LOGS E TRANSLATIONS ---
+// --- TRANSLATIONS & LOGS ---
 const translations = {
     pt: {
-        "hero-title": "JBrasil Labs - Cybersegurança",
-        "hero-text": "Proteção de dados e infraestrutura Sophos avançada.",
-        "service1-title": "SOPHOS FIREWALL", "service1-text": "Suporte e Migração.",
-        "service2-title": "SOPHOS EMAIL", "service2-text": "Anti-Phishing & Spam.",
-        "service3-title": "SOPORTE SOC", "service3-text": "Consultoria Remota 24/7.",
-        "contact-button": "CONTATO@JBRASILLABS"
-    },
-    es: {
-        "hero-title": "JBrasil Labs - Seguridad",
-        "hero-text": "Protección de datos e infraestructura Sophos.",
-        "service1-title": "SOPHOS FIREWALL", "service1-text": "Soporte y Migración.",
-        "service2-title": "SOPHOS EMAIL", "service2-text": "Anti-Phishing & Spam.",
-        "service3-title": "SOPORTE SOC", "service3-text": "Consultoría Remota 24/7.",
-        "contact-button": "CONTACTO@JBRASILLABS"
+        "hero-title": "JBrasil Labs SOC",
+        "hero-text": "Operações de cibersegurança e infraestrutura Sophos Platinum.",
+        "service1-title": "SOPHOS FIREWALL", "service1-text": "Gestão de UTM, XG e XGS Series.",
+        "service2-title": "EMAIL PROTECTION", "service2-text": "Filtros avançados e Anti-Spoofing.",
+        "service3-title": "REDES & SUPORTE", "service3-text": "Monitoramento 24/7 toda América Latina.",
+        "contact-button": "SOLICITAR ACESSO"
     }
 };
 
@@ -196,12 +253,13 @@ function logTerminal(msg) {
     const term = document.getElementById('terminal');
     term.appendChild(p);
     term.scrollTop = term.scrollHeight;
-    setTimeout(() => p.remove(), 10000);
 }
 
 // --- START ACTION ---
-document.getElementById('main-logo').addEventListener('click', startSystem);
-document.getElementById('start-btn').addEventListener('click', startSystem);
+const startBtn = document.getElementById('main-logo');
+const startBtnText = document.getElementById('start-btn');
+
+[startBtn, startBtnText].forEach(el => el.addEventListener('click', startSystem));
 
 async function startSystem() {
     if(gameActive) return;
@@ -212,27 +270,21 @@ async function startSystem() {
         document.getElementById('main-content').classList.add('visible-content');
         document.getElementById('hud').style.display = 'block';
         gameActive = true;
+        logTerminal("PROTOCOL INITIATED: SHIP ONLINE");
     }, 800);
-
-    logTerminal("INITIALIZING DEFENSE PROTOCOLS...");
-    logTerminal("CONNECTING TO SOC...");
 
     try {
         const info = await fetch('https://jbrasillabs-1.onrender.com/geoip').then(r => r.json());
-        logTerminal(`[OK] ACCESS GRANTED: ${info.entry}`);
+        logTerminal(`[SOC] ACCESS GRANTED: ${info.entry}`);
         fetch('https://jbrasillabs-1.onrender.com/log', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ entry: info.entry })
         });
-    } catch {
-        logTerminal("[!] OFFLINE MODE ACTIVATED");
-    }
+    } catch { logTerminal("[!] LOCAL SESSION STARTED"); }
 }
 
 function applyLang() {
-    const lang = navigator.language.startsWith('es') ? 'es' : 'pt';
-    const t = translations[lang];
+    const t = translations.pt;
     Object.keys(t).forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t[id]; });
 }
 
