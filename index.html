@@ -74,8 +74,10 @@ const fontSize = 16;
 const columns = canvas.width / fontSize;
 const drops = Array(Math.floor(columns)).fill(1);
 function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#0F0"; ctx.font = fontSize + "px monospace";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0F0";
+    ctx.font = fontSize + "px monospace";
     for (let i = 0; i < drops.length; i++) {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -90,20 +92,30 @@ const translations = {
     pt: {
         "hero-title": "Cybersegurança & Redes Corporativas",
         "hero-text": "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuração, implementação e suporte em firewalls Sophos para máxima proteção.",
-        "service2-title": "Sophos Central Email", "service2-text": "Proteção contra spam e ameaças avançadas com solução Sophos Email Advanced.",
-        "service3-title": "Suporte Técnico", "service3-text": "Consultoria remota ou presencial para redes e infraestrutura em toda Latino América.",
-        "contact-title": "Entre em Contato", "contact-text": "Solicite uma consultoria personalizada ou tire suas dúvidas.",
-        "contact-button": "Enviar Email", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
+        "service1-title": "Sophos Firewall",
+        "service1-text": "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
+        "service2-title": "Sophos Central Email",
+        "service2-text": "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
+        "service3-title": "Suporte Técnico",
+        "service3-text": "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
+        "contact-title": "Entre em Contato",
+        "contact-text": "Solicite uma consultoria personalizada ou tire suas dúvidas.",
+        "contact-button": "Enviar Email",
+        "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
     },
     es: {
         "hero-title": "Ciberseguridad & Redes Corporativas",
         "hero-text": "Protección avanzada con Sophos Firewall, Sophos Central Email e soporte técnico especializado.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuración, implementación y soporte para firewalls Sophos.",
-        "service2-title": "Sophos Central Email", "service2-text": "Protección contra amenazas de correo electrónico con Sophos Central.",
-        "service3-title": "Soporte Técnico", "service3-text": "Consultoría remota para redes e infraestructura en toda Latinoamérica.",
-        "contact-title": "Contáctanos", "contact-text": "Solicite una consultoría personalizada o resuelva sus dudas.",
-        "contact-button": "Enviar Correo", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
+        "service1-title": "Sophos Firewall",
+        "service1-text": "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
+        "service2-title": "Sophos Central Email",
+        "service2-text": "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con Sophos Email Advanced.",
+        "service3-title": "Soporte Técnico",
+        "service3-text": "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura en toda Latinoamérica.",
+        "contact-title": "Contáctanos",
+        "contact-text": "Solicite una consultoría personalizada o resuelva sus dudas.",
+        "contact-button": "Enviar Correo",
+        "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
     }
 };
 
@@ -119,15 +131,11 @@ document.getElementById('lang-switch').addEventListener('change', (e) => applyLa
 // --- GEO IP & LOG LOGIC ---
 async function getVisitorInfo() {
     try {
-        // ipwho.is é mais estável e rápido para geolocalização client-side
-        const res = await fetch('https://ipwho.is/');
+        const res = await fetch('https://jbrasillabs-1.onrender.com/visitor');
         const data = await res.json();
-        if(data.success) {
-            return `${data.ip} (${data.country})`;
-        }
-        return "IP Localizado pelo Servidor";
+        return `${data.ip} (${data.source})`;
     } catch {
-        return "Analisando IP...";
+        return "Desconhecido (Global)";
     }
 }
 
