@@ -107,11 +107,11 @@ const translations = {
         "hero-title": "Ciberseguridad & Redes Corporativas",
         "hero-text": "Protección avanzada con Sophos Firewall, Sophos Central Email e soporte técnico especializado.",
         "service1-title": "Sophos Firewall",
-        "service1-text": "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
+        "service1-text": "Configuración, implementación y soporte para firewalls Sophos.",
         "service2-title": "Sophos Central Email",
-        "service2-text": "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con Sophos Email Advanced.",
+        "service2-text": "Protección de correo electrónico con políticas de seguridad y filtrado avanzado.",
         "service3-title": "Soporte Técnico",
-        "service3-text": "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura en toda Latinoamérica.",
+        "service3-text": "Consultoría y soporte remoto para redes e infraestructura en toda Latinoamérica.",
         "contact-title": "Contáctanos",
         "contact-text": "Solicite una consultoría personalizada o resuelva sus dudas.",
         "contact-button": "Enviar Correo",
@@ -128,14 +128,15 @@ document.getElementById('lang-switch').value = userLang;
 applyLang(userLang);
 document.getElementById('lang-switch').addEventListener('change', (e) => applyLang(e.target.value));
 
-// --- GEO IP & LOG LOGIC ---
+// --- GEO IP & LOG ---
 async function getVisitorInfo() {
     try {
-        const res = await fetch('https://jbrasillabs-1.onrender.com/visitor');
+        const res = await fetch('https://ipwho.is/');
         const data = await res.json();
-        return `${data.ip} (${data.source})`;
+        if(data.success) return `${data.ip} (${data.country})`;
+        return "Unknown";
     } catch {
-        return "Desconhecido (Global)";
+        return "Unknown";
     }
 }
 
@@ -157,6 +158,7 @@ function logTerminal(msg) {
     setTimeout(() => p.remove(), 6000);
 }
 
+// --- CLICK LOG ---
 document.getElementById('main-logo').addEventListener('click', async () => {
     document.getElementById('logo-wrap').style.opacity = '0';
     setTimeout(() => {
