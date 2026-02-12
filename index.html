@@ -7,117 +7,39 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>tailwind.config = { darkMode: 'class' }</script>
-
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
     <style>
-        body {
-            font-family: 'Orbitron', sans-serif;
-            background: black;
-            color: #00ff00;
-            margin: 0;
-            overflow-x: hidden;
-        }
+        body { font-family: 'Orbitron', sans-serif; background: black; color: #00ff00; margin: 0; overflow-x: hidden; }
+        
+        .logo-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; transition: 0.8s; }
+        .logo-container img { width: 300px; cursor: pointer; filter: drop-shadow(0 0 10px #00ff00); }
+        
+        .hidden-content { opacity: 0; visibility: hidden; pointer-events: none; }
+        .visible-content { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 1.5s; }
 
-        /* Efeitos de Neon e Glow */
-        .glow-card {
-            border: 1px solid #00ff0033;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        .glow-card:hover {
-            border-color: #00ff00;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
-        }
+        .glow-card { border: 1px solid #00ff0033; background: rgba(0,0,0,0.8); transition: 0.3s; }
+        .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 20px rgba(0,255,0,0.3); transform: translateY(-5px); }
 
-        .neon-button {
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            box-shadow: 0 0 10px #00ff00;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .neon-button:hover {
-            background: #00ff00;
-            color: black;
-            box-shadow: 0 0 30px #00ff00;
-        }
+        .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; }
+        .neon-button:hover { background: #00ff00; color: black; box-shadow: 0 0 30px #00ff00; }
 
-        .logo-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 50;
-            transition: all 0.8s ease;
-        }
-        .logo-container img {
-            width: 300px;
-            cursor: pointer;
-            filter: drop-shadow(0 0 10px #00ff00);
-        }
+        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; pointer-events: none; }
+        .terminal-line { font-size: 13px; margin-bottom: 5px; animation: fadeInUp 0.5s forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .hidden-content { opacity: 0; visibility: hidden; transition: opacity 1s; }
-        .visible-content { opacity: 1; visibility: visible; transition: opacity 1s; }
-
-        #lang-switch {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.8);
-            color: #00ff00;
-            border: 1px solid #00ff00;
-            border-radius: 4px;
-            padding: 5px 10px;
-            z-index: 100;
-            cursor: pointer;
-        }
-
-        #terminal {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            font-family: monospace;
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        .terminal-line {
-            font-size: 14px;
-            margin-bottom: 5px;
-            animation: moveUp 6s forwards;
-        }
-
-        @keyframes moveUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            10% { opacity: 1; transform: translateY(0); }
-            90% { opacity: 1; }
-            100% { opacity: 0; transform: translateY(-50px); }
-        }
-
-        .terminal-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            opacity: 0.05;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        #lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; }
+        .terminal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.03; z-index: -1; pointer-events: none; word-break: break-all; font-family: monospace; }
     </style>
 </head>
 <body>
 
-<div class="terminal-bg" id="terminal-bg"></div>
+<div class="terminal-bg" id="matrix-bg"></div>
 
-<div class="logo-container" id="logo-container">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" id="logo">
-    <p class="mt-4 animate-pulse text-xs tracking-widest">INICIALIZAR PROTOCOLO</p>
+<div class="logo-container" id="logo-wrap">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
+    <p class="mt-4 animate-pulse text-xs">CLIQUE PARA ACESSAR O TERMINAL</p>
 </div>
 
 <select id="lang-switch">
@@ -127,128 +49,97 @@
 
 <div id="terminal"></div>
 
-<div id="main-content" class="hidden-content pb-20">
-    <section class="hero flex flex-col items-center justify-center text-center mt-32 px-4">
-        <h2 id="hero-title" class="text-4xl md:text-6xl font-extrabold text-green-400 mb-6 uppercase"></h2>
-        <p id="hero-text" class="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl"></p>
+<div id="main-content" class="hidden-content pt-20">
+    <section class="flex flex-col items-center text-center px-4 mt-20">
+        <h2 id="hero-title" class="text-4xl md:text-6xl font-bold text-green-400 mb-6"></h2>
+        <p id="hero-text" class="text-lg text-gray-300 max-w-2xl"></p>
     </section>
 
-    <section id="services" class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 max-w-6xl mx-auto px-4">
-        <div class="glow-card p-8 bg-black rounded">
-            <h3 id="service1-title" class="text-xl font-bold text-green-300 mb-3"></h3>
-            <p id="service1-text" class="text-gray-400"></p>
-        </div>
-        <div class="glow-card p-8 bg-black rounded">
-            <h3 id="service2-title" class="text-xl font-bold text-green-300 mb-3"></h3>
-            <p id="service2-text" class="text-gray-400"></p>
-        </div>
-        <div class="glow-card p-8 bg-black rounded">
-            <h3 id="service3-title" class="text-xl font-bold text-green-300 mb-3"></h3>
-            <p id="service3-text" class="text-gray-400"></p>
-        </div>
-    </section>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6 mt-16">
+        <div class="glow-card p-6 rounded"><h3 id="service1-title" class="text-green-300 font-bold mb-2"></h3><p id="service1-text" class="text-sm text-gray-400"></p></div>
+        <div class="glow-card p-6 rounded"><h3 id="service2-title" class="text-green-300 font-bold mb-2"></h3><p id="service2-text" class="text-sm text-gray-400"></p></div>
+        <div class="glow-card p-6 rounded"><h3 id="service3-title" class="text-green-300 font-bold mb-2"></h3><p id="service3-text" class="text-sm text-gray-400"></p></div>
+    </div>
 
-    <section id="contact" class="mt-20 text-center p-10 mx-4 max-w-3xl md:mx-auto glow-card rounded-lg">
-        <h2 id="contact-title" class="text-3xl font-bold text-green-400 mb-6"></h2>
-        <p id="contact-text" class="mb-8 text-gray-300"></p>
-        <a href="mailto:jonas.brasil@jbrasillabs.com.br" id="contact-button" class="px-10 py-4 neon-button rounded font-bold transition"></a>
-    </section>
+    <div class="text-center mt-20 pb-20">
+        <h2 id="contact-title" class="text-3xl text-green-400 mb-6"></h2>
+        <p id="contact-text" class="text-gray-300 mb-8"></p>
+        <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="neon-button rounded"></a>
+    </div>
 </div>
 
 <script>
-const terminal = document.getElementById('terminal');
+// Matrix Background Effect
+const bg = document.getElementById('matrix-bg');
+bg.innerHTML = "01".repeat(1000);
 
 const translations = {
     pt: {
-        heroTitle: "Cybersegurança & Redes Corporativas",
-        heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
-        service1Title: "Sophos Firewall",
-        service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
-        service2Title: "Sophos Central Email",
-        service2Text: "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
-        service3Title: "Suporte Técnico",
-        service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
-        contactTitle: "Entre em Contato",
-        contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
-        contactButton: "Enviar Email"
+        heroTitle: "Cybersegurança & Redes",
+        heroText: "Proteção avançada com Sophos Firewall e suporte especializado.",
+        service1Title: "Sophos Firewall", service1Text: "Configuração e migração para máxima proteção de rede.",
+        service2Title: "Sophos Central Email", service2Text: "Proteção contra spam e ameaças avançadas de email.",
+        service3Title: "Suporte Técnico", service3Text: "Consultoria para toda a América Latina.",
+        contactTitle: "Contato", contactText: "Fale com nossos especialistas.", contactButton: "Enviar Email"
     },
     es: {
-        heroTitle: "Ciberseguridad & Redes Corporativas",
-        heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
-        service1Title: "Sophos Firewall",
-        service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
-        service2Title: "Sophos Central Email",
-        service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
-        service3Title: "Soporte Técnico",
-        service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
-        contactTitle: "Contáctanos",
-        contactText: "Solicita una consultoría personalizada o envie sus dudas.",
-        contactButton: "Enviar Correo"
+        heroTitle: "Ciberseguridad & Redes",
+        heroText: "Protección avanzada con Sophos Firewall y soporte técnico.",
+        service1Title: "Sophos Firewall", service1Text: "Configuración y migración para máxima protección.",
+        service2Title: "Sophos Central Email", service2Text: "Protección avanzada contra spam y amenazas.",
+        service3Title: "Soporte Técnico", service3Text: "Consultoría para toda Latinoamérica.",
+        contactTitle: "Contacto", contactText: "Hable con nuestros especialistas.", contactButton: "Enviar Correo"
     }
 };
 
-function applyTranslations(lang){
-    const t = translations[lang] || translations.pt;
-    Object.keys(t).forEach(key => {
-        const el = document.getElementById(key.replace(/([A-Z])/g, "-$1").toLowerCase());
-        if(el) el.textContent = t[key];
+function applyLang(lang) {
+    const t = translations[lang];
+    Object.keys(t).forEach(k => {
+        const el = document.getElementById(k.replace(/([A-Z])/g, "-$1").toLowerCase());
+        if(el) el.textContent = t[k];
     });
 }
 
 const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
 document.getElementById('lang-switch').value = userLang;
-applyTranslations(userLang);
-document.getElementById('lang-switch').addEventListener('change', e => applyTranslations(e.target.value));
+applyLang(userLang);
+document.getElementById('lang-switch').addEventListener('change', (e) => applyLang(e.target.value));
 
-async function getVisitorInfo(){
+async function getIP() {
     try {
-        const res = await fetch('https://ipapi.co/json/');
+        const res = await fetch('https://ipwho.is/');
         const data = await res.json();
-        return { ip: data.ip || '0.0.0.0', country: data.country_name || 'Desconhecido' };
-    } catch {
-        return { ip: 'Unknown', country: 'Global' };
-    }
+        return `${data.ip} (${data.country})`;
+    } catch { return "Unknown (Global)"; }
 }
 
-async function sendLog(entry) {
+async function sendToSOC(msg) {
     try {
         await fetch('https://jbrasillabs-1.onrender.com/log', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ entry: entry })
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ entry: msg })
         });
-    } catch (e) { console.log('Log offline'); }
+    } catch(e) {}
 }
 
-function showTerminalMessage(text) {
-    const div = document.createElement('div');
-    div.textContent = `> ${text}`;
-    div.className = 'terminal-line';
-    terminal.appendChild(div);
-    setTimeout(() => div.remove(), 6000);
+function logTerminal(msg) {
+    const p = document.createElement('p');
+    p.className = 'terminal-line';
+    p.textContent = `> ${msg}`;
+    document.getElementById('terminal').appendChild(p);
+    setTimeout(() => p.remove(), 5000);
 }
 
-document.getElementById('logo').addEventListener('click', async () => {
-    const logoContainer = document.getElementById('logo-container');
-    logoContainer.style.opacity = '0';
+document.getElementById('main-logo').addEventListener('click', async () => {
+    document.getElementById('logo-wrap').style.display = 'none';
+    document.getElementById('main-content').classList.remove('hidden-content');
+    document.getElementById('main-content').classList.add('visible-content');
     
-    setTimeout(() => {
-        logoContainer.style.display = 'none';
-        document.getElementById('main-content').classList.remove('hidden-content');
-        document.getElementById('main-content').classList.add('visible-content');
-        document.getElementById('terminal-bg').style.opacity = '0.15';
-    }, 800);
-
-    const visitor = await getVisitorInfo();
-    const logText = `[SOC] ACCESS: ${visitor.ip} (${visitor.country})`;
-    showTerminalMessage(logText);
-    sendLog(logText);
-});
-
-document.getElementById('contact-button').addEventListener('click', () => {
-    const logText = '[SOC] Event: Contact Button Clicked';
-    showTerminalMessage(logText);
-    sendLog(logText);
+    const info = await getIP();
+    const logMsg = `[SOC] ACCESS GRANTED: ${info}`;
+    logTerminal(logMsg);
+    sendToSOC(logMsg);
 });
 </script>
 </body>
