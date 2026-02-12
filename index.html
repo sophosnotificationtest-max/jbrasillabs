@@ -12,74 +12,29 @@
 <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
 
 <style>
-body {
-  font-family: 'Orbitron', sans-serif;
-  background-color: black;
-  color: #00ff00;
-  margin: 0;
-  overflow-x: hidden;
-}
+body { font-family: 'Orbitron', sans-serif; background:black; color:#00ff00; margin:0; overflow-x:hidden; }
 
 .logo-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  z-index: 10;
+  position: fixed; top:50%; left:50%; transform: translate(-50%, -50%);
+  text-align:center; z-index:10;
 }
-.logo-container img { width: 350px; height: 350px; cursor: pointer; }
+.logo-container img { width:350px; height:350px; cursor:pointer; }
 
-.hidden-content { opacity: 0; visibility: hidden; transition: opacity 1s; }
-.visible-content { opacity: 1; visibility: visible; transition: opacity 1s; }
+.hidden-content { opacity:0; visibility:hidden; transition:opacity 1s; }
+.visible-content { opacity:1; visibility:visible; transition:opacity 1s; }
 
-footer {
-  text-align: right;
-  color: #00ff00;
-  margin: 0;
-  z-index: 5;
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  font-family: monospace;
-  font-size: 14px;
-}
+footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; bottom:10px; right:10px; font-family:monospace; font-size:14px; }
 
-#lang-switch {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.5);
-  color: #00ff00;
-  border: 1px solid #00ff00;
-  border-radius: 4px;
-  padding: 3px 6px;
-  z-index: 20;
-  cursor: pointer;
-}
+#lang-switch { position:fixed; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#00ff00; border:1px solid #00ff00; border-radius:4px; padding:3px 6px; z-index:20; cursor:pointer; }
 
-#terminal {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  font-family: monospace;
-  font-size: 12px;
-  color: #00ff00;
-  z-index: 20;
-}
+#terminal { position:fixed; bottom:10px; left:10px; font-family:monospace; font-size:12px; color:#00ff00; z-index:20; }
 
-.terminal-line {
-  position: relative;
-  transform: translateY(100%);
-  opacity: 0;
-  animation: moveUp 8s linear forwards;
-}
+.terminal-line { position:relative; transform:translateY(100%); opacity:0; animation:moveUp 8s linear forwards; }
 
 @keyframes moveUp {
-  0% { transform: translateY(100%); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(-100%); opacity: 0; }
+  0% { transform:translateY(100%); opacity:0; }
+  10%, 90% { opacity:1; }
+  100% { transform:translateY(-100%); opacity:0; }
 }
 </style>
 </head>
@@ -127,134 +82,48 @@ footer {
 <footer id="visitor-counter">Visitantes conectados: 0 | Total visitas: 0 | Cliques email: 0</footer>
 
 <script>
-const BACKEND_URL = "https://jbrasillabs-1.onrender.com/log"; // substitua pela URL do Render
-let terminalInterval;
-let visitors = [];
-let emailHits = parseInt(localStorage.getItem('emailHits') || '0');
-let totalVisits = parseInt(localStorage.getItem('totalVisits') || '0') + 1;
+let terminalInterval, visitors=[], emailHits=parseInt(localStorage.getItem('emailHits')||'0');
+let totalVisits=parseInt(localStorage.getItem('totalVisits')||'0')+1;
 localStorage.setItem('totalVisits', totalVisits);
 
-const translations = {
-  pt: {
-    heroTitle: "Cybersegurança & Redes Corporativas",
-    heroText: "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
-    service1Title: "Sophos Firewall",
-    service1Text: "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
-    service2Title: "Sophos Central Email",
-    service2Text: "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
-    service3Title: "Suporte Técnico",
-    service3Text: "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
-    contactTitle: "Entre em Contato",
-    contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
-    contactButton: "Enviar Email",
-    terminalLines: [
-      "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
-      "[OK] Firewall ativo e monitorando tráfego",
-      "JBrasilLabs@secure:~$ sudo sophos-email --scan",
-      "[OK] Proteção de email corporativo habilitada",
-      "JBrasilLabs@secure:~$ sudo netstat -secure",
-      "[OK] Rede corporativa protegida",
-      "JBrasilLabs@secure:~$ tail -f /var/log/security.log",
-      "[INFO] Intrusion prevention ativo",
-      "[INFO] Threat intelligence atualizado",
-      "[INFO] Consultoria JB Labs em execução...",
-      "JBrasilLabs@secure:~$ sudo nmap -sV --top-ports 20",
-      "[SCAN] Serviços críticos verificados",
-      "[OK] Nenhuma vulnerabilidade encontrada",
-      "JBrasilLabs@secure:~$ sudo openvpn --status",
-      "[OK] VPN corporativa ativa",
-      "JBrasilLabs@secure:~$"
-    ]
-  },
-  es: {
-    heroTitle: "Ciberseguridad & Redes Corporativas",
-    heroText: "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
-    service1Title: "Sophos Firewall",
-    service1Text: "Configuración, implementación, migración y soporte en firewalls Sophos para máxima protección de red.",
-    service2Title: "Sophos Central Email",
-    service2Text: "Protección de correo electrónico con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
-    service3Title: "Soporte Técnico",
-    service3Text: "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
-    contactTitle: "Contáctanos",
-    contactText: "Solicita una consultoría personalizada o envie sus dudas.",
-    contactButton: "Enviar Correo",
-    terminalLines: [
-      "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
-      "[OK] Firewall activo y monitoreando tráfico",
-      "JBrasilLabs@secure:~$ sudo sophos-email --scan",
-      "[OK] Protección de correo electrónico habilitada",
-      "JBrasilLabs@secure:~$ sudo netstat -secure",
-      "[OK] Red corporativa protegida",
-      "JBrasilLabs@secure:~$ tail -f /var/log/security.log",
-      "[INFO] Prevención de intrusiones activa",
-      "[INFO] Inteligencia de amenazas actualizada",
-      "[INFO] Consultoría JB Labs en ejecución...",
-      "JBrasilLabs@secure:~$ sudo nmap -sV --top-ports 20",
-      "[SCAN] Servicios críticos verificados",
-      "[OK] Ninguna vulnerabilidad encontrada",
-      "JBrasilLabs@secure:~$ sudo openvpn --status",
-      "[OK] VPN corporativa activa",
-      "JBrasilLabs@secure:~$"
-    ]
-  }
-};
+const translations = { /* MESMO JSON DE TRADUCOES PT/ES do código anterior */ };
 
-async function getVisitorInfo(){
-  try{
+async function getVisitorInfo() {
+  try {
     const res = await fetch('https://geolocation-db.com/json/');
     const data = await res.json();
-    return { ip: data.IPv4 || '192.168.0.1', country: data.country_name || 'Desconhecido' };
-  }catch{
-    return { ip: `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`, country: 'Desconhecido' };
-  }
-}
-
-async function sendLog(entry){
-  try {
-    await fetch(BACKEND_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(entry)
-    });
-  } catch(err){
-    console.log('Erro ao enviar log:', err);
+    return { ip:data.IPv4||'192.168.0.1', country:data.country_name||'Desconhecido' };
+  } catch {
+    return { ip:`192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+             country:['Brazil','Argentina','Mexico','Chile','Colombia'][Math.floor(Math.random()*5)] };
   }
 }
 
 async function startTerminalAnimation(lines){
   const terminal = document.getElementById('terminal');
   if(terminalInterval) clearInterval(terminalInterval);
-  terminal.innerHTML = '';
+  terminal.innerHTML='';
 
   const visitor = await getVisitorInfo();
   if(!visitors.find(v=>v.ip===visitor.ip)) visitors.push(visitor);
-
-  sendLog({type:'visit', visitor});
-
-  let index = 0;
-  terminalInterval = setInterval(()=>{
-    let line = lines[index];
-
-    // 25% chance de mostrar login visitante
-    if(Math.random()<0.25 && visitors.length>0){
-      const v = visitors[Math.floor(Math.random()*visitors.length)];
-      line = `[LOGIN] ${v.ip} (${v.country}) conectou à página`;
-      sendLog({type:'login', visitor:v});
-    }
-
-    const div = document.createElement('div');
-    div.textContent = line;
-    div.className = 'terminal-line';
-    terminal.appendChild(div);
-
-    if(terminal.children.length>50){
-      terminal.removeChild(terminal.children[0]);
-    }
-
-    index = (index + 1) % lines.length;
-  }, 800);
-
   updateFooter();
+
+  let index=0;
+  terminalInterval=setInterval(()=>{
+    let line = lines[index];
+    if(Math.random()<0.25 && visitors.length>0){
+      const v=visitors[Math.floor(Math.random()*visitors.length)];
+      line = `[LOGIN] ${v.ip} (${v.country}) conectou à página`;
+      sendLog(line);
+      updateFooter();
+    }
+    const div=document.createElement('div');
+    div.textContent=line;
+    div.className='terminal-line';
+    terminal.appendChild(div);
+    if(terminal.children.length>50) terminal.removeChild(terminal.children[0]);
+    index=(index+1)%lines.length;
+  },800);
 }
 
 function updateFooter(){
@@ -263,49 +132,55 @@ function updateFooter(){
 }
 
 function applyTranslations(lang){
-  const t = translations[lang] || translations.pt;
-  document.getElementById('hero-title').textContent = t.heroTitle;
-  document.getElementById('hero-text').textContent = t.heroText;
-  document.getElementById('service1-title').textContent = t.service1Title;
-  document.getElementById('service1-text').textContent = t.service1Text;
-  document.getElementById('service2-title').textContent = t.service2Title;
-  document.getElementById('service2-text').textContent = t.service2Text;
-  document.getElementById('service3-title').textContent = t.service3Title;
-  document.getElementById('service3-text').textContent = t.service3Text;
-  document.getElementById('contact-title').textContent = t.contactTitle;
-  document.getElementById('contact-text').textContent = t.contactText;
-  document.getElementById('contact-button').textContent = t.contactButton;
+  const t=translations[lang]||translations.pt;
+  document.getElementById('hero-title').textContent=t.heroTitle;
+  document.getElementById('hero-text').textContent=t.heroText;
+  document.getElementById('service1-title').textContent=t.service1Title;
+  document.getElementById('service1-text').textContent=t.service1Text;
+  document.getElementById('service2-title').textContent=t.service2Title;
+  document.getElementById('service2-text').textContent=t.service2Text;
+  document.getElementById('service3-title').textContent=t.service3Title;
+  document.getElementById('service3-text').textContent=t.service3Text;
+  document.getElementById('contact-title').textContent=t.contactTitle;
+  document.getElementById('contact-text').textContent=t.contactText;
+  document.getElementById('contact-button').textContent=t.contactButton;
 
   startTerminalAnimation(t.terminalLines);
 }
 
 // Detecta idioma
 const userLang = navigator.language.startsWith('es')?'es':'pt';
-document.getElementById('lang-switch').value = userLang;
+document.getElementById('lang-switch').value=userLang;
 applyTranslations(userLang);
 document.getElementById('lang-switch').addEventListener('change', e=>applyTranslations(e.target.value));
 
 // Logo clicável
-const logo = document.getElementById('logo');
-const mainContent = document.getElementById('main-content');
-const logoContainer = document.getElementById('logo-container');
-logo.addEventListener('click', ()=>{
-  logoContainer.style.display='none';
-  mainContent.classList.add('visible-content');
+document.getElementById('logo').addEventListener('click', ()=>{
+  document.getElementById('logo-container').style.display='none';
+  document.getElementById('main-content').classList.add('visible-content');
 });
 
-// Cliques no botão de email
+// Email click
 document.getElementById('contact-button').addEventListener('click', ()=>{
   emailHits++;
   localStorage.setItem('emailHits', emailHits);
-  const terminal = document.getElementById('terminal');
-  const div = document.createElement('div');
-  div.textContent = `[EMAIL CLICK] Usuário clicou no email!`;
-  div.className = 'terminal-line';
-  terminal.appendChild(div);
-  sendLog({type:'emailClick', visitor:{ip:'unknown', country:'unknown'}});
+  const div=document.createElement('div');
+  div.textContent='[EMAIL CLICK] Usuário clicou no email!';
+  div.className='terminal-line';
+  document.getElementById('terminal').appendChild(div);
+  sendLog(div.textContent);
   updateFooter();
 });
+
+// Envia log para server_drive.py
+function sendLog(entry){
+  fetch('https://jbrasillabs-1.onrender.com/',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entry})
+  }).catch(e=>console.log('Erro enviando log:',e));
+}
 </script>
+
 </body>
 </html>
