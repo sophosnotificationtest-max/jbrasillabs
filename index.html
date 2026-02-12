@@ -92,9 +92,9 @@ footer { text-align:right; color:#00ff00; margin:0; z-index:5; position:fixed; b
 </div>
 
 <script>
-let terminal = document.getElementById('terminal');
+const terminal = document.getElementById('terminal');
 
-// Traduções
+// Traduções PT/ES
 const translations = {
   pt: {
     heroTitle: "Cybersegurança & Redes Corporativas",
@@ -145,7 +145,7 @@ function applyTranslations(lang){
   document.getElementById('contact-button').textContent = t.contactButton;
 }
 
-// Obtem IP e país do visitante
+// Função para buscar IP e país do visitante
 async function getVisitorInfo(){
   try{
     const res = await fetch('https://geolocation-db.com/json/');
@@ -157,45 +157,38 @@ async function getVisitorInfo(){
   }
 }
 
-// Função para enviar log e capturar erros
+// Função para enviar log ao servidor Flask
 function sendLog(entry){
   fetch('https://jbrasillabs-1.onrender.com/log',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({entry})
-  })
-  .then(async res=>{
-    const data = await res.json();
-    if(!res.ok){
-      console.error('[Erro Sheet/Drive]', res.status, data);
-    } else {
-      console.log('[SOC Log OK]', data);
-    }
-  })
-  .catch(e=>console.error('[Erro Fetch]', e));
+  }).catch(e=>console.log('Erro enviando log:',e));
 }
 
-// Logo clicável - abre conteúdo e envia log
+// Click no logo: mostra conteúdo e registra visita
 document.getElementById('logo').addEventListener('click', async ()=>{
   document.getElementById('logo-container').style.display='none';
   document.getElementById('main-content').classList.add('visible-content');
   document.getElementById('terminal-bg').style.opacity = 0.2;
 
   const visitor = await getVisitorInfo();
+  const logEntry = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
   const div = document.createElement('div');
-  div.textContent = `[SOC] ${visitor.ip} (${visitor.country}) entrou na página`;
+  div.textContent = logEntry;
   div.className = 'terminal-line';
   terminal.appendChild(div);
-  sendLog(div.textContent);
+  sendLog(logEntry);
 });
 
 // Click no botão de email
 document.getElementById('contact-button').addEventListener('click', ()=>{
+  const logEntry = '[SOC] Usuário clicou no email';
   const div = document.createElement('div');
-  div.textContent='[SOC] Usuário clicou no email';
-  div.className='terminal-line';
+  div.textContent = logEntry;
+  div.className = 'terminal-line';
   terminal.appendChild(div);
-  sendLog(div.textContent);
+  sendLog(logEntry);
 });
 </script>
 </body>
