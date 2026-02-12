@@ -1,17 +1,17 @@
 # server_drive.py
 from flask import Flask, request, jsonify
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
+from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
-import io
 import os
 
 app = Flask(__name__)
 
 # Configurações
 SERVICE_ACCOUNT_FILE = 'tactile-vial-373717-4b5adeb02171.json'  # credencial do Drive
-FOLDER_ID = '1ajsiTAC1bBkeyN0ixaGd9w25RmR42FHR'  # Substitua pela ID da pasta no Drive
+FOLDER_ID = '1ajsiTAC1bBkeyN0ixaGd9w25RmR42FHR'  # ID da pasta no Drive
 FILE_NAME = 'logs.txt'
+LOCAL_LOG_FILE = '/tmp/logs.txt'  # Render aceita /tmp para escrita
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 # Autenticação Google Drive
@@ -20,9 +20,15 @@ credentials = service_account.Credentials.from_service_account_file(
 )
 drive_service = build('drive', 'v3', credentials=credentials)
 
-def write_log_to_drive(entry):
-    """Cria ou atualiza logs.txt na pasta do Drive"""
+def write_log_local(entry):
+    """Salva log local temporário"""
+    with open(LOCAL_LOG_FILE, 'a', encoding='utf-8') as f:
+        f.write(entry + '\n')
+
+def upload_log_to_drive():
+    """Cria ou atualiza logs.txt no Drive"""
     try:
+        # Verifica se o arquivo já existe na pasta
         results = drive_service.files().list(
             q=f"name='{FILE_NAME}' and '{FOLDER_ID}' in parents",
             spaces='drive',
@@ -30,23 +36,16 @@ def write_log_to_drive(entry):
         ).execute()
         files = results.get('files', [])
 
-        content = entry + '\n'
-        media = MediaIoBaseUpload(io.BytesIO(content.encode('utf-8')), mimetype='text/plain')
+        media = MediaFileUpload(LOCAL_LOG_FILE, mimetype='text/plain', resumable=True)
 
         if files:
             file_id = files[0]['id']
-            # Baixa conteúdo atual
-            existing_file = drive_service.files().get_media(fileId=file_id).execute()
-            combined_content = existing_file + content.encode('utf-8')
-            media = MediaIoBaseUpload(io.BytesIO(combined_content), mimetype='text/plain')
             drive_service.files().update(fileId=file_id, media_body=media).execute()
-            print(f"[Drive] Log atualizado: {entry}")
+            print(f"[Drive] Log atualizado")
         else:
             file_metadata = {'name': FILE_NAME, 'parents': [FOLDER_ID]}
-            drive_service.files().create(
-                body=file_metadata, media_body=media, fields='id'
-            ).execute()
-            print(f"[Drive] Log criado: {entry}")
+            drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+            print(f"[Drive] Log criado")
     except Exception as e:
         print(f"[Erro Drive] {e}")
 
@@ -56,8 +55,15 @@ def receive_log():
     if not data or 'entry' not in data:
         return jsonify({'status': 'error', 'message': 'entry missing'}), 400
     entry = data['entry']
+
     print(f"[Render] Log recebido: {entry}")
-    write_log_to_drive(entry)
+
+    # 1️⃣ Salva localmente
+    write_log_local(entry)
+
+    # 2️⃣ Envia para o Drive
+    upload_log_to_drive()
+
     return jsonify({'status': 'ok', 'entry': entry}), 200
 
 @app.route('/')
