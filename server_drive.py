@@ -6,21 +6,26 @@ import geoip2.database
 import os
 from datetime import datetime
 
+# --- Configurações Flask ---
 app = Flask(__name__)
 CORS(app)
 
+# --- Google Sheets ---
 SERVICE_ACCOUNT_FILE = 'tactile-vial-373717-4b5adeb02171.json'
 SPREADSHEET_ID = '1WokAlWyXcYGlMjGWEWTlV9_Ej-GYJpuCTjOU8-r-HCQ'
 SHEET_NAME = 'Logs'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-GEOIP_DB = 'GeoLite2-Country.mmdb'  # arquivo que você já subiu
 
-# Inicializa o leitor GeoIP
-geo_reader = geoip2.database.Reader(GEOIP_DB)
+# --- GeoIP2 ---
+GEO_DB = 'GeoLite2-Country.mmdb'
+geo_reader = geoip2.database.Reader(GEO_DB)
 
-def append_log(entry):
+# --- Função para gravar log no Google Sheets ---
+def append_log(entry: str) -> bool:
     try:
-        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+        credentials = service_account.Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
         service = build('sheets', 'v4', credentials=credentials)
         timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
         values = [[timestamp, entry]]
@@ -34,30 +39,36 @@ def append_log(entry):
         ).execute()
         return True
     except Exception as e:
-        print(f"Erro Sheet: {e}")
+        print(f"Erro ao gravar no Google Sheets: {e}")
         return False
 
-def get_country_from_ip(ip):
-    try:
-        response = geo_reader.country(ip)
-        return response.country.name
-    except Exception:
-        return "Desconhecido"
-
+# --- Endpoint para receber logs ---
 @app.route('/log', methods=['POST'])
 def receive_log():
     data = request.get_json()
     entry = data.get('entry', 'Sem conteúdo')
+
+    # Captura do IP real (primeiro do X-Forwarded-For ou remoto)
+    x_forwarded_for = request.headers.get('X-Forwarded-For', '')
+    first_ip = x_forwarded_for.split(',')[0].strip() if x_forwarded_for else request.remote_addr
+
+    # Detecta país via GeoLite2
+    try:
+        response = geo_reader.country(first_ip)
+        country = response.country.name or "Desconhecido"
+    except Exception:
+        country = "Desconhecido"
+
+    # Monta log final
+    log_entry = f"[SOC] ACCESS GRANTED: {first_ip} ({country}, Detectado pelo Servidor)"
     
-    # Se o JS falhou ou IP não veio
-    if "Analisando" in entry or "Unknown" in entry:
-        real_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-        country = get_country_from_ip(real_ip)
-        entry = f"[SOC] ACCESS GRANTED: {real_ip} ({country}, Detectado pelo Servidor)"
+    # Envia para Google Sheets
+    append_log(log_entry)
 
-    append_log(entry)
-    return jsonify({'status': 'ok'}), 200
+    return jsonify({'status': 'ok', 'log': log_entry}), 200
 
+# --- Inicialização ---
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    print(f"Servidor rodando na porta {port}")
     app.run(host='0.0.0.0', port=port)
