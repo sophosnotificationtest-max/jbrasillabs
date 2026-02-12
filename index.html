@@ -4,73 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JBrasil Labs - Cybersegurança & Redes</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" type="image/png">
-
     <style>
-        body { font-family: 'Orbitron', sans-serif; background: black; color: #00ff00; margin: 0; overflow-x: hidden; }
+        body { font-family: 'Orbitron', sans-serif; background: #000; color: #00ff00; margin: 0; overflow-x: hidden; }
         
-        /* Fundo Matrix */
-        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
-
         /* Arcade Header */
-        #arcade-header { width: 100%; height: 180px; background: #050505; border-bottom: 2px solid #00ff00; position: relative; overflow: hidden; cursor: crosshair; }
+        #arcade-header { width: 100%; height: 200px; background: #050505; border-bottom: 2px solid #00ff00; position: relative; overflow: hidden; cursor: crosshair; }
         #game-canvas { width: 100%; height: 100%; }
-        .arcade-ui { position: absolute; top: 10px; left: 10px; font-family: 'Press Start 2P', cursive; font-size: 10px; pointer-events: none; z-index: 10; color: #00ff00; line-height: 1.5; }
+        .arcade-ui { position: absolute; top: 15px; left: 15px; font-family: 'Press Start 2P', cursive; font-size: 10px; color: #00ff00; line-height: 1.8; pointer-events: none; z-index: 20; text-shadow: 0 0 5px #000; }
+        
+        /* Footer Fixo na Direita */
+        #footer-fixed { position: fixed; bottom: 15px; right: 15px; font-size: 10px; color: #006600; z-index: 100; font-family: monospace; letter-spacing: 1px; pointer-events: none; }
 
-        /* Requadro de Boas-Vindas (Monitor CRT) */
-        .welcome-box { 
-            border: 2px solid #00ff00; 
-            padding: 40px; 
-            background: rgba(0, 20, 0, 0.8); 
-            box-shadow: inset 0 0 15px #00ff00, 0 0 20px #00ff0055;
-            position: relative;
-            max-width: 800px;
-            margin: 40px auto;
-            text-align: center;
-        }
-        .welcome-box::before { content: "SYSTEM_ACCESS_OK"; position: absolute; top: -12px; left: 20px; background: black; padding: 0 10px; font-size: 10px; color: #00ff00; }
+        /* Requadro de Boas-Vindas */
+        .welcome-box { border: 2px solid #00ff00; padding: 40px; background: rgba(0, 15, 0, 0.9); box-shadow: inset 0 0 20px #00ff0033, 0 0 30px #00ff0022; position: relative; max-width: 800px; margin: 60px auto; text-align: center; }
+        .welcome-box::after { content: "ESTADO: PROTEGIDO"; position: absolute; bottom: -10px; right: 20px; background: #000; padding: 0 10px; font-size: 9px; color: #00ff00; border: 1px solid #00ff00; }
 
         /* Logo e Entrada */
         .logo-container { position: fixed; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; transition: 0.8s; }
-        .logo-container img { width: 280px; cursor: pointer; filter: drop-shadow(0 0 15px #00ff00); }
+        .logo-container img { width: 280px; cursor: pointer; filter: drop-shadow(0 0 15px #00ff00); transition: 0.3s; }
+        .logo-container img:hover { transform: scale(1.05); filter: drop-shadow(0 0 25px #00ff00); }
         
         .hidden-content { display: none; opacity: 0; }
-        .visible-content { display: block; opacity: 1; animation: fadeIn 1s forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .visible-content { display: block; opacity: 1; animation: fadeIn 1.2s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Cards e Botões */
-        .glow-card { border: 1px solid #00ff0033; background: rgba(0,0,0,0.9); transition: 0.3s; backdrop-filter: blur(5px); }
-        .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 25px rgba(0,255,0,0.4); transform: translateY(-5px); }
-        .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; text-decoration: none; display: inline-block; }
-        .neon-button:hover { background: #00ff00; color: black; box-shadow: 0 0 30px #00ff00; }
+        /* Estilos de Componentes */
+        .glow-card { border: 1px solid #00ff0022; background: rgba(5, 5, 5, 0.8); transition: 0.4s; backdrop-filter: blur(10px); }
+        .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 20px rgba(0,255,0,0.2); transform: translateY(-5px); }
+        .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 40px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; display: inline-block; background: transparent; }
+        .neon-button:hover { background: #00ff00; color: #000; box-shadow: 0 0 30px #00ff00; }
         
-        /* Terminal */
-        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; max-height: 180px; overflow-y: auto; width: 90%; pointer-events: none; }
-        .terminal-line { font-size: 12px; margin-bottom: 5px; background: rgba(0,0,0,0.8); padding: 4px 8px; border-left: 3px solid #00ff00; animation: fadeInUp 0.3s forwards; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Terminal Inferior */
+        #terminal { position: fixed; bottom: 15px; left: 15px; font-family: 'Courier New', monospace; z-index: 60; color: #00ff00; max-height: 180px; overflow-y: auto; width: 60%; pointer-events: none; }
+        .terminal-line { font-size: 12px; margin-bottom: 4px; background: rgba(0,0,0,0.85); padding: 5px 10px; border-left: 3px solid #00ff00; animation: scanline 0.2s ease-out; }
+        @keyframes scanline { from { opacity: 0; } to { opacity: 1; } }
 
-        #lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; font-size: 12px; border-radius: 4px; }
+        #lang-switch { position: fixed; top: 20px; right: 20px; background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 6px 12px; z-index: 110; cursor: pointer; border-radius: 2px; font-family: 'Orbitron'; font-size: 11px; }
     </style>
 </head>
 <body>
 
-<canvas id="matrix-canvas"></canvas>
+<div id="footer-fixed">© 2026 JBrasil Labs. Todos os direitos reservados.</div>
 
 <div id="arcade-header">
     <div class="arcade-ui">
-        SCORE: <span id="score">0</span> | LIVES: <span id="lives">3</span><br>
-        <span style="font-size: 8px; color: #888;">[ESPAÇO] DISPARAR | [MOUSE] MIRAR</span>
+        DEFESA ATIVA: <span id="score">0</span> pts<br>
+        SISTEMA: <span id="lives">3</span> VIDAS<br>
+        <span style="font-size: 8px; color: #008800; margin-top: 10px; display: block;">[ESPAÇO] PARA DISPARAR PULSO</span>
     </div>
     <canvas id="game-canvas"></canvas>
 </div>
 
 <div class="logo-container" id="logo-wrap">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
-    <p class="mt-4 animate-pulse text-xs tracking-widest uppercase">Clique no logo para autenticar</p>
+    <p class="mt-6 animate-pulse text-xs tracking-[0.3em] uppercase">Autenticar Sistema</p>
 </div>
 
 <select id="lang-switch">
@@ -80,150 +69,125 @@
 
 <div id="terminal"></div>
 
-<div id="main-content" class="hidden-content pt-10 pb-20">
+<div id="main-content" class="hidden-content pt-10 pb-32">
     <div class="welcome-box">
-        <h2 id="hero-title" class="text-3xl md:text-5xl font-bold text-green-400 mb-6 uppercase"></h2>
-        <p id="hero-text" class="text-lg text-gray-300 max-w-2xl mx-auto"></p>
+        <h2 id="hero-title" class="text-3xl md:text-5xl font-bold text-green-400 mb-6 uppercase tracking-tight"></h2>
+        <p id="hero-text" class="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"></p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 mt-12">
-        <div class="glow-card p-8 rounded">
-            <h3 id="service1-title" class="text-green-300 font-bold mb-4 text-xl"></h3>
-            <p id="service1-text" class="text-gray-400 text-sm leading-relaxed"></p>
+        <div class="glow-card p-10 rounded-sm">
+            <h3 id="service1-title" class="text-green-300 font-bold mb-4 text-xl tracking-widest uppercase"></h3>
+            <p id="service1-text" class="text-gray-500 text-sm leading-relaxed"></p>
         </div>
-        <div class="glow-card p-8 rounded">
-            <h3 id="service2-title" class="text-green-300 font-bold mb-4 text-xl"></h3>
-            <p id="service2-text" class="text-gray-400 text-sm leading-relaxed"></p>
+        <div class="glow-card p-10 rounded-sm">
+            <h3 id="service2-title" class="text-green-300 font-bold mb-4 text-xl tracking-widest uppercase"></h3>
+            <p id="service2-text" class="text-gray-500 text-sm leading-relaxed"></p>
         </div>
-        <div class="glow-card p-8 rounded">
-            <h3 id="service3-title" class="text-green-300 font-bold mb-4 text-xl"></h3>
-            <p id="service3-text" class="text-gray-400 text-sm leading-relaxed"></p>
+        <div class="glow-card p-10 rounded-sm">
+            <h3 id="service3-title" class="text-green-300 font-bold mb-4 text-xl tracking-widest uppercase"></h3>
+            <p id="service3-text" class="text-gray-500 text-sm leading-relaxed"></p>
         </div>
     </div>
 
-    <div class="text-center mt-20">
-        <h2 id="contact-title" class="text-3xl text-green-400 mb-4 font-bold"></h2>
-        <p id="contact-text" class="text-gray-300 mb-8"></p>
-        <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="neon-button rounded"></a>
+    <div class="text-center mt-24">
+        <h2 id="contact-title" class="text-3xl text-green-400 mb-6 font-bold uppercase"></h2>
+        <p id="contact-text" class="text-gray-400 mb-10"></p>
+        <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="neon-button"></a>
     </div>
-    
-    <footer id="footer-text" class="text-center mt-20 text-xs text-green-900"></footer>
 </div>
 
 <script>
-// --- CONFIGURAÇÕES DO JOGO ---
+// --- LÓGICA DO JOGO ---
 const gCanvas = document.getElementById('game-canvas');
 const gCtx = gCanvas.getContext('2d');
 let score = 0, lives = 3, enemies = [], bullets = [];
-let mouseX = window.innerWidth / 2;
+let mX = window.innerWidth / 2;
 
-function resizeGame() { gCanvas.width = gCanvas.offsetWidth; gCanvas.height = gCanvas.offsetHeight; }
-window.addEventListener('resize', resizeGame); resizeGame();
+function resize() { gCanvas.width = window.innerWidth; gCanvas.height = 200; }
+window.addEventListener('resize', resize); resize();
 
-gCanvas.addEventListener('mousemove', (e) => {
-    const rect = gCanvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-});
+window.addEventListener('mousemove', (e) => { mX = e.clientX; });
 
 class Enemy {
     constructor() {
-        this.x = Math.random() * (gCanvas.width - 40) + 20;
+        this.x = Math.random() * (gCanvas.width - 60) + 30;
         this.y = -20;
-        this.speed = 0.7 + Math.random() * 1.3;
+        this.speed = 0.8 + Math.random() * 1.5;
     }
+    update() { this.y += this.speed; }
     draw() {
-        gCtx.font = "20px monospace";
-        gCtx.fillText("👾", this.x - 10, this.y);
-        this.y += this.speed;
+        gCtx.font = "24px serif";
+        gCtx.fillText("👾", this.x - 12, this.y);
     }
 }
 
 class Bullet {
-    constructor(x) {
-        this.x = x;
-        this.y = gCanvas.height - 10;
-        this.speed = 8;
-    }
+    constructor(x) { this.x = x; this.y = 190; this.speed = 10; }
+    update() { this.y -= this.speed; }
     draw() {
         gCtx.fillStyle = "#00ff00";
-        gCtx.fillRect(this.x, this.y, 2, 12);
-        this.y -= this.speed;
+        gCtx.fillRect(this.x - 1, this.y, 3, 15);
     }
 }
 
-// Disparo (Espaço ou Clique)
-window.addEventListener('keydown', (e) => { if (e.code === "Space") { e.preventDefault(); bullets.push(new Bullet(mouseX)); } });
-gCanvas.addEventListener('mousedown', () => { bullets.push(new Bullet(mouseX)); });
+window.addEventListener('keydown', (e) => { 
+    if(e.code === "Space") { e.preventDefault(); bullets.push(new Bullet(mX)); }
+});
+gCanvas.addEventListener('mousedown', () => bullets.push(new Bullet(mX)));
 
-function gameLoop() {
+function game() {
     gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-    if (Math.random() < 0.02) enemies.push(new Enemy());
+    
+    if(Math.random() < 0.02) enemies.push(new Enemy());
 
     bullets.forEach((b, bi) => {
-        b.draw();
-        if (b.y < 0) bullets.splice(bi, 1);
-        enemies.forEach((en, ei) => {
-            if (Math.hypot(en.x - b.x, en.y - b.y) < 20) {
+        b.update(); b.draw();
+        if(b.y < 0) bullets.splice(bi, 1);
+        enemies.forEach((e, ei) => {
+            if(Math.hypot(e.x - b.x, e.y - b.y) < 25) {
                 enemies.splice(ei, 1); bullets.splice(bi, 1);
                 score += 10; document.getElementById('score').innerText = score;
             }
         });
     });
 
-    enemies.forEach((en, i) => {
-        en.draw();
-        if (en.y > gCanvas.height) {
+    enemies.forEach((e, i) => {
+        e.update(); e.draw();
+        if(e.y > 200) {
             enemies.splice(i, 1); lives--;
             document.getElementById('lives').innerText = lives;
-            if(lives <= 0) { lives = 3; score = 0; document.getElementById('score').innerText = "0"; logTerminal("[ALERTA] DEFESAS REINICIADAS"); }
+            if(lives <= 0) { lives = 3; score = 0; document.getElementById('score').innerText = "0"; logTerminal("[!] BRECHA DETECTADA - SISTEMA REINICIADO"); }
         }
     });
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(game);
 }
-gameLoop();
-
-// --- MATRIX BACKGROUND ---
-const mCanvas = document.getElementById('matrix-canvas');
-const mCtx = mCanvas.getContext('2d');
-mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
-const chars = "01010101SECUREJBRLABS01";
-const drops = Array(Math.floor(mCanvas.width / 16)).fill(1);
-function drawMatrix() {
-    mCtx.fillStyle = "rgba(0, 0, 0, 0.05)"; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-    mCtx.fillStyle = "#0F0"; mCtx.font = "16px monospace";
-    drops.forEach((y, i) => {
-        const text = chars.charAt(Math.floor(Math.random() * chars.length));
-        mCtx.fillText(text, i * 16, y * 16);
-        if (y * 16 > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-    });
-}
-setInterval(drawMatrix, 35);
+game();
 
 // --- TRADUÇÕES ---
 const translations = {
     pt: {
-        "hero-title": "Bem-vindo à JBrasil Labs",
-        "hero-text": "Especialistas em Sophos Firewall e proteção de dados corporativos para toda a América Latina.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuração, migração e suporte especializado em firewalls de próxima geração.",
-        "service2-title": "Sophos Email", "service2-text": "Proteção avançada contra phishing e spam com Sophos Central Email Advanced.",
-        "service3-title": "Suporte Premium", "service3-text": "Consultoria remota 24/7 para infraestruturas críticas e redes corporativas.",
-        "contact-title": "Protocolo de Contato", "contact-text": "Inicie uma comunicação segura com nossos especialistas.",
-        "contact-button": "Abrir Ticket", "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
+        "hero-title": "JBrasil Labs - Cybersegurança",
+        "hero-text": "Proteção de dados e infraestrutura Sophos para o mercado corporativo latino-americano.",
+        "service1-title": "Sophos Firewall", "service1-text": "Implementação e suporte para máxima segurança perimetral.",
+        "service2-title": "Sophos Email", "service2-text": "Filtragem avançada e proteção contra phishing.",
+        "service3-title": "Suporte SOC", "service3-text": "Monitoramento e suporte remoto especializado 24/7.",
+        "contact-title": "Entrar em Contato", "contact-text": "Pronto para proteger sua rede?",
+        "contact-button": "Enviar E-mail"
     },
     es: {
-        "hero-title": "Bienvenidos a JBrasil Labs",
-        "hero-text": "Expertos en Sophos Firewall y protección de datos corporativos para toda Latinoamérica.",
-        "service1-title": "Sophos Firewall", "service1-text": "Configuración, migración y soporte especializado en firewalls de última generación.",
-        "service2-title": "Sophos Email", "service2-text": "Protección avanzada contra phishing con Sophos Central Email Advanced.",
-        "service3-title": "Soporte Premium", "service3-text": "Consultoría remota 24/7 para infraestructuras críticas y redes corporativas.",
-        "contact-title": "Protocolo de Contacto", "contact-text": "Inicie una comunicación segura con nuestros expertos.",
-        "contact-button": "Abrir Ticket", "footer-text": "© 2026 JBrasil Labs. Todos los derechos reservados."
+        "hero-title": "JBrasil Labs - Ciberseguridad",
+        "hero-text": "Protección de datos e infraestructura Sophos para el mercado corporativo latinoamericano.",
+        "service1-title": "Sophos Firewall", "service1-text": "Implementación y soporte para máxima seguridad perimetral.",
+        "service2-title": "Sophos Email", "service2-text": "Filtrado avanzado y protección contra phishing.",
+        "service3-title": "Soporte SOC", "service3-text": "Monitoreo y soporte remoto especializado 24/7.",
+        "contact-title": "Contactar", "contact-text": "¿Listo para proteger su red?",
+        "contact-button": "Enviar Correo"
     }
 };
 
-function applyLang(lang) {
-    const t = translations[lang];
+function applyLang(l) {
+    const t = translations[l];
     Object.keys(t).forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t[id]; });
 }
 applyLang(navigator.language.startsWith('es') ? 'es' : 'pt');
@@ -237,7 +201,7 @@ function logTerminal(msg) {
     const term = document.getElementById('terminal');
     term.appendChild(p);
     term.scrollTop = term.scrollHeight;
-    setTimeout(() => p.remove(), 8000);
+    setTimeout(() => p.remove(), 10000);
 }
 
 document.getElementById('main-logo').addEventListener('click', async () => {
@@ -248,18 +212,18 @@ document.getElementById('main-logo').addEventListener('click', async () => {
     }, 800);
 
     logTerminal("AUTENTICANDO CREDENCIAIS...");
-    logTerminal("LOCALIZANDO TERMINAL REMOTO...");
+    logTerminal("CONSULTANDO BASE GEO-IP...");
 
     try {
         const info = await fetch('https://jbrasillabs-1.onrender.com/geoip').then(r => r.json());
-        logTerminal(`[SOC] ACESSO CONCEDIDO: ${info.entry}`);
+        logTerminal(`[SOC] ACESSO PERMITIDO: ${info.entry}`);
         fetch('https://jbrasillabs-1.onrender.com/log', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ entry: info.entry })
         });
     } catch {
-        logTerminal("[SOC] ACESSO CONCEDIDO: ORIGEM EXTERNA");
+        logTerminal("[SOC] ACESSO PERMITIDO: IDENTIDADE OCULTA");
     }
 });
 </script>
