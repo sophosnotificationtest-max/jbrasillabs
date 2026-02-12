@@ -17,10 +17,10 @@ SHEET_NAME = 'Logs'
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # --- GeoIP2 ---
+# Certifique-se de que o arquivo GeoLite2-Country.mmdb está na mesma pasta no Render
 GEO_DB = 'GeoLite2-Country.mmdb'
 geo_reader = geoip2.database.Reader(GEO_DB)
 
-# --- Função para gravar log no Google Sheets ---
 def append_log(entry: str) -> bool:
     try:
         credentials = service_account.Credentials.from_service_account_file(
@@ -42,33 +42,43 @@ def append_log(entry: str) -> bool:
         print(f"Erro ao gravar no Google Sheets: {e}")
         return False
 
+# --- NOVO: Endpoint para o Frontend consultar o IP ---
+@app.route('/geoip', methods=['GET'])
+def get_geoip():
+    # Pega o IP real do visitante
+    x_forwarded_for = request.headers.get('X-Forwarded-For', '')
+    first_ip = x_forwarded_for.split(',')[0].strip() if x_forwarded_for else request.remote_addr
+    
+    try:
+        response = geo_reader.country(first_ip)
+        country = response.country.name or "Desconhecido"
+    except:
+        country = "Desconhecido"
+    
+    # Retorna o formato que o seu JavaScript espera
+    return jsonify({'entry': f"{first_ip} ({country})"}), 200
+
 # --- Endpoint para receber logs ---
 @app.route('/log', methods=['POST'])
 def receive_log():
     data = request.get_json()
-    entry = data.get('entry', 'Sem conteúdo')
+    # Se o front enviar a mensagem, gravamos ela. Se não, pegamos o IP aqui.
+    entry = data.get('entry', 'Acesso detectado')
 
-    # Captura do IP real (primeiro do X-Forwarded-For ou remoto)
     x_forwarded_for = request.headers.get('X-Forwarded-For', '')
     first_ip = x_forwarded_for.split(',')[0].strip() if x_forwarded_for else request.remote_addr
 
-    # Detecta país via GeoLite2
     try:
         response = geo_reader.country(first_ip)
         country = response.country.name or "Desconhecido"
-    except Exception:
+    except:
         country = "Desconhecido"
 
-    # Monta log final
-    log_entry = f"[SOC] ACCESS GRANTED: {first_ip} ({country}, Detectado pelo Servidor)"
-    
-    # Envia para Google Sheets
+    log_entry = f"[SOC] {entry} | IP: {first_ip} ({country})"
     append_log(log_entry)
 
     return jsonify({'status': 'ok', 'log': log_entry}), 200
 
-# --- Inicialização ---
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    print(f"Servidor rodando na porta {port}")
     app.run(host='0.0.0.0', port=port)
