@@ -20,7 +20,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Fundo animado estilo terminal */
 .terminal-bg {
   position: fixed;
   top: 0; left: 0;
@@ -60,7 +59,6 @@ footer {
   font-size: 14px;
 }
 
-/* Seletor idioma */
 #lang-switch {
   position: fixed;
   top: 10px;
@@ -74,7 +72,6 @@ footer {
   cursor: pointer;
 }
 
-/* Terminal animado no canto esquerdo */
 #terminal {
   position: fixed;
   bottom: 10px;
@@ -143,11 +140,16 @@ footer {
   </section>
 </div>
 
-<footer id="visitor-counter">Visitantes conectados: 0</footer>
+<footer id="visitor-counter">Visitantes conectados: 0 | Total visitas: 0 | Cliques email: 0</footer>
 
 <script>
 let terminalInterval;
 let visitors = [];
+let emailHits = parseInt(localStorage.getItem('emailHits') || '0');
+
+// Contagem persistente de visitantes
+let totalVisits = parseInt(localStorage.getItem('totalVisits') || '0') + 1;
+localStorage.setItem('totalVisits', totalVisits);
 
 const translations = {
   pt: {
@@ -162,7 +164,6 @@ const translations = {
     contactTitle: "Entre em Contato",
     contactText: "Solicite uma consultoria personalizada ou tire suas dúvidas.",
     contactButton: "Enviar Email",
-    footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
     terminalLines: [
       "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
       "[OK] Firewall ativo e monitorando tráfego",
@@ -194,7 +195,6 @@ const translations = {
     contactTitle: "Contáctanos",
     contactText: "Solicita una consultoría personalizada o envie sus dudas.",
     contactButton: "Enviar Correo",
-    footerText: "© 2026 JBrasil Labs. Todos os direitos reservados.",
     terminalLines: [
       "JBrasilLabs@secure:~$ sudo sophos-firewall --status",
       "[OK] Firewall activo y monitoreando tráfico",
@@ -237,16 +237,18 @@ async function startTerminalAnimation(lines){
 
   const visitor = await getVisitorInfo();
   if(!visitors.find(v => v.ip === visitor.ip)) visitors.push(visitor);
-  document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
+
+  updateFooter();
 
   let index = 0;
   terminalInterval = setInterval(()=>{
     let line = lines[index];
 
+    // 25% chance de mostrar um login de visitante
     if(Math.random() < 0.25 && visitors.length > 0){
       const v = visitors[Math.floor(Math.random()*visitors.length)];
       line = `[LOGIN] ${v.ip} (${v.country}) conectou à página`;
-      document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
+      updateFooter();
     }
 
     const div = document.createElement('div');
@@ -262,6 +264,11 @@ async function startTerminalAnimation(lines){
   }, 800);
 }
 
+function updateFooter(){
+  document.getElementById('visitor-counter').textContent =
+    `Visitantes conectados: ${visitors.length} | Total visitas: ${totalVisits} | Cliques email: ${emailHits}`;
+}
+
 function applyTranslations(lang){
   const t = translations[lang] || translations.pt;
   document.getElementById('hero-title').textContent = t.heroTitle;
@@ -275,7 +282,6 @@ function applyTranslations(lang){
   document.getElementById('contact-title').textContent = t.contactTitle;
   document.getElementById('contact-text').textContent = t.contactText;
   document.getElementById('contact-button').textContent = t.contactButton;
-  document.getElementById('visitor-counter').textContent = `Visitantes conectados: ${visitors.length}`;
 
   startTerminalAnimation(t.terminalLines);
 }
@@ -293,6 +299,18 @@ const logoContainer = document.getElementById('logo-container');
 logo.addEventListener('click', ()=>{
   logoContainer.style.display='none';
   mainContent.classList.add('visible-content');
+});
+
+// Captura click no botão de email
+document.getElementById('contact-button').addEventListener('click', ()=>{
+  emailHits++;
+  localStorage.setItem('emailHits', emailHits);
+  const terminal = document.getElementById('terminal');
+  const div = document.createElement('div');
+  div.textContent = `[EMAIL CLICK] Usuário clicou no email!`;
+  div.className = 'terminal-line';
+  terminal.appendChild(div);
+  updateFooter();
 });
 </script>
 </body>
