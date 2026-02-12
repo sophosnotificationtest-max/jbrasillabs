@@ -7,32 +7,30 @@ import os
 app = Flask(__name__)
 
 # -----------------------------
-# Configurações Google Sheets
+# Configurações
 # -----------------------------
-SERVICE_ACCOUNT_FILE = 'tactile-vial-373717-4b5adeb02171.json'  # Substitua pelo seu JSON
-SHEET_ID = '1WokAlWyXcYGlMjGWEWTlV9_Ej-GYJpuCTjOU8-r-HCQ'       # ID da planilha
-SHEET_NAME = 'Logs'                                             # Aba da planilha
+SERVICE_ACCOUNT_FILE = 'tactile-vial-373717-4b5adeb02171.json'  # sua credencial JSON
+SPREADSHEET_ID = '1WokAlWyXcYGlMjGWEWTlV9_Ej-GYJpuCTjOU8-r-HCQ'  # ID do Sheet
+SHEET_RANGE = 'Logs!A1'  # sempre apontar para a célula inicial A1
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-# Autenticação
+# Autenticação Google Sheets
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES
 )
-sheets_service = build('sheets', 'v4', credentials=credentials)
-sheet = sheets_service.spreadsheets()
+sheet_service = build('sheets', 'v4', credentials=credentials).spreadsheets()
 
 # -----------------------------
 # Função para enviar log
 # -----------------------------
 def write_log_to_sheet(entry: str):
-    """Adiciona um log como nova linha na aba Logs"""
     try:
-        body = {"values": [[entry]]}  # Cada log é uma linha
-        sheet.values().append(
-            spreadsheetId=SHEET_ID,
-            range=f"{SHEET_NAME}!A:A",           # Coluna A da aba Logs
-            valueInputOption="RAW",
-            insertDataOption="INSERT_ROWS",
+        body = {'values': [[entry]]}  # cada entry em uma nova linha
+        sheet_service.values().append(
+            spreadsheetId=SPREADSHEET_ID,
+            range=SHEET_RANGE,
+            valueInputOption='RAW',      # mantém o texto como está
+            insertDataOption='INSERT_ROWS',  # adiciona linha abaixo
             body=body
         ).execute()
         print(f"[Sheet] Log enviado: {entry}")
@@ -51,9 +49,7 @@ def receive_log():
     entry = data['entry']
     print(f"[Render] Log recebido: {entry}")
 
-    # Envia para Google Sheets
     write_log_to_sheet(entry)
-
     return jsonify({'status': 'ok', 'entry': entry}), 200
 
 @app.route('/')
@@ -61,7 +57,7 @@ def index():
     return "JBrasil Labs Logging Server Active"
 
 # -----------------------------
-# Inicialização
+# Inicia servidor
 # -----------------------------
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
