@@ -13,33 +13,37 @@
     <style>
         body { font-family: 'Orbitron', sans-serif; background: black; color: #00ff00; margin: 0; overflow-x: hidden; }
         
+        /* Canvas de Fundo */
+        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
+
         .logo-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; transition: 0.8s; }
-        .logo-container img { width: 300px; cursor: pointer; filter: drop-shadow(0 0 10px #00ff00); }
+        .logo-container img { width: 300px; cursor: pointer; filter: drop-shadow(0 0 15px #00ff00); }
         
         .hidden-content { opacity: 0; visibility: hidden; pointer-events: none; }
         .visible-content { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 1.5s; }
-
-        .glow-card { border: 1px solid #00ff0033; background: rgba(0,0,0,0.8); transition: 0.3s; }
-        .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 20px rgba(0,255,0,0.3); transform: translateY(-5px); }
-
-        .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; }
+        
+        .glow-card { border: 1px solid #00ff0033; background: rgba(0,0,0,0.9); transition: 0.3s; backdrop-filter: blur(5px); }
+        .glow-card:hover { border-color: #00ff00; box-shadow: 0 0 25px rgba(0,255,0,0.4); transform: translateY(-5px); }
+        
+        .neon-button { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; padding: 15px 30px; text-transform: uppercase; font-weight: bold; transition: 0.3s; cursor: pointer; text-decoration: none; display: inline-block; }
         .neon-button:hover { background: #00ff00; color: black; box-shadow: 0 0 30px #00ff00; }
-
+        
         #terminal { position: fixed; bottom: 15px; left: 15px; font-family: monospace; z-index: 60; color: #00ff00; pointer-events: none; }
-        .terminal-line { font-size: 13px; margin-bottom: 5px; animation: fadeInUp 0.5s forwards; }
+        .terminal-line { font-size: 13px; margin-bottom: 5px; animation: fadeInUp 0.5s forwards; background: rgba(0,0,0,0.5); padding: 2px 5px; }
+        
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        #lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; }
-        .terminal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.03; z-index: -1; pointer-events: none; word-break: break-all; font-family: monospace; }
+        
+        #lang-switch { position: fixed; top: 15px; right: 15px; background: black; color: #00ff00; border: 1px solid #00ff00; padding: 5px; z-index: 100; cursor: pointer; border-radius: 4px; }
+        footer { text-align: center; font-size: 12px; color: #00ff00; padding: 40px 0; width: 100%; }
     </style>
 </head>
 <body>
 
-<div class="terminal-bg" id="matrix-bg"></div>
+<canvas id="matrix-canvas"></canvas>
 
 <div class="logo-container" id="logo-wrap">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
-    <p class="mt-4 animate-pulse text-xs">CLIQUE PARA ACESSAR O TERMINAL</p>
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
+    <p class="mt-4 animate-pulse text-xs tracking-widest">CLIQUE PARA ACESSAR O TERMINAL</p>
 </div>
 
 <select id="lang-switch">
@@ -51,65 +55,115 @@
 
 <div id="main-content" class="hidden-content pt-20">
     <section class="flex flex-col items-center text-center px-4 mt-20">
-        <h2 id="hero-title" class="text-4xl md:text-6xl font-bold text-green-400 mb-6"></h2>
-        <p id="hero-text" class="text-lg text-gray-300 max-w-2xl"></p>
+        <h2 id="hero-title" class="text-4xl md:text-6xl font-bold text-green-400 mb-6 uppercase tracking-tighter"></h2>
+        <p id="hero-text" class="text-lg md:text-xl text-gray-300 max-w-2xl"></p>
     </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6 mt-16">
-        <div class="glow-card p-6 rounded"><h3 id="service1-title" class="text-green-300 font-bold mb-2"></h3><p id="service1-text" class="text-sm text-gray-400"></p></div>
-        <div class="glow-card p-6 rounded"><h3 id="service2-title" class="text-green-300 font-bold mb-2"></h3><p id="service2-text" class="text-sm text-gray-400"></p></div>
-        <div class="glow-card p-6 rounded"><h3 id="service3-title" class="text-green-300 font-bold mb-2"></h3><p id="service3-text" class="text-sm text-gray-400"></p></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-6 mt-16">
+        <div class="glow-card p-8 rounded">
+            <h3 id="service1-title" class="text-green-300 font-bold mb-4 text-xl"></h3>
+            <p id="service1-text" class="text-gray-400 leading-relaxed"></p>
+        </div>
+        <div class="glow-card p-8 rounded">
+            <h3 id="service2-title" class="text-green-300 font-bold mb-4 text-xl"></h3>
+            <p id="service2-text" class="text-gray-400 leading-relaxed"></p>
+        </div>
+        <div class="glow-card p-8 rounded">
+            <h3 id="service3-title" class="text-green-300 font-bold mb-4 text-xl"></h3>
+            <p id="service3-text" class="text-gray-400 leading-relaxed"></p>
+        </div>
     </div>
 
-    <div class="text-center mt-20 pb-20">
-        <h2 id="contact-title" class="text-3xl text-green-400 mb-6"></h2>
-        <p id="contact-text" class="text-gray-300 mb-8"></p>
+    <div class="text-center mt-24 pb-10">
+        <h2 id="contact-title" class="text-4xl text-green-400 mb-6 font-bold"></h2>
+        <p id="contact-text" class="text-gray-300 mb-10 text-lg"></p>
         <a id="contact-button" href="mailto:jonas.brasil@jbrasillabs.com.br" class="neon-button rounded"></a>
     </div>
+
+    <footer id="footer-text"></footer>
 </div>
 
 <script>
-// Matrix Background Effect
-const bg = document.getElementById('matrix-bg');
-bg.innerHTML = "01".repeat(1000);
+// --- ANIMAÇÃO MATRIX (CYBERSECURITY) ---
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0F0";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
+}
+setInterval(drawMatrix, 35);
+
+// --- TRADUÇÕES E TEXTOS ---
 const translations = {
     pt: {
-        heroTitle: "Cybersegurança & Redes",
-        heroText: "Proteção avançada com Sophos Firewall e suporte especializado.",
-        service1Title: "Sophos Firewall", service1Text: "Configuração e migração para máxima proteção de rede.",
-        service2Title: "Sophos Central Email", service2Text: "Proteção contra spam e ameaças avançadas de email.",
-        service3Title: "Suporte Técnico", service3Text: "Consultoria para toda a América Latina.",
-        contactTitle: "Contato", contactText: "Fale com nossos especialistas.", contactButton: "Enviar Email"
+        "hero-title": "Cybersegurança & Redes Corporativas",
+        "hero-text": "Proteção avançada com Sophos Firewall, Sophos Central Email e suporte técnico especializado.",
+        "service1-title": "Sophos Firewall",
+        "service1-text": "Configuração, implementação, migração e suporte em firewalls Sophos para máxima proteção de rede.",
+        "service2-title": "Sophos Central Email",
+        "service2-text": "Proteção de email com políticas de segurança, filtragem e anti-spam avançado com solução Sophos Email Advanced.",
+        "service3-title": "Suporte Técnico",
+        "service3-text": "Consultoria e suporte remoto ou presencial para redes corporativas e infraestrutura para toda Latino América.",
+        "contact-title": "Entre em Contato",
+        "contact-text": "Solicite uma consultoria personalizada ou tire suas dúvidas.",
+        "contact-button": "Enviar Email",
+        "footer-text": "© 2026 JBrasil Labs. Todos os direitos reservados."
     },
     es: {
-        heroTitle: "Ciberseguridad & Redes",
-        heroText: "Protección avanzada con Sophos Firewall y soporte técnico.",
-        service1Title: "Sophos Firewall", service1Text: "Configuración y migración para máxima protección.",
-        service2Title: "Sophos Central Email", service2Text: "Protección avanzada contra spam y amenazas.",
-        service3Title: "Soporte Técnico", service3Text: "Consultoría para toda Latinoamérica.",
-        contactTitle: "Contacto", contactText: "Hable con nuestros especialistas.", contactButton: "Enviar Correo"
+        "hero-title": "Ciberseguridad & Redes Corporativas",
+        "hero-text": "Protección avanzada con Sophos Firewall, Sophos Central Email y soporte técnico especializado.",
+        "service1-title": "Sophos Firewall",
+        "service1-text": "Configuración, implementación, migração e suporte em firewalls Sophos para máxima proteção.",
+        "service2-title": "Sophos Central Email",
+        "service2-text": "Protección de email con políticas de seguridad, filtrado y anti-spam avanzado con solución Sophos Email Advanced.",
+        "service3-title": "Soporte Técnico",
+        "service3-text": "Consultoría y soporte remoto o presencial para redes corporativas e infraestructura para toda Latinoamérica.",
+        "contact-title": "Contáctanos",
+        "contact-text": "Solicite una consultoría personalizada o resuelva sus dudas.",
+        "contact-button": "Enviar Correo",
+        "footer-text": "© 2026 JBrasil Labs. Todos los derechos reservados."
     }
 };
 
 function applyLang(lang) {
     const t = translations[lang];
-    Object.keys(t).forEach(k => {
-        const el = document.getElementById(k.replace(/([A-Z])/g, "-$1").toLowerCase());
-        if(el) el.textContent = t[k];
+    Object.keys(t).forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = t[id];
     });
 }
 
+// Inicialização
 const userLang = navigator.language.startsWith('es') ? 'es' : 'pt';
 document.getElementById('lang-switch').value = userLang;
 applyLang(userLang);
+
 document.getElementById('lang-switch').addEventListener('change', (e) => applyLang(e.target.value));
 
-async function getIP() {
+// --- LÓGICA DO TERMINAL E SOC ---
+async function getVisitor() {
     try {
-        const res = await fetch('https://ipwho.is/');
+        const res = await fetch('https://ipapi.co/json/'); // Alternativa robusta
         const data = await res.json();
-        return `${data.ip} (${data.country})`;
+        return `${data.ip} (${data.country_name})`;
     } catch { return "Unknown (Global)"; }
 }
 
@@ -133,13 +187,20 @@ function logTerminal(msg) {
 
 document.getElementById('main-logo').addEventListener('click', async () => {
     document.getElementById('logo-wrap').style.display = 'none';
-    document.getElementById('main-content').classList.remove('hidden-content');
-    document.getElementById('main-content').classList.add('visible-content');
-    
-    const info = await getIP();
+    const main = document.getElementById('main-content');
+    main.classList.remove('hidden-content');
+    main.classList.add('visible-content');
+
+    logTerminal("INITIALIZING SECURITY PROTOCOLS...");
+    const info = await getVisitor();
     const logMsg = `[SOC] ACCESS GRANTED: ${info}`;
     logTerminal(logMsg);
     sendToSOC(logMsg);
+});
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 });
 </script>
 </body>
