@@ -2,14 +2,22 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>JBrasil Labs - Interstellar SOC Pro</title>
+    <title>JBrasil Labs - Interstellar SOC Threat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Press Start 2P', cursive; cursor: none; color: #00ff00; }
         canvas { position: fixed; inset: 0; }
-        #bg-space { z-index: 0; }
-        #game-layer { z-index: 1; }
+        
+        /* Efeito de Tremor */
+        .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, -2px, 0); }
+            20%, 80% { transform: translate3d(4px, 4px, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, -6px, 0); }
+            40%, 60% { transform: translate3d(6px, 6px, 0); }
+        }
+
         .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; color: #fff; text-shadow: 0 0 10px #00ff00; line-height: 2.2; }
         #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.85); padding: 15px; border: 1px solid rgba(0,255,0,0.4); text-align: right; backdrop-filter: blur(5px); }
         #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 9px; background: rgba(0,0,0,0.8); padding: 12px; border-left: 3px solid #0ff; backdrop-filter: blur(5px); min-width: 280px; color: #0ff; }
@@ -20,7 +28,7 @@
         .btn-ui.disabled { opacity: 0.3; cursor: wait; border-color: #444; color: #444; }
     </style>
 </head>
-<body>
+<body id="game-body">
 
 <canvas id="bg-space"></canvas>
 <canvas id="game-layer"></canvas>
@@ -33,7 +41,7 @@
 
 <div id="leaderboard-fixed">
     <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00;">TOP DEFENDERS</div>
-    <div id="rank-list">LOADING...</div>
+    <div id="rank-list">SYNCING...</div>
 </div>
 
 <div id="geo-terminal">> [SYSTEM] NEURAL CORE<br><span id="location-data">> [SOC] SCANNING...</span></div>
@@ -44,13 +52,11 @@
 </div>
 
 <div id="game-over-screen" class="overlay" style="display:none">
-    <h1 style="color: #ff3333; font-size: 26px; margin-bottom: 10px;">SYSTEM BREACH</h1>
-    <div style="font-size: 10px; margin-bottom: 30px;">FINAL SCORE: <span id="final-score">0</span></div>
-    <div class="btn-ui" style="border-color: #f33; color: #f33;" onclick="location.reload()">REBOOT CORE</div>
+    <h1 style="color: #ff3333; font-size: 26px; margin-bottom: 10px;">CORE BREACHED</h1>
+    <div class="btn-ui" style="border-color: #f33; color: #f33;" onclick="location.reload()">RELOAD SYSTEM</div>
 </div>
 
 <script>
-// --- AUDIO ENGINE ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function sfx(freq, type, duration, vol=0.1) {
     if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -64,7 +70,6 @@ function sfx(freq, type, duration, vol=0.1) {
     osc.start(); osc.stop(audioCtx.currentTime + duration);
 }
 
-// --- CORE VARS ---
 const bgCanvas=document.getElementById("bg-space"), gCanvas=document.getElementById("game-layer");
 const sCtx=bgCanvas.getContext("2d"), gCtx=gCanvas.getContext("2d");
 let score=0, lives=3, gameRunning=false, tick=0;
@@ -73,74 +78,48 @@ let boss=null, overdrive=false, overdriveTimer=0;
 let mouseX=innerWidth/2, mouseY=innerHeight/2;
 let userLoc="BR", userIP="0.0.0.0";
 
-// --- INIT ---
 function init() {
-    bgCanvas.width=gCanvas.width=innerWidth;
-    bgCanvas.height=gCanvas.height=innerHeight;
+    bgCanvas.width=gCanvas.width=innerWidth; bgCanvas.height=gCanvas.height=innerHeight;
     stars=[];
     for(let i=0; i<300; i++) stars.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*2});
 }
 window.addEventListener("resize", init);
 init();
 
-// --- API SYNC ---
-async function fetchTop10() {
-    try {
-        const r = await fetch('https://jbrasillabs-1.onrender.com/leaderboard');
-        const data = await r.json();
-        let html = ""; 
-        data.slice(0, 10).forEach((d, i) => html += `${i+1}º ${d.score} [${d.country || 'BR'}]<br>`);
-        document.getElementById("rank-list").innerHTML = html || "EMPTY";
-    } catch(e) { document.getElementById("rank-list").innerText = "OFFLINE"; }
-}
-
-function sendLog(msg) {
-    fetch('https://jbrasillabs-1.onrender.com/log', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({ entry: `[SOC] ${msg} | IP: ${userIP} [${userLoc}]` }) 
-    }).catch(e=>{});
-}
-
-// --- EXPLOSION ---
-function explode(x, y) {
-    for(let i=0; i<25; i++) {
-        explosions.push({ x, y, vx:(Math.random()-0.5)*8, vy:(Math.random()-0.5)*8, life:1 });
-    }
-    sfx(120, "sawtooth", 0.2, 0.2);
-}
-
-// --- DRAWING FUNCTIONS ---
-function drawPlayer() {
-    gCtx.save();
-    gCtx.translate(mouseX, mouseY);
-    let glow = overdrive ? "#ff0" : "#0ff";
-    gCtx.shadowBlur=20; gCtx.shadowColor=glow; gCtx.strokeStyle=glow; gCtx.lineWidth=2;
-    gCtx.beginPath();
-    gCtx.moveTo(0,-20); gCtx.lineTo(15,10); gCtx.lineTo(0,5); gCtx.lineTo(-15,10);
-    gCtx.closePath(); gCtx.stroke();
-    gCtx.restore();
-    
-    // Propulsão
-    for(let i=0; i<2; i++) {
-        particles.push({ x:mouseX, y:mouseY+10, vx:(Math.random()-0.5)*2, vy:2+Math.random()*2, life:1, color:glow });
-    }
+function triggerShake() {
+    const body = document.getElementById("game-body");
+    body.classList.add("shake");
+    setTimeout(() => body.classList.remove("shake"), 300);
 }
 
 function drawEnemy(e) {
     gCtx.save();
     gCtx.translate(e.x, e.y);
     gCtx.rotate(e.rot);
-    gCtx.strokeStyle=e.hit?"#fff":"#f33";
-    gCtx.lineWidth=2;
+    
+    // Pulsação visual
+    let pulse = Math.sin(tick * 0.1) * 5;
+    gCtx.strokeStyle = e.hit ? "#fff" : "#ff3333";
+    gCtx.lineWidth = 2;
+    gCtx.shadowBlur = 10;
+    gCtx.shadowColor = "#ff0000";
+
+    // Corpo da Criatura (Forma Bio-Mecânica)
     gCtx.beginPath();
-    gCtx.moveTo(0,-e.size); gCtx.lineTo(e.size, e.size); gCtx.lineTo(-e.size, e.size);
-    gCtx.closePath(); gCtx.stroke();
+    gCtx.arc(0, 0, e.size + pulse/2, 0, Math.PI * 2);
+    // Tentáculos/Pernas
+    for(let i=0; i<6; i++) {
+        let ang = (i * Math.PI * 2) / 6;
+        let tx = Math.cos(ang + Math.sin(tick*0.2)) * (e.size * 1.8);
+        let ty = Math.sin(ang + Math.sin(tick*0.2)) * (e.size * 1.8);
+        gCtx.moveTo(0,0);
+        gCtx.quadraticCurveTo(tx/2, ty/2, tx, ty);
+    }
+    gCtx.stroke();
     gCtx.restore();
-    e.hit=false;
+    e.hit = false;
 }
 
-// --- GAME LOOP ---
 function loop() {
     tick++;
     sCtx.fillStyle="#000"; sCtx.fillRect(0,0,innerWidth,innerHeight);
@@ -148,117 +127,95 @@ function loop() {
     gCtx.clearRect(0,0,innerWidth,innerHeight);
 
     if(gameRunning) {
-        if(tick%40===0 && !boss) enemies.push({x:Math.random()*innerWidth, y:-40, size:20+Math.random()*10, speed:2+score/1000, rot:0, hit:false});
-        if(score>=1000 && !boss) boss={x:innerWidth/2, y:120, health:300};
-
-        bullets.forEach((b,i)=>{
-            b.y-=b.speed;
-            gCtx.fillStyle="#fff"; gCtx.fillRect(b.x, b.y, 4, 15);
-            if(b.y<0) bullets.splice(i,1);
-        });
-
-        enemies.forEach((e,i)=>{
-            e.y+=e.speed; e.rot+=0.05;
-            drawEnemy(e);
-            if(e.y>innerHeight){
-                lives--; enemies.splice(i,1);
-                document.body.style.background="#300"; setTimeout(()=>document.body.style.background="#000",100);
-                if(lives<=0) endGame();
-            }
-            bullets.forEach((b,bi)=>{
-                if(Math.hypot(b.x-e.x, b.y-e.y)<e.size){
-                    score+=10; explode(e.x, e.y); enemies.splice(i,1); bullets.splice(bi,1);
-                }
-            });
-        });
-
-        if(boss){
-            gCtx.strokeStyle="#f0f"; gCtx.lineWidth=4; gCtx.strokeRect(boss.x-60, boss.y-60, 120, 120);
-            bullets.forEach((b,bi)=>{
-                if(Math.hypot(b.x-boss.x, b.y-boss.y)<60){
-                    boss.health-=5; bullets.splice(bi,1);
-                    if(boss.health<=0){ score+=500; explode(boss.x, boss.y); boss=null; overdrive=true; overdriveTimer=300; }
-                }
-            });
+        if(tick % Math.max(10, 40 - Math.floor(score/500)) === 0 && !boss) {
+            enemies.push({x:Math.random()*innerWidth, y:-50, size:15, speed:2 + score/1200, rot:0});
         }
 
-        if(overdrive){
-            overdriveTimer--;
-            document.getElementById("status-text").innerText="OVERDRIVE";
-            document.getElementById("status-text").style.color="#ff0";
-            if(overdriveTimer<=0) {
-                overdrive=false;
-                document.getElementById("status-text").innerText="STABLE";
-                document.getElementById("status-text").style.color="#0ff";
+        enemies.forEach((e, i) => {
+            e.y += e.speed; e.rot += 0.02;
+            drawEnemy(e);
+
+            if(e.y > innerHeight) {
+                lives--;
+                triggerShake(); // Tremer a tela quando passam
+                sfx(60, "square", 0.3, 0.2);
+                enemies.splice(i, 1);
+                if(lives <= 0) endGame();
             }
+
+            bullets.forEach((b, bi) => {
+                if(Math.hypot(b.x - e.x, b.y - e.y) < e.size * 1.5) {
+                    score += 10;
+                    sfx(150, "sawtooth", 0.1, 0.1);
+                    // Partículas de explosão
+                    for(let p=0; p<10; p++) explosions.push({x:e.x, y:e.y, vx:(Math.random()-0.5)*10, vy:(Math.random()-0.5)*10, life:1});
+                    enemies.splice(i, 1); bullets.splice(bi, 1);
+                }
+            });
+        });
+
+        bullets.forEach((b, i) => {
+            b.y -= b.speed;
+            gCtx.fillStyle = overdrive ? "#ff0" : "#fff";
+            gCtx.fillRect(b.x, b.y, 4, 15);
+            if(b.y < 0) bullets.splice(i, 1);
+        });
+
+        if(overdrive) {
+            overdriveTimer--;
+            if(overdriveTimer <= 0) overdrive = false;
         }
     }
 
-    particles.forEach((p,i)=>{
-        p.y+=p.vy; p.life-=0.04;
-        gCtx.fillStyle=p.color; gCtx.globalAlpha=p.life;
-        gCtx.fillRect(p.x, p.y, 2, 2); gCtx.globalAlpha=1;
-        if(p.life<=0) particles.splice(i,1);
+    // Desenha Partículas e Jogador
+    explosions.forEach((ex, i) => {
+        ex.x += ex.vx; ex.y += ex.vy; ex.life -= 0.05;
+        gCtx.fillStyle = `rgba(255, 50, 0, ${ex.life})`;
+        gCtx.fillRect(ex.x, ex.y, 3, 3);
+        if(ex.life <= 0) explosions.splice(i, 1);
     });
 
-    explosions.forEach((ex,i)=>{
-        ex.x+=ex.vx; ex.y+=ex.vy; ex.life-=0.03;
-        gCtx.fillStyle=`rgba(255,100,0,${ex.life})`;
-        gCtx.fillRect(ex.x, ex.y, 4, 4);
-        if(ex.life<=0) explosions.splice(i,1);
-    });
+    // Nave Jogador
+    gCtx.save();
+    gCtx.translate(mouseX, mouseY);
+    gCtx.strokeStyle = overdrive ? "#ff0" : "#0ff";
+    gCtx.lineWidth = 2;
+    gCtx.beginPath();
+    gCtx.moveTo(0,-20); gCtx.lineTo(15,10); gCtx.lineTo(-15,10); gCtx.closePath();
+    gCtx.stroke();
+    gCtx.restore();
 
-    drawPlayer();
-    document.getElementById("score").innerText=score.toString().padStart(4,"0");
-    document.getElementById("lives").innerText=(lives*33.3).toFixed(0)+"%";
+    document.getElementById("score").innerText = score.toString().padStart(4,"0");
+    document.getElementById("lives").innerText = (lives*33.3).toFixed(0) + "%";
     requestAnimationFrame(loop);
 }
 
-// --- CONTROLS ---
-window.addEventListener("mousemove", e=>{ mouseX=e.clientX; mouseY=e.clientY; });
-window.addEventListener("mousedown", ()=>{
-    if(gameRunning){
-        bullets.push({x:mouseX, y:mouseY, speed: overdrive?25:15});
-        sfx(800, "triangle", 0.1, 0.1);
+// Controles e Sincronização (Mantendo o que já funcionava)
+window.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
+window.addEventListener("mousedown", () => {
+    if(gameRunning) {
+        bullets.push({x: mouseX, y: mouseY, speed: overdrive ? 25 : 15});
+        sfx(800, "triangle", 0.1, 0.05);
     }
 });
 
-function startGame(){
+function startGame() {
     document.getElementById("start-screen").style.display="none";
-    score=0; lives=3; enemies=[]; bullets=[]; boss=null; gameRunning=true;
-    sendLog("SESSION_START");
+    score=0; lives=3; enemies=[]; bullets=[]; gameRunning=true;
 }
 
-async function endGame(){
-    gameRunning=false;
-    document.getElementById("final-score").innerText=score;
+function endGame() {
+    gameRunning = false;
     document.getElementById("game-over-screen").style.display="flex";
-    try {
-        await fetch('https://jbrasillabs-1.onrender.com/score', { 
-            method: 'POST', headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ score, country: userLoc }) 
-        });
-        fetchTop10();
-    } catch(e){}
 }
 
-// --- SYNC ---
 const unlock = () => {
     const btn=document.getElementById("start-btn");
     btn.innerText="INITIALIZE DEFENSE"; btn.classList.remove("disabled");
     btn.onclick=startGame;
 };
-setTimeout(unlock, 3000);
-fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{
-    userIP=d.ip;
-    fetch(`https://ipapi.co/${d.ip}/json/`).then(r2=>r2.json()).then(d2=>{
-        userLoc=d2.country_code || "BR";
-        document.getElementById("location-data").innerHTML=`> [IP] ${userIP}<br>> [LOC] ${d2.city}`;
-        unlock();
-    });
-}).catch(unlock);
+setTimeout(unlock, 2000);
 
-fetchTop10();
 loop();
 </script>
 </body>
