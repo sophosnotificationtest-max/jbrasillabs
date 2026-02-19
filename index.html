@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>JBrasil Labs - Interstellar Hardcore</title>
+    <title>JBrasil Labs - Interstellar SOC Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
@@ -10,23 +10,16 @@
         canvas { position: fixed; inset: 0; }
         #bg-space { z-index: 0; }
         #game-layer { z-index: 1; image-rendering: pixelated; }
-        
         .shake { animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } }
-
         .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; color: #fff; text-shadow: 0 0 8px #00ff00; }
-        
-        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.8); padding: 15px; border: 1px solid rgba(0,255,0,0.2); text-align: right; backdrop-filter: blur(5px); line-height: 1.8; }
-        
-        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 9px; background: rgba(0,0,0,0.8); padding: 12px; border-left: 3px solid #00ff00; backdrop-filter: blur(5px); min-width: 250px; }
-        
+        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.85); padding: 15px; border: 1px solid rgba(0,255,0,0.3); text-align: right; backdrop-filter: blur(5px); line-height: 2; }
+        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 9px; background: rgba(0,0,0,0.8); padding: 12px; border-left: 3px solid #00ff00; backdrop-filter: blur(5px); min-width: 280px; }
         .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 300; }
         #main-logo { width: 320px; margin-bottom: 30px; filter: drop-shadow(0 0 15px #00ff00); }
-        
         .btn-ui { font-size: 12px; cursor: pointer; border: 3px solid #00ff00; padding: 15px 30px; background: transparent; color: #00ff00; transition: 0.3s; }
-        .btn-ui:hover { background: #00ff00; color: #000; box-shadow: 0 0 30px #00ff00; }
-        
-        #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid #00ff0033; padding: 10px 20px; z-index: 100; font-size: 8px; opacity: 0.7; }
+        .btn-ui:hover:not(.disabled) { background: #00ff00; color: #000; box-shadow: 0 0 30px #00ff00; }
+        .btn-ui.disabled { opacity: 0.5; cursor: wait; border-color: #555; color: #555; }
     </style>
 </head>
 <body id="main-body">
@@ -42,23 +35,22 @@
 
 <div id="leaderboard-fixed">
     <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00; border-bottom: 1px solid #00ff0033;">TOP DEFENDERS</div>
-    <div id="rank-list">SYNCING...</div>
+    <div id="rank-list">LOADING...</div>
 </div>
 
 <div id="geo-terminal">
     > [SYSTEM] JBRASIL NEURAL CORE<br>
-    <span id="location-data">> [SOC] SCANNING SECTOR...</span>
+    <span id="location-data">> [SOC] INITIALIZING GEO-LOC...</span>
 </div>
 
 <div id="start-screen" class="overlay">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="Logo">
-    <div class="btn-ui" onclick="startGame()">INITIALIZE DEFENSE</div>
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
+    <div id="start-btn" class="btn-ui disabled">CONNECTING...</div>
 </div>
 
 <div id="game-over-screen" class="overlay" style="display: none;">
     <h1 style="color: #ff3333; font-size: 26px; margin-bottom: 10px;">SYSTEM BREACH</h1>
-    <div style="font-size: 10px; margin-bottom: 20px;">FINAL SCORE: <span id="final-score">0</span></div>
-    <div class="btn-ui" style="border-color: #ff3333; color: #ff3333;" onclick="startGame()">REBOOT CORE</div>
+    <div class="btn-ui" onclick="startGame()">REBOOT CORE</div>
 </div>
 
 <script>
@@ -66,40 +58,32 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const bgCanvas = document.getElementById("bg-space"), sCtx = bgCanvas.getContext("2d");
 const gCanvas = document.getElementById("game-layer"), gCtx = gCanvas.getContext("2d");
 let score = 0, lives = 3, gameRunning = false, tick = 0;
-let userLoc = "UNKNOWN", userCountry = "??";
+let userLoc = "UNKNOWN", userCountry = "??", userIP = "0.0.0.0";
 let galaxyStars = [], enemies = [], bullets = [], mouseTrail = [];
 let mouseX = innerWidth/2, mouseY = innerHeight/2;
 
-// --- Dificuldade ---
-let spawnRate = 60; // Frames entre cada inimigo
-let baseSpeed = 1.5;
-
+// --- API SYNC ---
 async function fetchTop10() {
     try {
         const r = await fetch('https://jbrasillabs-1.onrender.com/leaderboard');
         const data = await r.json();
         let html = ""; 
         data.slice(0, 10).forEach((d, i) => {
-            const country = d.country || "UN";
-            html += `${i+1}º ${d.score} [${country.toUpperCase()}]<br>`;
+            // Se o backend não retornar o país, tentamos adivinhar ou usamos ícone
+            const flag = d.country ? `[${d.country.toUpperCase()}]` : "🌍";
+            html += `${i+1}º ${d.score} ${flag}<br>`;
         });
-        document.getElementById("rank-list").innerHTML = html || "EMPTY";
-    } catch(e) { document.getElementById("rank-list").innerText = "OFFLINE"; }
+        document.getElementById("rank-list").innerHTML = html || "NO DATA";
+    } catch(e) { document.getElementById("rank-list").innerText = "SOC OFFLINE"; }
 }
 
-function sendLog(entry) {
-    fetch('https://jbrasillabs-1.onrender.com/log', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ entry }) });
+function sendLog(msg) {
+    fetch('https://jbrasillabs-1.onrender.com/log', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ entry: `[SOC] ${msg} | IP: ${userIP} (${userCountry})` }) 
+    });
 }
-
-function playSfx(f, t, d, v=0.04) {
-    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-    o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + d);
-    g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + d);
-}
-
-const INVADER_A = [[0,0,1,0,0,1,0,0],[0,0,0,1,1,0,0,0],[0,1,1,1,1,1,1,0],[1,1,0,1,1,0,1,1],[1,1,1,1,1,1,1,1],[0,0,1,0,0,1,0,0],[0,1,0,1,1,0,1,0],[1,0,1,0,0,1,0,1]];
 
 function initGalaxy() {
     bgCanvas.width = gCanvas.width = innerWidth; bgCanvas.height = gCanvas.height = innerHeight;
@@ -108,26 +92,23 @@ function initGalaxy() {
 }
 
 function gameLoop() {
-    // Fundo Escuro Galáctico
+    // Galáxia Realista Fundo Escuro
     let gr = sCtx.createRadialGradient(innerWidth/2, innerHeight/2, 0, innerWidth/2, innerHeight/2, innerWidth);
-    gr.addColorStop(0, '#000818'); gr.addColorStop(1, '#000');
+    gr.addColorStop(0, '#000a20'); gr.addColorStop(1, '#000');
     sCtx.fillStyle = gr; sCtx.fillRect(0,0,innerWidth,innerHeight);
     
-    // A galáxia acelera com o score
-    let galaxySpeedBoost = 1 + (score / 1000);
     galaxyStars.forEach(s => {
-        s.angle += s.speed * galaxySpeedBoost;
+        s.angle += s.speed * (1 + score/1000);
         const x = innerWidth/2 + Math.cos(s.angle + s.arm) * s.distance;
         const y = innerHeight/2 + Math.sin(s.angle + s.arm) * (s.distance * 0.4);
-        sCtx.fillStyle = "#fff"; sCtx.fillRect(x,y,s.size,s.size);
+        sCtx.fillStyle = "rgba(255,255,255,0.7)"; sCtx.fillRect(x,y,s.size,s.size);
     });
 
     gCtx.clearRect(0,0,innerWidth,innerHeight);
-    
     if(tick % 3 === 0) mouseTrail.push({x: mouseX, y: mouseY, l: 1});
     mouseTrail.forEach((p, i) => { gCtx.fillStyle = `rgba(0,255,0,${p.l})`; gCtx.fillRect(p.x,p.y,3,3); p.l-=0.05; if(p.l<=0) mouseTrail.splice(i,1); });
     
-    // Player
+    // Nave Jogador
     gCtx.fillStyle = "#0f0";
     [[0,1,0],[1,1,1],[1,0,1]].forEach((row, rIdx) => {
         row.forEach((col, cIdx) => { if(col) gCtx.fillRect(mouseX-10+(cIdx*6), mouseY-10+(rIdx*6), 6, 6); });
@@ -135,75 +116,65 @@ function gameLoop() {
 
     if(gameRunning) {
         tick++;
-        
-        // --- LÓGICA DE DIFICULDADE INCREMENTAL ---
-        let currentLevel = Math.floor(score / 200) + 1;
-        document.getElementById("level-display").innerText = `LVL: ${currentLevel}`;
-        spawnRate = Math.max(15, 60 - (currentLevel * 5)); 
-        let dynamicSpeed = baseSpeed + (currentLevel * 0.4);
-
-        if(tick % spawnRate === 0) {
-            enemies.push({x: Math.random()*(innerWidth-80)+40, y: -60, speed: dynamicSpeed, color: currentLevel > 3 ? "#ff0" : "#f33"});
+        let lvl = Math.floor(score/200) + 1;
+        document.getElementById("level-display").innerText = `LVL: ${lvl}`;
+        if(tick % Math.max(20, 60 - lvl*5) === 0) {
+            enemies.push({x: Math.random()*(innerWidth-80)+40, y: -60, speed: 1.5 + lvl*0.4, color: lvl > 3 ? "#ff0" : "#f33"});
         }
-        
-        bullets.forEach((b, bi) => {
-            b.y -= 15; gCtx.fillStyle = "#fff"; gCtx.fillRect(b.x, b.y, 4, 15);
-            if(b.y < 0) bullets.splice(bi,1);
-        });
-
+        bullets.forEach((b, bi) => { b.y -= 15; gCtx.fillStyle = "#fff"; gCtx.fillRect(b.x, b.y, 4, 15); if(b.y < 0) bullets.splice(bi,1); });
         enemies.forEach((e, ei) => {
             e.y += e.speed;
-            INVADER_A.forEach((row, rIdx) => {
-                row.forEach((col, cIdx) => { if(col) { gCtx.fillStyle = e.color; gCtx.fillRect(e.x+(cIdx*5), e.y+(rIdx*5), 5, 5); }});
-            });
+            gCtx.fillStyle = e.color; gCtx.fillRect(e.x, e.y, 40, 30); // Simplificado para performance
             if(e.y > innerHeight) { 
-                lives--; playSfx(100, 'square', 0.4, 0.2); 
-                document.getElementById("main-body").classList.add("shake");
+                lives--; document.getElementById("main-body").classList.add("shake");
                 setTimeout(()=>document.getElementById("main-body").classList.remove("shake"), 200);
                 enemies.splice(ei,1); if(lives<=0) endGame(); 
             }
             bullets.forEach((b, bi) => {
-                if(b.x > e.x && b.x < e.x+40 && b.y > e.y && b.y < e.y+40) { 
-                    score+=10; playSfx(150, 'sawtooth', 0.1); enemies.splice(ei,1); bullets.splice(bi,1); 
-                }
+                if(b.x > e.x && b.x < e.x+40 && b.y > e.y && b.y < e.y+40) { score+=10; enemies.splice(ei,1); bullets.splice(bi,1); }
             });
         });
     }
-    document.getElementById("score").innerText = score;
-    document.getElementById("lives").innerText = lives;
     requestAnimationFrame(gameLoop);
 }
 
 function startGame() {
+    if(document.getElementById("start-btn").classList.contains("disabled")) return;
     if(audioCtx.state === 'suspended') audioCtx.resume();
     document.getElementById("start-screen").style.display = "none";
     document.getElementById("game-over-screen").style.display = "none";
     score = 0; lives = 3; enemies = []; bullets = []; gameRunning = true;
-    sendLog(`LEVEL_START: ${userLoc} [${userCountry}]`);
+    sendLog(`LEVEL_START: ${userLoc}`);
 }
 
 async function endGame() {
     gameRunning = false;
-    document.getElementById("final-score").innerText = score;
     document.getElementById("game-over-screen").style.display = "flex";
-    playSfx(60, 'sine', 1);
     try {
         await fetch('https://jbrasillabs-1.onrender.com/score', { 
             method: 'POST', 
             headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ score, country: userCountry, entry: userLoc }) 
+            body: JSON.stringify({ score, country: userCountry }) 
         });
         fetchTop10();
     } catch(e) {}
 }
 
 window.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
-window.addEventListener("mousedown", () => { if(gameRunning) { bullets.push({x: mouseX, y: mouseY-15}); playSfx(600, 'triangle', 0.1); } });
-window.addEventListener("resize", initGalaxy);
+window.addEventListener("mousedown", () => { if(gameRunning) bullets.push({x: mouseX, y: mouseY-15}); });
 
+// --- GEO-IP COM CALLBACK PARA LIBERAR O BOTÃO ---
 fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
-    userLoc = d.city; userCountry = d.country_code;
-    document.getElementById("location-data").innerHTML = `> [GEO] ${d.city.toUpperCase()}, ${d.country.toUpperCase()}<br>> [IP] ${d.ip}`;
+    userLoc = d.city || "UNKNOWN";
+    userCountry = d.country_code || "??";
+    userIP = d.ip || "0.0.0.0";
+    document.getElementById("location-data").innerHTML = `> [GEO] ${userLoc.toUpperCase()}, ${d.country_name.toUpperCase()}<br>> [IP] ${userIP}`;
+    
+    // Libera o jogo após carregar os dados
+    const btn = document.getElementById("start-btn");
+    btn.innerText = "INITIALIZE DEFENSE";
+    btn.classList.remove("disabled");
+    btn.onclick = startGame;
 });
 
 initGalaxy(); fetchTop10(); gameLoop();
