@@ -160,4 +160,65 @@ function loop() {
     document.getElementById("level-val").innerText = level;
     document.getElementById("lives-val").innerText = Math.max(0, (lives*33.4)).toFixed(0) + "%";
     document.getElementById("weapon-status").innerText = overdrive > 0 ? "OVERDRIVE" : "STANDARD";
-    document.getElementById("weapon-status").style.color = overdrive > 0 ?
+    document.getElementById("weapon-status").style.color = overdrive > 0 ? "#ff0" : "#0ff";
+
+    requestAnimationFrame(loop);
+}
+
+window.addEventListener("mousemove", e => { mouseX=e.clientX; mouseY=e.clientY; });
+window.addEventListener("mousedown", () => {
+    if(gameRunning) {
+        bullets.push({x: mouseX, y: mouseY});
+        sfx(overdrive > 0 ? 1200 : 800, 'sine', 0.05);
+    }
+});
+
+function startGame() {
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    document.getElementById("start-screen").style.display="none";
+    gameRunning=true;
+    fetch('https://jbrasillabs-1.onrender.com/log', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ entry: `[SOC] START_GAME | IP: ${userIP}` }) }).catch(e=>{});
+}
+
+function endGame() {
+    gameRunning = false;
+    document.getElementById("game-over-screen").style.display="flex";
+    fetch('https://jbrasillabs-1.onrender.com/score', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ score, country: userLoc }) }).catch(e=>{});
+}
+
+// --- LOGICA DE DESBLOQUEIO (ANTI-TRAVAMENTO) ---
+const unlock = () => {
+    const b = document.getElementById("start-btn");
+    b.innerText = "INITIALIZE SYSTEM";
+    b.classList.remove("disabled");
+    b.onclick = startGame;
+};
+
+// Se em 2.5 segundos a API de IP não responder, libera o jogo mesmo assim
+const forceUnlock = setTimeout(() => {
+    console.log("Force unlock active");
+    unlock();
+}, 2500);
+
+fetch('https://api.ipify.org?format=json')
+    .then(r => r.json())
+    .then(d => {
+        userIP = d.ip;
+        return fetch(`https://ipapi.co/${d.ip}/json/`);
+    })
+    .then(r => r.json())
+    .then(d => {
+        userLoc = d.country_code || "BR";
+        clearTimeout(forceUnlock);
+        unlock();
+    })
+    .catch(() => {
+        console.log("API Error, using fallback");
+        unlock();
+    });
+
+fetchRank();
+loop();
+</script>
+</body>
+</html>
