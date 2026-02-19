@@ -2,232 +2,175 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil Labs - Interstellar SOC</title>
+    <title>JBrasil Labs - Atari SOC</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #00020a; font-family: 'Orbitron', sans-serif; cursor: none; color: #00ff00; }
-        canvas { position: fixed; inset: 0; z-index: 1; }
-        #bg-space { z-index: 0; }
-        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 10px; color: #00ff00; text-shadow: 0 0 10px #00ff00; pointer-events: none; }
-        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-family: monospace; font-size: 11px; color: #00ff00; background: rgba(0,15,5,0.85); padding: 15px; border-left: 4px solid #00ff00; border-radius: 0 8px 8px 0; box-shadow: 0 0 30px rgba(0,255,0,0.1); backdrop-filter: blur(5px); }
-        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-family: monospace; font-size: 11px; color: #4e9eff; background: rgba(0,5,15,0.7); padding: 20px; border: 1px solid #4e9eff44; border-radius: 10px; text-align: right; backdrop-filter: blur(8px); }
-        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle at center, rgba(0,20,40,0.4) 0%, rgba(0,0,0,0.95) 100%); z-index: 300; }
-        #main-logo { width: 450px; max-width: 85%; filter: drop-shadow(0 0 40px rgba(0,255,0,0.6)); margin-bottom: 40px; }
-        .btn-ui { font-family: 'Press Start 2P', cursive; font-size: 14px; letter-spacing: 2px; cursor: pointer; border: 2px solid #00ff00; padding: 20px 45px; background: rgba(0,255,0,0.05); color: #00ff00; transition: 0.4s; }
-        .btn-ui:hover { background: #00ff00; color: #000; box-shadow: 0 0 50px #00ff00; }
-        #game-over-screen { display: none; background: rgba(10,0,0,0.98); }
-        #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,5,10,0.9); border-top: 1px solid #00ff0044; padding: 12px 25px; z-index: 100; font-size: 10px; opacity: 0.8; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Press Start 2P', cursive; cursor: none; color: #00ff00; }
+        canvas { position: fixed; inset: 0; z-index: 1; image-rendering: pixelated; }
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 12px; pointer-events: none; color: #fff; }
+        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 10px; background: rgba(0,0,0,0.8); padding: 10px; border: 2px solid #00ff00; }
+        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 300; }
+        .btn-ui { font-size: 16px; cursor: pointer; border: 4px solid #00ff00; padding: 20px; background: #000; color: #00ff00; }
+        .btn-ui:hover { background: #00ff00; color: #000; }
+        #game-over-screen { display: none; }
     </style>
 </head>
 <body>
 
-<canvas id="bg-space"></canvas>
 <canvas id="game-layer"></canvas>
 
 <div class="hud" id="game-hud" style="display: none;">
     SCORE: <span id="score">0</span><br>
-    BREACHES: <span id="leaks">0</span>/30
+    LIVES: <span id="lives">3</span>
 </div>
 
-<div id="leaderboard-fixed">
-    <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00;">TOP 10 DEFENDERS</div>
-    <div id="rank-list">INITIALIZING...</div>
-</div>
-
-<div id="geo-terminal">> [SYSTEM] JB-LABS CORE ONLINE...<br>> [SOC] AUDIO MODULES LOADED...</div>
+<div id="geo-terminal">> JBRASIL ATARI CORE...<br>> LOADING PIXELS...</div>
 
 <div id="start-screen" class="overlay">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
-    <div class="btn-ui" onclick="startGame()">INITIALIZE DEFENSE</div>
+    <h1 style="font-size: 30px; margin-bottom: 50px; text-align: center;">JBRASIL LABS<br>INVADERS</h1>
+    <div class="btn-ui" onclick="startGame()">START MISSION</div>
 </div>
 
 <div id="game-over-screen" class="overlay">
-    <h1 style="font-size: 50px; color: #ff3333; font-weight: 900; margin-bottom: 10px;">SYSTEM FAILURE</h1>
-    <div style="margin-bottom: 30px;">SCORE: <span id="final-score">0</span></div>
-    <div class="btn-ui" style="border-color: #ff3333; color: #ff3333;" onclick="startGame()">REBOOT SYSTEM</div>
+    <h1 style="color: #f00; font-size: 40px; margin-bottom: 20px;">GAME OVER</h1>
+    <div class="btn-ui" onclick="startGame()">RETRY</div>
 </div>
 
-<div id="footer-bar">JBRASIL LABS // NEURAL DEFENSE PROTOCOL v3.0</div>
-
 <script>
-// --- MOTOR DE ÁUDIO (Web Audio API) ---
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const canvas = document.getElementById("game-layer");
+const ctx = canvas.getContext("2d");
+let score = 0, lives = 3, gameRunning = false, tick = 0;
+let enemies = [], bullets = [], particles = [];
+let mouseX = innerWidth/2;
 
-function playLaser() {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+// Desenhos em Pixel Art (8x8)
+const INVADER_A = [
+    [0,0,1,0,0,1,0,0],
+    [0,0,0,1,1,0,0,0],
+    [0,1,1,1,1,1,1,0],
+    [1,1,0,1,1,0,1,1],
+    [1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,1,0,0],
+    [0,1,0,1,1,0,1,0],
+    [1,0,1,0,0,1,0,1]
+];
+
+const INVADER_B = [
+    [0,0,0,1,1,0,0,0],
+    [0,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,1,1],
+    [1,1,0,1,1,0,1,1],
+    [1,1,1,1,1,1,1,1],
+    [0,0,1,0,0,1,0,0],
+    [0,1,0,1,1,0,1,0],
+    [0,0,1,0,0,1,0,0]
+];
+
+function drawPixelObject(matrix, x, y, size, color) {
+    ctx.fillStyle = color;
+    for(let row = 0; row < matrix.length; row++) {
+        for(let col = 0; col < matrix[row].length; col++) {
+            if(matrix[row][col]) {
+                ctx.fillRect(x + (col * size), y + (row * size), size, size);
+            }
+        }
+    }
 }
-
-function playExplosion() {
-    const bufSize = audioCtx.sampleRate * 0.2;
-    const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-    const gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-    noise.connect(gain); gain.connect(audioCtx.destination);
-    noise.start();
-}
-
-function playGameOver() {
-    [220, 165, 110].forEach((f, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.2);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.2);
-        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + i * 0.2 + 0.3);
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.start(audioCtx.currentTime + i * 0.2); osc.stop(audioCtx.currentTime + i * 0.2 + 0.3);
-    });
-}
-
-// --- MOTOR GRÁFICO (IDÊNTICO AO ANTERIOR COM MELHORIAS) ---
-const spaceCanvas = document.getElementById("bg-space"), sCtx = spaceCanvas.getContext("2d");
-const gameCanvas = document.getElementById("game-layer"), gCtx = gameCanvas.getContext("2d");
-let score = 0, leaks = 0, gameRunning = false, userLoc = "UNKNOWN", tick = 0;
-let stars = [], planets = [], enemies = [], bullets = [], mouseTrail = [];
-let mouseX = innerWidth/2, mouseY = innerHeight/2;
 
 function resize() {
-    spaceCanvas.width = gameCanvas.width = innerWidth;
-    spaceCanvas.height = gameCanvas.height = innerHeight;
-    initUniverse();
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
 }
 window.addEventListener("resize", resize);
 
-function initUniverse() {
-    stars = []; planets = [];
-    for(let i=0; i<350; i++) stars.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, z: Math.random()*innerWidth, s: Math.random()*2 });
-    for(let i=0; i<3; i++) spawnPlanet();
-}
-
-function spawnPlanet() {
-    planets.push({ x: Math.random()*innerWidth, y: -500, size: Math.random()*80+40, speed: Math.random()*0.15+0.05, hue: Math.random()*360 });
-}
-
-function drawUniverse() {
-    sCtx.fillStyle = "#000105"; sCtx.fillRect(0,0,innerWidth,innerHeight);
-    
-    // Núcleo Galáctico Realista
-    let g = sCtx.createRadialGradient(innerWidth/2, innerHeight/2, 0, innerWidth/2, innerHeight/2, innerWidth*0.7);
-    g.addColorStop(0, "rgba(20, 40, 100, 0.2)"); g.addColorStop(1, "transparent");
-    sCtx.fillStyle = g; sCtx.fillRect(0,0,innerWidth,innerHeight);
-
-    stars.forEach(s => {
-        s.z -= 1.8; if(s.z <= 0) s.z = innerWidth;
-        let sx = (s.x - innerWidth/2) * (innerWidth/s.z) + innerWidth/2;
-        let sy = (s.y - innerHeight/2) * (innerWidth/s.z) + innerHeight/2;
-        let size = (1 - s.z/innerWidth) * 3 * s.s;
-        sCtx.fillStyle = `rgba(255,255,255, ${1 - s.z/innerWidth})`;
-        sCtx.beginPath(); sCtx.arc(sx, sy, size, 0, Math.PI*2); sCtx.fill();
-    });
-
-    planets.forEach((p, i) => {
-        p.y += p.speed;
-        let pGrad = sCtx.createRadialGradient(p.x - p.size*0.3, p.y - p.size*0.3, p.size*0.1, p.x, p.y, p.size);
-        pGrad.addColorStop(0, `hsl(${p.hue}, 60%, 40%)`); pGrad.addColorStop(1, '#000');
-        sCtx.fillStyle = pGrad; sCtx.beginPath(); sCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); sCtx.fill();
-        if(p.y > innerHeight+500) { planets.splice(i,1); spawnPlanet(); }
-    });
-}
-
 class Enemy {
     constructor() {
-        this.x = Math.random()*(innerWidth-100)+50; this.y = -100;
-        this.speed = 1.3 + (score/5000);
-        this.type = Math.floor(Math.random()*3);
-        this.phase = Math.random()*Math.PI*2;
+        this.x = Math.random() * (innerWidth - 60);
+        this.y = -50;
+        this.speed = 2 + (score/1000);
+        this.type = Math.random() > 0.5 ? INVADER_A : INVADER_B;
+        this.color = ["#f00", "#0f0", "#ff0", "#f0f"][Math.floor(Math.random()*4)];
     }
-    draw() {
-        gCtx.save(); gCtx.translate(this.x, this.y);
-        gCtx.strokeStyle = "#ff3333"; gCtx.lineWidth = 3; gCtx.shadowBlur = 15; gCtx.shadowColor = "#f00";
-        let anim = Math.sin(tick * 0.08 + this.phase) * 6;
-        gCtx.beginPath();
-        if(this.type === 0) { // O Vigia
-            gCtx.ellipse(0, 0, 25, 18, 0, 0, Math.PI*2); gCtx.stroke(); gCtx.beginPath(); gCtx.arc(0, 0, 8, 0, Math.PI*2);
-            for(let i=0; i<4; i++) { gCtx.moveTo(-12+i*8, 15); gCtx.lineTo(-12+i*8+anim, 35); }
-        } else if(this.type === 1) { // Caçador
-            gCtx.moveTo(0, -25); gCtx.lineTo(25, 15); gCtx.lineTo(0, 5); gCtx.lineTo(-25, 15); gCtx.closePath();
-        } else { // Medusa
-            gCtx.arc(0, 0, 20, Math.PI, 0); gCtx.lineTo(20, 5); gCtx.lineTo(-20, 5); gCtx.closePath();
-            for(let i=0; i<3; i++) { gCtx.moveTo(-10+i*10, 5); gCtx.lineTo(-10+i*10+anim, 30); }
-        }
-        gCtx.stroke(); gCtx.restore();
+    update() {
+        this.y += this.speed;
+        drawPixelObject(this.type, this.x, this.y, 5, this.color);
     }
-}
-
-class Particle {
-    constructor(x,y, color="rgba(0, 255, 0, 1)") { this.x=x; this.y=y; this.v={x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4}; this.l=1; this.c=color; }
-    draw() { gCtx.fillStyle=this.c.replace('1)', `${this.l})`); gCtx.fillRect(this.x,this.y,3,3); this.x+=this.v.x; this.y+=this.v.y; this.l-=0.02; }
 }
 
 function gameLoop() {
-    tick++; drawUniverse(); gCtx.clearRect(0,0,innerWidth,innerHeight);
-    if(tick % 3 === 0) mouseTrail.push(new Particle(mouseX, mouseY));
-    mouseTrail.forEach((p, i) => { p.draw(); if(p.l <= 0) mouseTrail.splice(i, 1); });
-
-    // Cursor Nave
-    gCtx.save(); gCtx.translate(mouseX, mouseY);
-    gCtx.strokeStyle = "#00ff00"; gCtx.lineWidth = 3; gCtx.shadowBlur = 20; gCtx.shadowColor = "#0f0";
-    gCtx.beginPath(); gCtx.moveTo(0, -25); gCtx.lineTo(-20, 15); gCtx.lineTo(0, 5); gCtx.lineTo(20, 15); gCtx.closePath(); gCtx.stroke();
-    gCtx.restore();
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Estrelas estilo Atari (quadrados simples)
+    ctx.fillStyle = "#fff";
+    for(let i=0; i<50; i++) {
+        ctx.fillRect(Math.random()*canvas.width, (tick + i*20)%canvas.height, 2, 2);
+    }
 
     if(gameRunning) {
-        if(Math.random() < 0.045) enemies.push(new Enemy());
+        tick++;
+        if(tick % 60 === 0) enemies.push(new Enemy());
+
+        // Tiros (Pixels retangulares)
         bullets.forEach((b, bi) => {
-            b.y -= 25; gCtx.fillStyle = "#0ff"; gCtx.shadowBlur = 15; gCtx.fillRect(b.x-2, b.y, 4, 25);
-            if(b.y < -50) bullets.splice(bi, 1);
+            b.y -= 10;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(b.x, b.y, 4, 12);
+            if(b.y < 0) bullets.splice(bi, 1);
         });
+
+        // Inimigos
         enemies.forEach((e, ei) => {
-            e.y += e.speed; e.draw();
-            if(e.y > innerHeight + 100) { leaks++; enemies.splice(ei, 1); if(leaks>=30) endGame(); }
+            e.update();
+            if(e.y > canvas.height) {
+                enemies.splice(ei, 1);
+                lives--;
+                if(lives <= 0) endGame();
+            }
+
             bullets.forEach((b, bi) => {
-                if(Math.hypot(e.x - b.x, e.y - b.y) < 45) { 
-                    score += 10; playExplosion();
-                    for(let k=0; k<10; k++) mouseTrail.push(new Particle(e.x, e.y, "rgba(255, 50, 50, 1)"));
-                    enemies.splice(ei, 1); bullets.splice(bi, 1); 
+                if(b.x > e.x && b.x < e.x + 40 && b.y > e.y && b.y < e.y + 40) {
+                    enemies.splice(ei, 1);
+                    bullets.splice(bi, 1);
+                    score += 10;
                 }
             });
         });
+
+        // Nave Jogador (Pixel Art simples)
+        const playerShip = [
+            [0,0,0,1,1,0,0,0],
+            [0,0,1,1,1,1,0,0],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1]
+        ];
+        drawPixelObject(playerShip, mouseX - 20, canvas.height - 60, 5, "#0f0");
     }
+
     document.getElementById("score").innerText = score;
-    document.getElementById("leaks").innerText = leaks;
+    document.getElementById("lives").innerText = lives;
     requestAnimationFrame(gameLoop);
 }
 
 function startGame() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
     document.getElementById("start-screen").style.display = "none";
     document.getElementById("game-over-screen").style.display = "none";
     document.getElementById("game-hud").style.display = "block";
-    score = 0; leaks = 0; enemies = []; bullets = []; gameRunning = true;
+    score = 0; lives = 3; enemies = []; bullets = [];
+    gameRunning = true;
 }
 
 function endGame() {
-    gameRunning = false; playGameOver();
-    document.getElementById("final-score").innerText = score;
+    gameRunning = false;
     document.getElementById("game-over-screen").style.display = "flex";
 }
 
-addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
-addEventListener("mousedown", () => { if(gameRunning) { bullets.push({x: mouseX, y: mouseY}); playLaser(); } });
+addEventListener("mousemove", e => { mouseX = e.clientX; });
+addEventListener("mousedown", () => { if(gameRunning) bullets.push({x: mouseX, y: canvas.height - 60}); });
 
-resize(); gameLoop();
-fetch('https://jbrasillabs-1.onrender.com/geoip').then(r => r.json()).then(d => {
-    userLoc = d.entry; document.getElementById("geo-terminal").innerHTML += `<br>> [SOC] ORIGIN: ${userLoc.toUpperCase()}`;
-});
+resize();
+gameLoop();
 </script>
 </body>
 </html>
