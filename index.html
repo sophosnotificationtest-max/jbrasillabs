@@ -3,235 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JBrasil Labs - Cyber Defense SOC</title>
-
+<title>JBrasil Labs - Cyber Defense AAA</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
-
 <style>
-body, html {
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#000;
-    font-family:'Orbitron',sans-serif;
-    cursor:none;
+body,html{
+margin:0;
+padding:0;
+overflow:hidden;
+background:radial-gradient(circle at center,#001100,#000);
+font-family:monospace;
+cursor:none;
+color:#00ff00;
+}
+canvas{position:fixed;top:0;left:0}
+#hud{
+position:fixed;
+top:20px;
+left:20px;
+font-size:14px;
+z-index:100;
+}
+#bossBar{
+position:fixed;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+width:400px;
+height:20px;
+border:2px solid red;
+display:none;
+}
+#bossHealth{
+height:100%;
+background:red;
+width:100%;
+}
+#start{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+background:black;
+z-index:200;
+cursor:pointer;
+font-size:20px;
+}
+#leaderboard{
+position:fixed;
+right:20px;
+top:20px;
+font-size:12px;
 }
 </style>
 </head>
 <body>
 
-<canvas id="bg-circuits"></canvas>
-<canvas id="game-canvas"></canvas>
+<canvas id="game"></canvas>
 
-<div class="hud" id="hud" style="display:none;">
-SCORE: <span id="score">0000</span><br>
-LEAKS: <span id="leaks">0</span>/30
+<div id="hud">
+Score: <span id="score">0</span><br>
+Leaks: <span id="leaks">0</span>
 </div>
 
-<div id="terminal"></div>
+<div id="bossBar"><div id="bossHealth"></div></div>
+<div id="leaderboard"></div>
 
-<div id="start-screen">
-<h1 style="color:#00ff00;">JBrasil Labs</h1>
-<div class="start-prompt" id="start-btn">INITIALIZE DEFENSE</div>
-</div>
+<div id="start">CLICK TO START</div>
 
 <script>
-// ---------------- AUDIO ----------------
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(freq,type,dur){
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type=type;
-    osc.frequency.value=freq;
-    gain.gain.value=0.1;
-    gain.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+dur);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime+dur);
-}
-
-// ---------------- FUNDO COM TÚNEL 3D ----------------
-const bgCanvas=document.getElementById("bg-circuits");
-const bgCtx=bgCanvas.getContext("2d");
-let stars=[];
-
-function initStars(){
-    bgCanvas.width=window.innerWidth;
-    bgCanvas.height=window.innerHeight;
-    stars=[];
-    for(let i=0;i<300;i++){
-        stars.push({
-            x:(Math.random()-0.5)*bgCanvas.width,
-            y:(Math.random()-0.5)*bgCanvas.height,
-            z:Math.random()*bgCanvas.width
-        });
-    }
-}
-
-function drawStars(){
-    bgCtx.fillStyle="black";
-    bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
-    stars.forEach(s=>{
-        s.z-=4;
-        if(s.z<=0) s.z=bgCanvas.width;
-        let k=128/s.z;
-        let px=s.x*k+bgCanvas.width/2;
-        let py=s.y*k+bgCanvas.height/2;
-        if(px>=0 && px<bgCanvas.width && py>=0 && py<bgCanvas.height){
-            let size=(1-s.z/bgCanvas.width)*2;
-            bgCtx.fillStyle="#0f0";
-            bgCtx.fillRect(px,py,size,size);
-        }
-    });
-    requestAnimationFrame(drawStars);
-}
-
-// ---------------- JOGO ----------------
-const canvas=document.getElementById("game-canvas");
+const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
-let score=0, leaks=0;
-let enemies=[], bullets=[];
-let gameActive=false;
-let mouseX=window.innerWidth/2;
-let mouseY=window.innerHeight/2;
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-function resize(){
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
-    bgCanvas.width=window.innerWidth;
-    bgCanvas.height=window.innerHeight;
-}
-resize();
-window.addEventListener("resize",()=>{resize();initStars();});
-window.addEventListener("mousemove",e=>{
-    mouseX=e.clientX;
-    mouseY=e.clientY;
+let score=0,leaks=0,game=true;
+let enemies=[],bullets=[],boss=null,bossBullets=[];
+let difficulty=1;
+
+let mouseX=canvas.width/2;
+let mouseY=canvas.height/2;
+
+addEventListener("mousemove",e=>{
+mouseX=e.clientX;
+mouseY=e.clientY;
 });
 
-// Nave com efeito 3D
-function drawShip(x,y){
-    ctx.save();
-    ctx.translate(x,y);
-    ctx.strokeStyle="#00ff00";
-    ctx.shadowBlur=30;
-    ctx.shadowColor="#00ff00";
-    ctx.beginPath();
-    ctx.moveTo(0,-25);
-    ctx.lineTo(-20,15);
-    ctx.lineTo(0,5);
-    ctx.lineTo(20,15);
-    ctx.closePath();
-    ctx.stroke();
-    ctx.fillStyle="rgba(0,255,0,0.2)";
-    ctx.fill();
-    ctx.restore();
+class Enemy{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=-20;
+this.speed=2*difficulty;
+}
+draw(){
+ctx.fillStyle="#00ff00";
+ctx.beginPath();
+ctx.arc(this.x,this.y,10,0,Math.PI*2);
+ctx.fill();
+}
 }
 
-class Enemy{
-    constructor(){
-        this.x=Math.random()*canvas.width;
-        this.y=-40;
-        this.z=Math.random()*400;
-        this.speed=2+(score/1000);
-    }
-    draw(){
-        let scale=200/(this.z+200);
-        ctx.save();
-        ctx.font=`${28*scale}px Arial`;
-        ctx.fillStyle="#0f0";
-        ctx.shadowBlur=20;
-        ctx.shadowColor="#0f0";
-        ctx.fillText("👾",this.x,this.y);
-        ctx.restore();
-    }
-    update(){
-        this.y+=this.speed;
-        this.z-=1;
-    }
+class Boss{
+constructor(){
+this.x=canvas.width/2;
+this.y=100;
+this.health=300;
+this.maxHealth=300;
+}
+draw(){
+ctx.fillStyle="red";
+ctx.beginPath();
+ctx.arc(this.x,this.y,40,0,Math.PI*2);
+ctx.fill();
+}
 }
 
 class Bullet{
-    constructor(x,y){
-        this.x=x; this.y=y;
-        this.z=0;
-        this.speed=15;
-    }
-    draw(){
-        let scale=1+this.z*0.01;
-        ctx.fillStyle="#00ff00";
-        ctx.fillRect(this.x-2*scale,this.y-20*scale,4*scale,20*scale);
-    }
-    update(){
-        this.y-=this.speed;
-        this.z+=5;
-    }
+constructor(x,y){
+this.x=x;
+this.y=y;
+this.speed=10;
+}
+draw(){
+ctx.fillStyle="#00ffff";
+ctx.fillRect(this.x,this.y,3,10);
+}
+}
+
+function spawnEnemy(){
+if(!boss){
+enemies.push(new Enemy());
+}
 }
 
 function shoot(){
-    if(!gameActive) return;
-    bullets.push(new Bullet(mouseX,mouseY));
-    playSound(440,"square",0.1);
+bullets.push(new Bullet(mouseX,mouseY));
 }
-window.addEventListener("mousedown",shoot);
-window.addEventListener("keydown",e=>{
-    if(e.code==="Space") shoot();
-});
+
+addEventListener("click",shoot);
 
 function gameLoop(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    if(gameActive){
-        drawShip(mouseX,mouseY);
-        if(Math.random()<0.05) enemies.push(new Enemy());
-        bullets.forEach((b,bi)=>{
-            b.update(); b.draw();
-            enemies.forEach((e,ei)=>{
-                if(Math.hypot(e.x-b.x,e.y-b.y)<35){
-                    enemies.splice(ei,1);
-                    bullets.splice(bi,1);
-                    score+=10;
-                    document.getElementById("score").innerText=score.toString().padStart(4,"0");
-                    playSound(150,"sine",0.05);
-                }
-            });
-            if(b.y<0) bullets.splice(bi,1);
-        });
-        enemies.forEach((e,i)=>{
-            e.update(); e.draw();
-            if(e.y>canvas.height){
-                enemies.splice(i,1);
-                leaks++;
-                document.getElementById("leaks").innerText=leaks;
-                if(leaks>=30) systemReboot();
-            }
-        });
-    }
-    requestAnimationFrame(gameLoop);
-}
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-function systemReboot(){
-    gameActive=false;
-    leaks=0; score=0;
-    enemies=[]; bullets=[];
-    document.getElementById("score").innerText="0000";
-    document.getElementById("leaks").innerText="0";
-    document.getElementById("hud").style.display="none";
-    document.getElementById("start-screen").style.display="flex";
-}
+difficulty=1+score/500;
 
-document.getElementById("start-btn").addEventListener("click",()=>{
-    audioCtx.resume();
-    document.getElementById("start-screen").style.display="none";
-    document.getElementById("hud").style.display="block";
-    gameActive=true;
+if(Math.random()<0.02*difficulty)spawnEnemy();
+
+bullets.forEach((b,i)=>{
+b.y-=b.speed;
+b.draw();
+if(b.y<0)bullets.splice(i,1);
 });
 
-initStars();
-drawStars();
+enemies.forEach((e,i)=>{
+e.y+=e.speed;
+e.draw();
+if(e.y>canvas.height){
+leaks++;
+enemies.splice(i,1);
+}
+bullets.forEach((b,bi)=>{
+if(Math.hypot(e.x-b.x,e.y-b.y)<15){
+score+=10;
+enemies.splice(i,1);
+bullets.splice(bi,1);
+}
+});
+});
+
+if(score>=1000&&!boss){
+boss=new Boss();
+document.getElementById("bossBar").style.display="block";
+}
+
+if(boss){
+boss.draw();
+bullets.forEach((b,bi)=>{
+if(Math.hypot(boss.x-b.x,boss.y-b.y)<45){
+boss.health-=5;
+bullets.splice(bi,1);
+}
+});
+document.getElementById("bossHealth").style.width=
+(boss.health/boss.maxHealth*100)+"%";
+
+if(boss.health<=0){
+score+=500;
+boss=null;
+document.getElementById("bossBar").style.display="none";
+}
+}
+
+ctx.fillStyle="#00ff00";
+ctx.beginPath();
+ctx.moveTo(mouseX,mouseY-15);
+ctx.lineTo(mouseX-10,mouseY+10);
+ctx.lineTo(mouseX+10,mouseY+10);
+ctx.closePath();
+ctx.stroke();
+
+document.getElementById("score").innerText=score;
+document.getElementById("leaks").innerText=leaks;
+
+if(game)requestAnimationFrame(gameLoop);
+}
+
+document.getElementById("start").onclick=()=>{
+document.getElementById("start").style.display="none";
 gameLoop();
+loadLeaderboard();
+};
+
+// --------- RANKING API ---------
+
+async function saveScore(){
+await fetch("https://SEU_BACKEND_RENDER_URL/score",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({score})
+});
+}
+
+async function loadLeaderboard(){
+const res=await fetch("https://SEU_BACKEND_RENDER_URL/leaderboard");
+const data=await res.json();
+let html="<h3>TOP 10</h3>";
+data.forEach((d,i)=>{
+html+=`${i+1}. ${d.score}<br>`;
+});
+document.getElementById("leaderboard").innerHTML=html;
+}
 </script>
 </body>
 </html>
