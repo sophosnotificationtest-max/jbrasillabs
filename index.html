@@ -1,251 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JBrasil Labs - Cyber Defense AAA</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-body, html {
-    margin:0;
-    padding:0;
-    overflow:hidden;
-    background: radial-gradient(circle at center,#001100,#000);
-    font-family: monospace;
-    cursor: none;
-    color: #00ff00;
-}
-canvas { position: fixed; top:0; left:0; }
-#hud {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    font-size: 14px;
-    z-index: 100;
-}
-#bossBar {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    height: 20px;
-    border: 2px solid red;
-    display: none;
-}
-#bossHealth { height: 100%; background: red; width: 100%; }
-#start {
-    position: fixed;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:black;
-    z-index:200;
-    cursor:pointer;
-    font-size:20px;
-}
-#leaderboard {
-    position: fixed;
-    right: 20px;
-    top: 20px;
-    font-size: 12px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBrasil Labs - Cyber Defense SOC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; cursor: none; color: #00ff00; }
+        #bg-circuits { position: fixed; inset: 0; z-index: 0; opacity: 0.3; }
+        #bg-logo-watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; opacity: 0.07; z-index: 0; pointer-events: none; filter: grayscale(1); }
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 10px; line-height: 2.5; pointer-events: none; }
+        .controls { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .action-btn { border: 1px solid #00ff00; padding: 10px 20px; font-family: 'Press Start 2P', cursive; font-size: 9px; color: #00ff00; background: rgba(0,255,0,0.1); transition: 0.3s; cursor: pointer; width: 220px; text-align: center; }
+        .action-btn:hover { background: #00ff00; color: #000; box-shadow: 0 0 20px #00ff00; }
+        #bossBar { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); width: 400px; height: 12px; border: 1px solid red; display: none; z-index: 150; }
+        #bossHealth { height: 100%; background: red; width: 100%; transition: width 0.3s; }
+        #overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.95); z-index: 300; transition: opacity 0.5s; }
+        #main-logo { width: 550px; max-width: 85%; filter: drop-shadow(0 0 20px #00ff00); margin-bottom: 40px; }
+        .prompt { font-family: 'Press Start 2P', cursive; font-size: 16px; animation: blink 1s infinite; cursor: pointer; }
+        #leaderboard { position: fixed; bottom: 60px; right: 20px; font-size: 9px; text-align: right; z-index: 100; color: #008800; line-height: 1.8; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
 </head>
 <body>
 
-<canvas id="game"></canvas>
+<canvas id="bg-circuits"></canvas>
+<img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="bg-logo-watermark">
 
-<div id="hud">
-Score: <span id="score">0</span><br>
-Leaks: <span id="leaks">0</span>
+<div class="hud">
+    SCORE: <span id="score">0</span><br>
+    BREACHES: <span id="leaks">0</span>/30
 </div>
 
 <div id="bossBar"><div id="bossHealth"></div></div>
 <div id="leaderboard"></div>
 
-<div id="start">CLICK TO START</div>
+<div class="controls" id="ui-controls" style="display: none;">
+    <button class="action-btn" onclick="window.open('mailto:jonas.brasil@jbrasillabs.com.br')">CONTACT EXPERT</button>
+</div>
+
+<div id="overlay">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
+    <div class="prompt" id="start-btn">INITIALIZE DEFENSE</div>
+</div>
+
+<canvas id="game"></canvas>
 
 <script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+const cCanvas = document.getElementById("bg-circuits");
+const cCtx = cCanvas.getContext("2d");
 
-let score = 0, leaks = 0, gameRunning = true;
-let enemies = [], bullets = [], boss = null;
-let difficulty = 1;
+let score = 0, leaks = 0, gameRunning = false, dots = [];
+let enemies = [], bullets = [], particles = [], boss = null;
+let mouseX = innerWidth/2, mouseY = innerHeight/2;
 
-let mouseX = canvas.width/2;
-let mouseY = canvas.height/2;
+function resize() {
+    canvas.width = cCanvas.width = innerWidth;
+    canvas.height = cCanvas.height = innerHeight;
+    initCircuits();
+}
+window.addEventListener("resize", resize);
+resize();
 
-addEventListener("mousemove", e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
+addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
 
-// --- Classes ---
-class Enemy {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = -20;
-        this.speed = 2 * difficulty;
-    }
-    draw() {
-        ctx.fillStyle = "#00ff00";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
-        ctx.fill();
+function initCircuits() {
+    dots = [];
+    for(let i=0; i<60; i++) {
+        dots.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4 });
     }
 }
 
-class Boss {
-    constructor() {
-        this.x = canvas.width/2;
-        this.y = 100;
-        this.health = 300;
-        this.maxHealth = 300;
+function drawCircuits() {
+    cCtx.clearRect(0,0,innerWidth,innerHeight);
+    cCtx.strokeStyle = "rgba(0, 255, 0, 0.1)";
+    dots.forEach((d, i) => {
+        d.x += d.vx; d.y += d.vy;
+        if(d.x<0 || d.x>innerWidth) d.vx*=-1;
+        if(d.y<0 || d.y>innerHeight) d.vy*=-1;
+        dots.slice(i+1).forEach(d2 => {
+            let dist = Math.hypot(d.x - d2.x, d.y - d2.y);
+            if(dist < 150) {
+                cCtx.beginPath(); cCtx.moveTo(d.x, d.y); cCtx.lineTo(d2.x, d2.y); cCtx.stroke();
+            }
+        });
+    });
+}
+
+// --- Sistema de Explosão ---
+class Particle {
+    constructor(x, y, color) {
+        this.x = x; this.y = y;
+        this.color = color;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 6;
+        this.speedY = (Math.random() - 0.5) * 6;
+        this.life = 1;
+        this.decay = Math.random() * 0.02 + 0.015;
+    }
+    update() {
+        this.x += this.speedX; this.y += this.speedY;
+        this.life -= this.decay;
     }
     draw() {
-        ctx.fillStyle = "red";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 40, 0, Math.PI*2);
-        ctx.fill();
+        ctx.fillStyle = this.color.replace('opacity', this.life);
+        ctx.fillRect(this.x, this.y, this.size, this.size);
     }
+}
+
+function createExplosion(x, y, color) {
+    for(let i=0; i<15; i++) {
+        particles.push(new Particle(x, y, color));
+    }
+}
+
+class Enemy {
+    constructor() {
+        this.x = Math.random() * (canvas.width - 40) + 20;
+        this.y = -20;
+        this.speed = 1.5 + (score / 2000);
+    }
+    update() { this.y += this.speed; }
+    draw() { ctx.font = "24px Arial"; ctx.fillText("👾", this.x - 12, this.y + 8); }
 }
 
 class Bullet {
-    constructor(x,y) {
-        this.x = x;
-        this.y = y;
-        this.speed = 10;
-    }
+    constructor(x, y) { this.x = x; this.y = y - 20; this.speed = 18; }
     draw() {
         ctx.fillStyle = "#00ffff";
-        ctx.fillRect(this.x, this.y, 3, 10);
+        ctx.fillRect(this.x - 1, this.y, 3, 15);
     }
 }
 
-// --- Funções de Jogo ---
-function spawnEnemy() {
-    if(!boss) enemies.push(new Enemy());
-}
-
-function shoot() {
-    bullets.push(new Bullet(mouseX, mouseY));
-}
-
-addEventListener("click", shoot);
-
-function gameOver() {
-    gameRunning = false;
-    saveScore(score);
-    alert("Game Over! Score final: " + score);
-}
+function shoot() { if(gameRunning) bullets.push(new Bullet(mouseX, mouseY)); }
+addEventListener("mousedown", shoot);
 
 function gameLoop() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    drawCircuits();
 
-    difficulty = 1 + score/500;
+    if(gameRunning) {
+        if(Math.random() < 0.03 + (score/25000)) enemies.push(new Enemy());
 
-    if(Math.random() < 0.02 * difficulty) spawnEnemy();
-
-    bullets.forEach((b,i)=>{
-        b.y -= b.speed;
-        b.draw();
-        if(b.y < 0) bullets.splice(i,1);
-    });
-
-    enemies.forEach((e,i)=>{
-        e.y += e.speed;
-        e.draw();
-
-        if(e.y > canvas.height) {
-            leaks++;
-            enemies.splice(i,1);
-            if(leaks >= 10) gameOver(); // Fim do jogo
-        }
-
-        bullets.forEach((b,bi)=>{
-            if(Math.hypot(e.x-b.x,e.y-b.y)<15){
-                score += 10;
-                enemies.splice(i,1);
-                bullets.splice(bi,1);
-            }
+        particles.forEach((p, i) => {
+            p.update(); p.draw();
+            if(p.life <= 0) particles.splice(i, 1);
         });
-    });
 
-    if(score >= 1000 && !boss){
-        boss = new Boss();
-        document.getElementById("bossBar").style.display = "block";
+        bullets.forEach((b, bi) => {
+            b.y -= b.speed; b.draw();
+            if(b.y < 0) bullets.splice(bi, 1);
+        });
+
+        enemies.forEach((e, ei) => {
+            e.update(); e.draw();
+            if(e.y > canvas.height) {
+                leaks++; enemies.splice(ei, 1);
+                if(leaks >= 30) { gameRunning = false; document.getElementById("overlay").style.display = "flex"; }
+            }
+            bullets.forEach((b, bi) => {
+                if(Math.hypot(e.x - b.x, e.y - b.y) < 25) {
+                    createExplosion(e.x, e.y, "rgba(0, 255, 0, opacity)");
+                    score += 10; enemies.splice(ei, 1); bullets.splice(bi, 1);
+                }
+            });
+        });
+
+        // Nave
+        ctx.save();
+        ctx.translate(mouseX, mouseY);
+        ctx.strokeStyle = "#00ff00"; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, -20); ctx.lineTo(-15, 10); ctx.lineTo(0, 3); ctx.lineTo(15, 10);
+        ctx.closePath(); ctx.stroke();
+        ctx.restore();
     }
 
-    if(boss){
-        boss.draw();
-        bullets.forEach((b,bi)=>{
-            if(Math.hypot(boss.x-b.x,boss.y-b.y)<45){
-                boss.health -= 5;
-                bullets.splice(bi,1);
-            }
-        });
-        document.getElementById("bossHealth").style.width = (boss.health/boss.maxHealth*100)+"%";
-
-        if(boss.health <= 0){
-            score += 500;
-            boss = null;
-            document.getElementById("bossBar").style.display = "none";
-        }
-    }
-
-    // Cursor
-    ctx.fillStyle="#00ff00";
-    ctx.beginPath();
-    ctx.moveTo(mouseX,mouseY-15);
-    ctx.lineTo(mouseX-10,mouseY+10);
-    ctx.lineTo(mouseX+10,mouseY+10);
-    ctx.closePath();
-    ctx.stroke();
-
-    // Atualiza HUD
     document.getElementById("score").innerText = score;
     document.getElementById("leaks").innerText = leaks;
-
-    if(gameRunning) requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
 }
 
-// --- Leaderboard ---
-async function saveScore(score) {
-    try {
-        await fetch("https://jbrasillabs-1.onrender.com/score", {
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({score})
-        });
-        loadLeaderboard();
-    } catch(e) { console.error("Erro ao salvar score:", e); }
-}
-
-async function loadLeaderboard() {
-    try {
-        const res = await fetch("https://jbrasillabs-1.onrender.com/leaderboard");
-        const data = await res.json();
-        let html = "<h3>TOP 10</h3>";
-        data.forEach((d,i)=>{ html += `${i+1}. ${d.score}<br>`; });
-        document.getElementById("leaderboard").innerHTML = html;
-    } catch(e){ console.error("Erro ao carregar leaderboard:", e); }
-}
-
-// --- Start Game ---
-document.getElementById("start").onclick = () => {
-    document.getElementById("start").style.display = "none";
-    gameLoop();
-    loadLeaderboard();
+document.getElementById("start-btn").onclick = () => {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("ui-controls").style.display = "flex";
+    score = 0; leaks = 0; enemies = []; bullets = []; particles = [];
+    gameRunning = true;
 };
 
-// Atualiza leaderboard ao carregar a página
-window.addEventListener("DOMContentLoaded", loadLeaderboard);
+// --- Mockup de Leaderboard para funcionamento visual ---
+function loadLeaderboard() {
+    let html = "<strong>SOC RANKING</strong><br>";
+    let ranks = [2500, 1800, 1200, 950, 400];
+    ranks.forEach((s, i) => html += `${i+1}º - ${s} PTS<br>`);
+    document.getElementById("leaderboard").innerHTML = html;
+}
 
+loadLeaderboard();
+gameLoop();
 </script>
 </body>
 </html>
