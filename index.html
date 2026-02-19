@@ -1,302 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>JBrasil Labs - Interstellar SOC Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Press Start 2P', cursive; cursor: none; color: #00ff00; }
+        canvas { position: fixed; inset: 0; }
+        #bg-space { z-index: 0; }
+        #game-layer { z-index: 1; }
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; color: #fff; text-shadow: 0 0 10px #00ff00; line-height: 2.2; }
+        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.85); padding: 15px; border: 1px solid rgba(0,255,0,0.4); text-align: right; backdrop-filter: blur(5px); }
+        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 9px; background: rgba(0,0,0,0.8); padding: 12px; border-left: 3px solid #0ff; backdrop-filter: blur(5px); min-width: 280px; color: #0ff; }
+        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.92); z-index: 300; }
+        #main-logo { width: 320px; margin-bottom: 40px; filter: drop-shadow(0 0 15px #00ff00); }
+        .btn-ui { font-size: 12px; cursor: pointer; border: 2px solid #00ff00; padding: 15px 35px; background: transparent; color: #00ff00; transition: 0.4s; letter-spacing: 2px; }
+        .btn-ui:hover:not(.disabled) { background: #00ff00; color: #000; box-shadow: 0 0 40px #00ff00; }
+        .btn-ui.disabled { opacity: 0.3; cursor: wait; border-color: #444; color: #444; }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-space"></canvas>
+<canvas id="game-layer"></canvas>
+
+<div class="hud">
+    SCORE_ <span id="score">0000</span><br>
+    SHIELD_ <span id="lives">100%</span><br>
+    STATUS_ <span id="status-text" style="color:#0ff">STABLE</span>
+</div>
+
+<div id="leaderboard-fixed">
+    <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00;">TOP DEFENDERS</div>
+    <div id="rank-list">LOADING...</div>
+</div>
+
+<div id="geo-terminal">> [SYSTEM] NEURAL CORE<br><span id="location-data">> [SOC] SCANNING...</span></div>
+
+<div id="start-screen" class="overlay">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
+    <div id="start-btn" class="btn-ui disabled">WAITING SYNC...</div>
+</div>
+
+<div id="game-over-screen" class="overlay" style="display:none">
+    <h1 style="color: #ff3333; font-size: 26px; margin-bottom: 10px;">SYSTEM BREACH</h1>
+    <div style="font-size: 10px; margin-bottom: 30px;">FINAL SCORE: <span id="final-score">0</span></div>
+    <div class="btn-ui" style="border-color: #f33; color: #f33;" onclick="location.reload()">REBOOT CORE</div>
+</div>
+
 <script>
-// =======================
-// 🎵 AUDIO ENGINE
-// =======================
+// --- AUDIO ENGINE ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function sfx(freq,type,duration,vol=0.1){
-    if(audioCtx.state==="suspended") audioCtx.resume();
-    const osc=audioCtx.createOscillator();
-    const gain=audioCtx.createGain();
-    osc.type=type;
-    osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
-    gain.gain.setValueAtTime(vol,audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+duration);
+function sfx(freq, type, duration, vol=0.1) {
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
     osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime+duration);
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
 }
 
-// =======================
-// 🎮 CORE
-// =======================
-const bgCanvas=document.getElementById("bg-space");
-const gCanvas=document.getElementById("game-layer");
-const sCtx=bgCanvas.getContext("2d");
-const gCtx=gCanvas.getContext("2d");
+// --- CORE VARS ---
+const bgCanvas=document.getElementById("bg-space"), gCanvas=document.getElementById("game-layer");
+const sCtx=bgCanvas.getContext("2d"), gCtx=gCanvas.getContext("2d");
+let score=0, lives=3, gameRunning=false, tick=0;
+let enemies=[], bullets=[], particles=[], explosions=[], stars=[];
+let boss=null, overdrive=false, overdriveTimer=0;
+let mouseX=innerWidth/2, mouseY=innerHeight/2;
+let userLoc="BR", userIP="0.0.0.0";
 
-let score=0,lives=3,gameRunning=false,tick=0;
-let enemies=[],bullets=[],particles=[],explosions=[];
-let boss=null;
-let mouseX=innerWidth/2,mouseY=innerHeight/2;
-let overdrive=false,overdriveTimer=0;
-
-// =======================
-// 🌌 BACKGROUND
-// =======================
-let stars=[];
-function init(){
+// --- INIT ---
+function init() {
     bgCanvas.width=gCanvas.width=innerWidth;
     bgCanvas.height=gCanvas.height=innerHeight;
     stars=[];
-    for(let i=0;i<300;i++){
-        stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2});
-    }
+    for(let i=0; i<300; i++) stars.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*2});
 }
+window.addEventListener("resize", init);
 init();
-window.addEventListener("resize",init);
 
-// =======================
-// 🚀 PLAYER
-// =======================
-function drawPlayer(){
+// --- API SYNC ---
+async function fetchTop10() {
+    try {
+        const r = await fetch('https://jbrasillabs-1.onrender.com/leaderboard');
+        const data = await r.json();
+        let html = ""; 
+        data.slice(0, 10).forEach((d, i) => html += `${i+1}º ${d.score} [${d.country || 'BR'}]<br>`);
+        document.getElementById("rank-list").innerHTML = html || "EMPTY";
+    } catch(e) { document.getElementById("rank-list").innerText = "OFFLINE"; }
+}
+
+function sendLog(msg) {
+    fetch('https://jbrasillabs-1.onrender.com/log', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ entry: `[SOC] ${msg} | IP: ${userIP} [${userLoc}]` }) 
+    }).catch(e=>{});
+}
+
+// --- EXPLOSION ---
+function explode(x, y) {
+    for(let i=0; i<25; i++) {
+        explosions.push({ x, y, vx:(Math.random()-0.5)*8, vy:(Math.random()-0.5)*8, life:1 });
+    }
+    sfx(120, "sawtooth", 0.2, 0.2);
+}
+
+// --- DRAWING FUNCTIONS ---
+function drawPlayer() {
     gCtx.save();
-    gCtx.translate(mouseX,mouseY);
-
+    gCtx.translate(mouseX, mouseY);
     let glow = overdrive ? "#ff0" : "#0ff";
-    gCtx.shadowBlur=20;
-    gCtx.shadowColor=glow;
-    gCtx.strokeStyle=glow;
-    gCtx.lineWidth=2;
-
+    gCtx.shadowBlur=20; gCtx.shadowColor=glow; gCtx.strokeStyle=glow; gCtx.lineWidth=2;
     gCtx.beginPath();
-    gCtx.moveTo(0,-20);
-    gCtx.lineTo(15,10);
-    gCtx.lineTo(0,5);
-    gCtx.lineTo(-15,10);
-    gCtx.closePath();
-    gCtx.stroke();
-
-    gCtx.fillStyle=glow;
-    gCtx.globalAlpha=0.6+Math.sin(tick*0.2)*0.3;
-    gCtx.beginPath();
-    gCtx.arc(0,0,6,0,Math.PI*2);
-    gCtx.fill();
-
+    gCtx.moveTo(0,-20); gCtx.lineTo(15,10); gCtx.lineTo(0,5); gCtx.lineTo(-15,10);
+    gCtx.closePath(); gCtx.stroke();
     gCtx.restore();
-    gCtx.globalAlpha=1;
-    gCtx.shadowBlur=0;
-
+    
     // Propulsão
-    for(let i=0;i<2;i++){
-        particles.push({
-            x:mouseX+(Math.random()*6-3),
-            y:mouseY+15,
-            vx:(Math.random()-0.5)*1,
-            vy:2+Math.random()*2,
-            life:1,
-            color:glow
-        });
+    for(let i=0; i<2; i++) {
+        particles.push({ x:mouseX, y:mouseY+10, vx:(Math.random()-0.5)*2, vy:2+Math.random()*2, life:1, color:glow });
     }
 }
 
-// =======================
-// 👾 ENEMY
-// =======================
-function spawnEnemy(){
-    enemies.push({
-        x:Math.random()*innerWidth,
-        y:-40,
-        size:20+Math.random()*10,
-        speed:2+score/1000,
-        rot:0,
-        hit:false
-    });
-}
-
-function drawEnemy(e){
+function drawEnemy(e) {
     gCtx.save();
-    gCtx.translate(e.x,e.y);
+    gCtx.translate(e.x, e.y);
     gCtx.rotate(e.rot);
-
     gCtx.strokeStyle=e.hit?"#fff":"#f33";
     gCtx.lineWidth=2;
-    gCtx.shadowBlur=15;
-    gCtx.shadowColor="#f00";
-
     gCtx.beginPath();
-    gCtx.moveTo(0,-e.size);
-    gCtx.lineTo(e.size,e.size);
-    gCtx.lineTo(-e.size,e.size);
-    gCtx.closePath();
-    gCtx.stroke();
-
+    gCtx.moveTo(0,-e.size); gCtx.lineTo(e.size, e.size); gCtx.lineTo(-e.size, e.size);
+    gCtx.closePath(); gCtx.stroke();
     gCtx.restore();
-    gCtx.shadowBlur=0;
     e.hit=false;
 }
 
-// =======================
-// 💥 EXPLOSION
-// =======================
-function explode(x,y){
-    for(let i=0;i<25;i++){
-        explosions.push({
-            x,y,
-            vx:(Math.random()-0.5)*8,
-            vy:(Math.random()-0.5)*8,
-            life:1
-        });
-    }
-    sfx(120,"sawtooth",0.2,0.2);
-}
-
-// =======================
-// 👑 BOSS
-// =======================
-function spawnBoss(){
-    boss={
-        x:innerWidth/2,
-        y:120,
-        health:300,
-        phase:1
-    };
-}
-
-function drawBoss(){
-    gCtx.save();
-    gCtx.translate(boss.x,boss.y);
-    gCtx.strokeStyle="#ff00ff";
-    gCtx.lineWidth=4;
-    gCtx.shadowBlur=25;
-    gCtx.shadowColor="#ff00ff";
-    gCtx.beginPath();
-    gCtx.arc(0,0,60,0,Math.PI*2);
-    gCtx.stroke();
-    gCtx.restore();
-    gCtx.shadowBlur=0;
-}
-
-// =======================
-// 🎮 LOOP
-// =======================
-function loop(){
+// --- GAME LOOP ---
+function loop() {
     tick++;
-
-    // Background
-    sCtx.fillStyle="#000";
-    sCtx.fillRect(0,0,innerWidth,innerHeight);
-    stars.forEach(st=>{
-        sCtx.fillStyle="#fff";
-        sCtx.fillRect(st.x,st.y,st.s,st.s);
-    });
-
+    sCtx.fillStyle="#000"; sCtx.fillRect(0,0,innerWidth,innerHeight);
+    stars.forEach(st=>{ sCtx.fillStyle="#fff"; sCtx.fillRect(st.x, st.y, st.s, st.s); });
     gCtx.clearRect(0,0,innerWidth,innerHeight);
 
-    if(gameRunning){
-
-        if(tick%40===0) spawnEnemy();
-
-        if(score>1000 && !boss) spawnBoss();
+    if(gameRunning) {
+        if(tick%40===0 && !boss) enemies.push({x:Math.random()*innerWidth, y:-40, size:20+Math.random()*10, speed:2+score/1000, rot:0, hit:false});
+        if(score>=1000 && !boss) boss={x:innerWidth/2, y:120, health:300};
 
         bullets.forEach((b,i)=>{
             b.y-=b.speed;
-            gCtx.fillStyle="#fff";
-            gCtx.fillRect(b.x,b.y,4,15);
+            gCtx.fillStyle="#fff"; gCtx.fillRect(b.x, b.y, 4, 15);
             if(b.y<0) bullets.splice(i,1);
         });
 
         enemies.forEach((e,i)=>{
-            e.y+=e.speed;
-            e.rot+=0.05;
+            e.y+=e.speed; e.rot+=0.05;
             drawEnemy(e);
-
             if(e.y>innerHeight){
-                lives--;
-                document.body.style.background="#200";
-                setTimeout(()=>document.body.style.background="#000",100);
-                enemies.splice(i,1);
+                lives--; enemies.splice(i,1);
+                document.body.style.background="#300"; setTimeout(()=>document.body.style.background="#000",100);
                 if(lives<=0) endGame();
             }
-
             bullets.forEach((b,bi)=>{
-                if(Math.hypot(b.x-e.x,b.y-e.y)<e.size){
-                    score+=10;
-                    e.hit=true;
-                    explode(e.x,e.y);
-                    enemies.splice(i,1);
-                    bullets.splice(bi,1);
+                if(Math.hypot(b.x-e.x, b.y-e.y)<e.size){
+                    score+=10; explode(e.x, e.y); enemies.splice(i,1); bullets.splice(bi,1);
                 }
             });
         });
 
         if(boss){
-            drawBoss();
+            gCtx.strokeStyle="#f0f"; gCtx.lineWidth=4; gCtx.strokeRect(boss.x-60, boss.y-60, 120, 120);
             bullets.forEach((b,bi)=>{
-                if(Math.hypot(b.x-boss.x,b.y-boss.y)<60){
-                    boss.health-=5;
-                    bullets.splice(bi,1);
-                    if(boss.health<=0){
-                        score+=500;
-                        explode(boss.x,boss.y);
-                        boss=null;
-                        overdrive=true;
-                        overdriveTimer=300;
-                    }
+                if(Math.hypot(b.x-boss.x, b.y-boss.y)<60){
+                    boss.health-=5; bullets.splice(bi,1);
+                    if(boss.health<=0){ score+=500; explode(boss.x, boss.y); boss=null; overdrive=true; overdriveTimer=300; }
                 }
             });
         }
 
         if(overdrive){
             overdriveTimer--;
-            if(overdriveTimer<=0) overdrive=false;
+            document.getElementById("status-text").innerText="OVERDRIVE";
+            document.getElementById("status-text").style.color="#ff0";
+            if(overdriveTimer<=0) {
+                overdrive=false;
+                document.getElementById("status-text").innerText="STABLE";
+                document.getElementById("status-text").style.color="#0ff";
+            }
         }
     }
 
-    // Particles
     particles.forEach((p,i)=>{
-        p.x+=p.vx;
-        p.y+=p.vy;
-        p.life-=0.04;
-        gCtx.fillStyle=`rgba(0,255,255,${p.life})`;
-        gCtx.fillRect(p.x,p.y,3,3);
+        p.y+=p.vy; p.life-=0.04;
+        gCtx.fillStyle=p.color; gCtx.globalAlpha=p.life;
+        gCtx.fillRect(p.x, p.y, 2, 2); gCtx.globalAlpha=1;
         if(p.life<=0) particles.splice(i,1);
     });
 
     explosions.forEach((ex,i)=>{
-        ex.x+=ex.vx;
-        ex.y+=ex.vy;
-        ex.life-=0.03;
+        ex.x+=ex.vx; ex.y+=ex.vy; ex.life-=0.03;
         gCtx.fillStyle=`rgba(255,100,0,${ex.life})`;
-        gCtx.fillRect(ex.x,ex.y,4,4);
+        gCtx.fillRect(ex.x, ex.y, 4, 4);
         if(ex.life<=0) explosions.splice(i,1);
     });
 
     drawPlayer();
-
     document.getElementById("score").innerText=score.toString().padStart(4,"0");
     document.getElementById("lives").innerText=(lives*33.3).toFixed(0)+"%";
-
     requestAnimationFrame(loop);
 }
-loop();
 
-// =======================
-// 🖱 CONTROLES
-// =======================
-window.addEventListener("mousemove",e=>{
-    mouseX=e.clientX;
-    mouseY=e.clientY;
-});
-
-window.addEventListener("mousedown",()=>{
+// --- CONTROLS ---
+window.addEventListener("mousemove", e=>{ mouseX=e.clientX; mouseY=e.clientY; });
+window.addEventListener("mousedown", ()=>{
     if(gameRunning){
-        bullets.push({x:mouseX,y:mouseY,speed: overdrive?25:18});
-        sfx(800,"triangle",0.1,0.1);
+        bullets.push({x:mouseX, y:mouseY, speed: overdrive?25:15});
+        sfx(800, "triangle", 0.1, 0.1);
     }
 });
 
-// =======================
-// 🎮 GAME CONTROL
-// =======================
 function startGame(){
     document.getElementById("start-screen").style.display="none";
-    score=0;lives=3;enemies=[];bullets=[];boss=null;
-    gameRunning=true;
+    score=0; lives=3; enemies=[]; bullets=[]; boss=null; gameRunning=true;
+    sendLog("SESSION_START");
 }
 
-function endGame(){
+async function endGame(){
     gameRunning=false;
-    document.getElementById("game-over-screen").style.display="flex";
     document.getElementById("final-score").innerText=score;
-    sfx(60,"sine",1,0.3);
+    document.getElementById("game-over-screen").style.display="flex";
+    try {
+        await fetch('https://jbrasillabs-1.onrender.com/score', { 
+            method: 'POST', headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ score, country: userLoc }) 
+        });
+        fetchTop10();
+    } catch(e){}
 }
+
+// --- SYNC ---
+const unlock = () => {
+    const btn=document.getElementById("start-btn");
+    btn.innerText="INITIALIZE DEFENSE"; btn.classList.remove("disabled");
+    btn.onclick=startGame;
+};
+setTimeout(unlock, 3000);
+fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>{
+    userIP=d.ip;
+    fetch(`https://ipapi.co/${d.ip}/json/`).then(r2=>r2.json()).then(d2=>{
+        userLoc=d2.country_code || "BR";
+        document.getElementById("location-data").innerHTML=`> [IP] ${userIP}<br>> [LOC] ${d2.city}`;
+        unlock();
+    });
+}).catch(unlock);
+
+fetchTop10();
+loop();
 </script>
+</body>
+</html>
