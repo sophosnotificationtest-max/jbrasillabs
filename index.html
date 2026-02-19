@@ -2,221 +2,162 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>JBrasil Labs - Interstellar SOC Threat</title>
+    <title>JBrasil Labs - SOC Level System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Press Start 2P', cursive; cursor: none; color: #00ff00; }
         canvas { position: fixed; inset: 0; }
-        
-        /* Efeito de Tremor */
+        #bg-space { z-index: 0; }
+        #game-layer { z-index: 1; image-rendering: pixelated; }
         .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-2px, -2px, 0); }
-            20%, 80% { transform: translate3d(4px, 4px, 0); }
-            30%, 50%, 70% { transform: translate3d(-6px, -6px, 0); }
-            40%, 60% { transform: translate3d(6px, 6px, 0); }
-        }
-
-        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; color: #fff; text-shadow: 0 0 10px #00ff00; line-height: 2.2; }
-        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.85); padding: 15px; border: 1px solid rgba(0,255,0,0.4); text-align: right; backdrop-filter: blur(5px); }
-        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 9px; background: rgba(0,0,0,0.8); padding: 12px; border-left: 3px solid #0ff; backdrop-filter: blur(5px); min-width: 280px; color: #0ff; }
-        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.92); z-index: 300; }
-        #main-logo { width: 320px; margin-bottom: 40px; filter: drop-shadow(0 0 15px #00ff00); }
-        .btn-ui { font-size: 12px; cursor: pointer; border: 2px solid #00ff00; padding: 15px 35px; background: transparent; color: #00ff00; transition: 0.4s; letter-spacing: 2px; }
-        .btn-ui:hover:not(.disabled) { background: #00ff00; color: #000; box-shadow: 0 0 40px #00ff00; }
-        .btn-ui.disabled { opacity: 0.3; cursor: wait; border-color: #444; color: #444; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-2px, -2px, 0); } 20%, 80% { transform: translate3d(4px, 4px, 0); } 30%, 50%, 70% { transform: translate3d(-6px, -6px, 0); } }
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; color: #fff; text-shadow: 0 0 10px #00ff00; line-height: 1.8; }
+        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.85); padding: 15px; border: 1px solid rgba(0,255,0,0.3); text-align: right; backdrop-filter: blur(5px); }
+        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 300; }
+        .btn-ui { font-size: 12px; cursor: pointer; border: 3px solid #00ff00; padding: 15px 30px; background: transparent; color: #00ff00; transition: 0.3s; }
+        .btn-ui:hover:not(.disabled) { background: #00ff00; color: #000; }
+        .btn-ui.disabled { opacity: 0.3; cursor: wait; }
     </style>
 </head>
-<body id="game-body">
+<body id="main-body">
 
 <canvas id="bg-space"></canvas>
 <canvas id="game-layer"></canvas>
 
 <div class="hud">
-    SCORE_ <span id="score">0000</span><br>
-    SHIELD_ <span id="lives">100%</span><br>
-    STATUS_ <span id="status-text" style="color:#0ff">STABLE</span>
+    SCORE: <span id="score-val">0000</span><br>
+    LEVEL: <span id="level-val">1</span><br>
+    SHIELD: <span id="lives-val">100%</span><br>
+    WEAPON: <span id="weapon-status" style="color: #0ff;">STANDARD</span>
 </div>
 
 <div id="leaderboard-fixed">
     <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00;">TOP DEFENDERS</div>
-    <div id="rank-list">SYNCING...</div>
+    <div id="rank-list">WAITING...</div>
 </div>
-
-<div id="geo-terminal">> [SYSTEM] NEURAL CORE<br><span id="location-data">> [SOC] SCANNING...</span></div>
 
 <div id="start-screen" class="overlay">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
-    <div id="start-btn" class="btn-ui disabled">WAITING SYNC...</div>
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" style="width:300px; margin-bottom:30px;">
+    <div id="start-btn" class="btn-ui disabled">ESTABLISHING LINK...</div>
 </div>
 
-<div id="game-over-screen" class="overlay" style="display:none">
-    <h1 style="color: #ff3333; font-size: 26px; margin-bottom: 10px;">CORE BREACHED</h1>
-    <div class="btn-ui" style="border-color: #f33; color: #f33;" onclick="location.reload()">RELOAD SYSTEM</div>
+<div id="game-over-screen" class="overlay" style="display:none;">
+    <h1 style="color: #f33; font-size: 24px; margin-bottom: 20px;">BREACH DETECTED</h1>
+    <div class="btn-ui" onclick="location.reload()">REBOOT</div>
 </div>
 
 <script>
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function sfx(freq, type, duration, vol=0.1) {
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + duration);
+function sfx(f, t, d, v=0.05) {
+    try {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+        g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + d);
+    } catch(e) {}
 }
 
-const bgCanvas=document.getElementById("bg-space"), gCanvas=document.getElementById("game-layer");
-const sCtx=bgCanvas.getContext("2d"), gCtx=gCanvas.getContext("2d");
-let score=0, lives=3, gameRunning=false, tick=0;
-let enemies=[], bullets=[], particles=[], explosions=[], stars=[];
-let boss=null, overdrive=false, overdriveTimer=0;
+const bgCanvas = document.getElementById("bg-space"), sCtx = bgCanvas.getContext("2d");
+const gCanvas = document.getElementById("game-layer"), gCtx = gCanvas.getContext("2d");
+let score=0, lives=3, level=1, gameRunning=false, tick=0;
+let enemies=[], bullets=[], stars=[], boss=null, overdrive=0;
 let mouseX=innerWidth/2, mouseY=innerHeight/2;
 let userLoc="BR", userIP="0.0.0.0";
 
+const ALIEN = [ [0,1,0,1,0],[1,1,1,1,1],[1,0,1,0,1],[0,1,0,1,0] ];
+
 function init() {
-    bgCanvas.width=gCanvas.width=innerWidth; bgCanvas.height=gCanvas.height=innerHeight;
-    stars=[];
-    for(let i=0; i<300; i++) stars.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*2});
+    bgCanvas.width = gCanvas.width = innerWidth;
+    bgCanvas.height = gCanvas.height = innerHeight;
+    stars = Array.from({length:200}, () => ({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*2, a:Math.random()*Math.PI*2}));
 }
 window.addEventListener("resize", init);
 init();
 
-function triggerShake() {
-    const body = document.getElementById("game-body");
-    body.classList.add("shake");
-    setTimeout(() => body.classList.remove("shake"), 300);
-}
-
-function drawEnemy(e) {
-    gCtx.save();
-    gCtx.translate(e.x, e.y);
-    gCtx.rotate(e.rot);
-    
-    // Pulsação visual
-    let pulse = Math.sin(tick * 0.1) * 5;
-    gCtx.strokeStyle = e.hit ? "#fff" : "#ff3333";
-    gCtx.lineWidth = 2;
-    gCtx.shadowBlur = 10;
-    gCtx.shadowColor = "#ff0000";
-
-    // Corpo da Criatura (Forma Bio-Mecânica)
-    gCtx.beginPath();
-    gCtx.arc(0, 0, e.size + pulse/2, 0, Math.PI * 2);
-    // Tentáculos/Pernas
-    for(let i=0; i<6; i++) {
-        let ang = (i * Math.PI * 2) / 6;
-        let tx = Math.cos(ang + Math.sin(tick*0.2)) * (e.size * 1.8);
-        let ty = Math.sin(ang + Math.sin(tick*0.2)) * (e.size * 1.8);
-        gCtx.moveTo(0,0);
-        gCtx.quadraticCurveTo(tx/2, ty/2, tx, ty);
-    }
-    gCtx.stroke();
-    gCtx.restore();
-    e.hit = false;
+// --- SISTEMA DE RANKING CORRIGIDO ---
+async function fetchRank() {
+    const list = document.getElementById("rank-list");
+    try {
+        const r = await fetch('https://jbrasillabs-1.onrender.com/leaderboard', { signal: AbortSignal.timeout(5000) });
+        const d = await r.json();
+        if(d && d.length > 0) {
+            list.innerHTML = d.slice(0,8).map((x,i)=>`${i+1}º ${x.score} [${x.country||'BR'}]`).join("<br>");
+        } else { list.innerText = "NO RECORDS"; }
+    } catch(e) { list.innerText = "SOC OFFLINE"; }
 }
 
 function loop() {
     tick++;
-    sCtx.fillStyle="#000"; sCtx.fillRect(0,0,innerWidth,innerHeight);
-    stars.forEach(st=>{ sCtx.fillStyle="#fff"; sCtx.fillRect(st.x, st.y, st.s, st.s); });
+    sCtx.fillStyle = "#000"; sCtx.fillRect(0,0,innerWidth,innerHeight);
+    stars.forEach(s => {
+        s.a += 0.002;
+        let x = innerWidth/2 + Math.cos(s.a) * (innerWidth/2.5);
+        let y = innerHeight/2 + Math.sin(s.a) * (innerHeight/2.5);
+        sCtx.fillStyle = "rgba(255,255,255,0.4)"; sCtx.fillRect(x, y, s.s, s.s);
+    });
+
     gCtx.clearRect(0,0,innerWidth,innerHeight);
 
     if(gameRunning) {
-        if(tick % Math.max(10, 40 - Math.floor(score/500)) === 0 && !boss) {
-            enemies.push({x:Math.random()*innerWidth, y:-50, size:15, speed:2 + score/1200, rot:0});
+        // Boss a cada 100 pontos
+        if(score >= level * 100 && !boss) {
+            boss = { x: innerWidth/2, y: -100, hp: 50 * level, maxHp: 50 * level, size: 80 };
+            sfx(200, 'sawtooth', 0.5);
+        }
+
+        if(!boss && tick % Math.max(8, 35 - (level*4)) === 0) {
+            enemies.push({ x: Math.random()*(innerWidth-40), y: -40, speed: 2 + (level*0.4) });
+        }
+
+        if(boss) {
+            boss.y = Math.min(boss.y + 1, 120);
+            boss.x += Math.sin(tick*0.03) * 3;
+            gCtx.strokeStyle = "#f0f"; gCtx.lineWidth = 4;
+            gCtx.strokeRect(boss.x - boss.size/2, boss.y - boss.size/2, boss.size, boss.size);
+            gCtx.fillStyle = "#f00"; gCtx.fillRect(boss.x - 50, boss.y - boss.size/0.8, (boss.hp/boss.maxHp)*100, 6);
         }
 
         enemies.forEach((e, i) => {
-            e.y += e.speed; e.rot += 0.02;
-            drawEnemy(e);
-
+            e.y += e.speed;
+            gCtx.fillStyle = "#f33";
+            ALIEN.forEach((row, ri) => row.forEach((p, ci) => { if(p) gCtx.fillRect(e.x+ci*8, e.y+ri*8, 8, 8); }));
             if(e.y > innerHeight) {
-                lives--;
-                triggerShake(); // Tremer a tela quando passam
-                sfx(60, "square", 0.3, 0.2);
+                lives--; document.getElementById("main-body").classList.add("shake");
+                setTimeout(()=>document.getElementById("main-body").classList.remove("shake"), 200);
                 enemies.splice(i, 1);
                 if(lives <= 0) endGame();
             }
+        });
 
-            bullets.forEach((b, bi) => {
-                if(Math.hypot(b.x - e.x, b.y - e.y) < e.size * 1.5) {
-                    score += 10;
-                    sfx(150, "sawtooth", 0.1, 0.1);
-                    // Partículas de explosão
-                    for(let p=0; p<10; p++) explosions.push({x:e.x, y:e.y, vx:(Math.random()-0.5)*10, vy:(Math.random()-0.5)*10, life:1});
-                    enemies.splice(i, 1); bullets.splice(bi, 1);
+        bullets.forEach((b, bi) => {
+            b.y -= (overdrive > 0) ? 25 : 15;
+            gCtx.fillStyle = (overdrive > 0) ? "#ff0" : "#0ff";
+            gCtx.fillRect(b.x-2, b.y, 4, 15);
+            
+            if(boss && Math.hypot(b.x - boss.x, b.y - boss.y) < boss.size/2) {
+                boss.hp -= 5; bullets.splice(bi, 1);
+                if(boss.hp <= 0) { score += 200; level++; boss = null; overdrive = 400; sfx(400, 'sine', 0.4); }
+            }
+            
+            enemies.forEach((e, ei) => {
+                if(b.x > e.x && b.x < e.x+40 && b.y > e.y && b.y < e.y+32) {
+                    score += 10; enemies.splice(ei, 1); bullets.splice(bi, 1);
+                    sfx(600, 'triangle', 0.05);
                 }
             });
+            if(b.y < 0) bullets.splice(bi, 1);
         });
 
-        bullets.forEach((b, i) => {
-            b.y -= b.speed;
-            gCtx.fillStyle = overdrive ? "#ff0" : "#fff";
-            gCtx.fillRect(b.x, b.y, 4, 15);
-            if(b.y < 0) bullets.splice(i, 1);
-        });
-
-        if(overdrive) {
-            overdriveTimer--;
-            if(overdriveTimer <= 0) overdrive = false;
-        }
+        if(overdrive > 0) overdrive--;
     }
 
-    // Desenha Partículas e Jogador
-    explosions.forEach((ex, i) => {
-        ex.x += ex.vx; ex.y += ex.vy; ex.life -= 0.05;
-        gCtx.fillStyle = `rgba(255, 50, 0, ${ex.life})`;
-        gCtx.fillRect(ex.x, ex.y, 3, 3);
-        if(ex.life <= 0) explosions.splice(i, 1);
-    });
+    // Nave
+    gCtx.fillStyle = "#0f0";
+    gCtx.fillRect(mouseX-20, mouseY, 40, 5); gCtx.fillRect(mouseX-2, mouseY-10, 4, 10);
 
-    // Nave Jogador
-    gCtx.save();
-    gCtx.translate(mouseX, mouseY);
-    gCtx.strokeStyle = overdrive ? "#ff0" : "#0ff";
-    gCtx.lineWidth = 2;
-    gCtx.beginPath();
-    gCtx.moveTo(0,-20); gCtx.lineTo(15,10); gCtx.lineTo(-15,10); gCtx.closePath();
-    gCtx.stroke();
-    gCtx.restore();
-
-    document.getElementById("score").innerText = score.toString().padStart(4,"0");
-    document.getElementById("lives").innerText = (lives*33.3).toFixed(0) + "%";
-    requestAnimationFrame(loop);
-}
-
-// Controles e Sincronização (Mantendo o que já funcionava)
-window.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
-window.addEventListener("mousedown", () => {
-    if(gameRunning) {
-        bullets.push({x: mouseX, y: mouseY, speed: overdrive ? 25 : 15});
-        sfx(800, "triangle", 0.1, 0.05);
-    }
-});
-
-function startGame() {
-    document.getElementById("start-screen").style.display="none";
-    score=0; lives=3; enemies=[]; bullets=[]; gameRunning=true;
-}
-
-function endGame() {
-    gameRunning = false;
-    document.getElementById("game-over-screen").style.display="flex";
-}
-
-const unlock = () => {
-    const btn=document.getElementById("start-btn");
-    btn.innerText="INITIALIZE DEFENSE"; btn.classList.remove("disabled");
-    btn.onclick=startGame;
-};
-setTimeout(unlock, 2000);
-
-loop();
-</script>
-</body>
-</html>
+    document.getElementById("score-val").innerText = score.toString().padStart(4, '0');
+    document.getElementById("level-val").innerText = level;
+    document.getElementById("lives-val").innerText = Math.max(0, (lives*33.4)).toFixed(0) + "%";
+    document.getElementById("weapon-status").innerText = overdrive > 0 ? "OVERDRIVE" : "STANDARD";
+    document.getElementById("weapon-status").style.color = overdrive > 0 ?
