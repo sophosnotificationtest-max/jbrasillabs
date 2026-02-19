@@ -10,23 +10,14 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #00020a; font-family: 'Orbitron', sans-serif; cursor: none; color: #00ff00; }
         canvas { position: fixed; inset: 0; z-index: 1; }
         #bg-space { z-index: 0; }
-        
-        /* HUD Estilo Militar/SOC */
         .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 10px; color: #00ff00; text-shadow: 0 0 10px #00ff00; pointer-events: none; }
-        
         #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-family: monospace; font-size: 11px; color: #00ff00; background: rgba(0,15,5,0.85); padding: 15px; border-left: 4px solid #00ff00; border-radius: 0 8px 8px 0; box-shadow: 0 0 30px rgba(0,255,0,0.1); backdrop-filter: blur(5px); }
-
-        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-family: monospace; font-size: 11px; color: #4e9eff; background: rgba(0,5,15,0.7); padding: 20px; border: 1px solid #4e9eff44; border-radius: 10px; text-align: right; backdrop-filter: blur(8px); box-shadow: 0 0 20px rgba(78, 158, 255, 0.2); }
-
+        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-family: monospace; font-size: 11px; color: #4e9eff; background: rgba(0,5,15,0.7); padding: 20px; border: 1px solid #4e9eff44; border-radius: 10px; text-align: right; backdrop-filter: blur(8px); }
         .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle at center, rgba(0,20,40,0.4) 0%, rgba(0,0,0,0.95) 100%); z-index: 300; }
-        #main-logo { width: 500px; max-width: 85%; filter: drop-shadow(0 0 40px rgba(0,255,0,0.6)); margin-bottom: 40px; transition: 0.5s; }
-        
-        .btn-ui { font-family: 'Press Start 2P', cursive; font-size: 16px; letter-spacing: 2px; cursor: pointer; border: 2px solid #00ff00; padding: 20px 45px; background: rgba(0,255,0,0.05); color: #00ff00; transition: 0.4s; position: relative; overflow: hidden; }
+        #main-logo { width: 450px; max-width: 85%; filter: drop-shadow(0 0 40px rgba(0,255,0,0.6)); margin-bottom: 40px; }
+        .btn-ui { font-family: 'Press Start 2P', cursive; font-size: 14px; letter-spacing: 2px; cursor: pointer; border: 2px solid #00ff00; padding: 20px 45px; background: rgba(0,255,0,0.05); color: #00ff00; transition: 0.4s; }
         .btn-ui:hover { background: #00ff00; color: #000; box-shadow: 0 0 50px #00ff00; }
-        
         #game-over-screen { display: none; background: rgba(10,0,0,0.98); }
-        #game-over-screen h1 { font-family: 'Orbitron'; font-weight: 900; color: #ff3333; font-size: 60px; text-shadow: 0 0 30px #ff3333; margin-bottom: 10px; }
-
         #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,5,10,0.9); border-top: 1px solid #00ff0044; padding: 12px 25px; z-index: 100; font-size: 10px; opacity: 0.8; }
     </style>
 </head>
@@ -36,20 +27,16 @@
 <canvas id="game-layer"></canvas>
 
 <div class="hud" id="game-hud" style="display: none;">
-    [ DEFENSE CORE: ACTIVE ]<br>
     SCORE: <span id="score">0</span><br>
     BREACHES: <span id="leaks">0</span>/30
 </div>
 
 <div id="leaderboard-fixed">
-    <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00; text-transform: uppercase;">Top 10 Defenders</div>
+    <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00;">TOP 10 DEFENDERS</div>
     <div id="rank-list">INITIALIZING...</div>
 </div>
 
-<div id="geo-terminal">
-    > [SYSTEM] JB-LABS CORE V2.9 ONLINE...<br>
-    > [SOC] SCANNING INTERSTELLAR SECTOR...
-</div>
+<div id="geo-terminal">> [SYSTEM] JB-LABS CORE ONLINE...<br>> [SOC] AUDIO MODULES LOADED...</div>
 
 <div id="start-screen" class="overlay">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
@@ -57,21 +44,61 @@
 </div>
 
 <div id="game-over-screen" class="overlay">
-    <h1>CRITICAL FAILURE</h1>
-    <div style="font-family: 'Orbitron'; font-size: 18px; margin-bottom: 40px; color: #fff; letter-spacing: 5px;">SYSTEM BREACHED // SCORE: <span id="final-score">0</span></div>
+    <h1 style="font-size: 50px; color: #ff3333; font-weight: 900; margin-bottom: 10px;">SYSTEM FAILURE</h1>
+    <div style="margin-bottom: 30px;">SCORE: <span id="final-score">0</span></div>
     <div class="btn-ui" style="border-color: #ff3333; color: #ff3333;" onclick="startGame()">REBOOT SYSTEM</div>
 </div>
 
-<div id="footer-bar">
-    JBRASIL LABS // NEURAL DEFENSE PROTOCOL // SECURE SECTOR 7G
-</div>
+<div id="footer-bar">JBRASIL LABS // NEURAL DEFENSE PROTOCOL v3.0</div>
 
 <script>
+// --- MOTOR DE ÁUDIO (Web Audio API) ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playLaser() {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+}
+
+function playExplosion() {
+    const bufSize = audioCtx.sampleRate * 0.2;
+    const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    noise.connect(gain); gain.connect(audioCtx.destination);
+    noise.start();
+}
+
+function playGameOver() {
+    [220, 165, 110].forEach((f, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.2);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.2);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + i * 0.2 + 0.3);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + i * 0.2); osc.stop(audioCtx.currentTime + i * 0.2 + 0.3);
+    });
+}
+
+// --- MOTOR GRÁFICO (IDÊNTICO AO ANTERIOR COM MELHORIAS) ---
 const spaceCanvas = document.getElementById("bg-space"), sCtx = spaceCanvas.getContext("2d");
 const gameCanvas = document.getElementById("game-layer"), gCtx = gameCanvas.getContext("2d");
-let score = 0, leaks = 0, gameRunning = false, userLoc = "UNKNOWN";
+let score = 0, leaks = 0, gameRunning = false, userLoc = "UNKNOWN", tick = 0;
 let stars = [], planets = [], enemies = [], bullets = [], mouseTrail = [];
-let mouseX = innerWidth/2, mouseY = innerHeight/2, tick = 0;
+let mouseX = innerWidth/2, mouseY = innerHeight/2;
 
 function resize() {
     spaceCanvas.width = gameCanvas.width = innerWidth;
@@ -82,143 +109,85 @@ window.addEventListener("resize", resize);
 
 function initUniverse() {
     stars = []; planets = [];
-    for(let i=0; i<400; i++) stars.push({ 
-        x: Math.random()*innerWidth, 
-        y: Math.random()*innerHeight, 
-        z: Math.random()*innerWidth,
-        s: Math.random()*2 // Tamanho variável
-    });
-    for(let i=0; i<4; i++) spawnPlanet();
+    for(let i=0; i<350; i++) stars.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, z: Math.random()*innerWidth, s: Math.random()*2 });
+    for(let i=0; i<3; i++) spawnPlanet();
 }
 
 function spawnPlanet() {
-    planets.push({ 
-        x: Math.random()*innerWidth, 
-        y: -500, 
-        size: Math.random()*100+50, 
-        speed: Math.random()*0.2+0.05, 
-        hue: Math.random()*360 
-    });
+    planets.push({ x: Math.random()*innerWidth, y: -500, size: Math.random()*80+40, speed: Math.random()*0.15+0.05, hue: Math.random()*360 });
 }
 
 function drawUniverse() {
-    // Fundo Galáctico
-    let galGrad = sCtx.createRadialGradient(innerWidth/2, innerHeight/2, 0, innerWidth/2, innerHeight/2, innerWidth*0.8);
-    galGrad.addColorStop(0, '#000818');
-    galGrad.addColorStop(0.4, '#00020a');
-    galGrad.addColorStop(1, '#000000');
-    sCtx.fillStyle = galGrad;
-    sCtx.fillRect(0,0,innerWidth,innerHeight);
-
-    // Núcleo da Galáxia (Nebulosa central)
-    sCtx.save();
-    sCtx.globalAlpha = 0.15;
-    sCtx.shadowBlur = 100; sCtx.shadowColor = "#4e9eff";
-    sCtx.fillStyle = "#1a3a6a";
-    sCtx.beginPath();
-    sCtx.ellipse(innerWidth/2, innerHeight/2, innerWidth*0.4, 150, Math.PI/4, 0, Math.PI*2);
-    sCtx.fill();
-    sCtx.restore();
+    sCtx.fillStyle = "#000105"; sCtx.fillRect(0,0,innerWidth,innerHeight);
+    
+    // Núcleo Galáctico Realista
+    let g = sCtx.createRadialGradient(innerWidth/2, innerHeight/2, 0, innerWidth/2, innerHeight/2, innerWidth*0.7);
+    g.addColorStop(0, "rgba(20, 40, 100, 0.2)"); g.addColorStop(1, "transparent");
+    sCtx.fillStyle = g; sCtx.fillRect(0,0,innerWidth,innerHeight);
 
     stars.forEach(s => {
-        s.z -= 1.5; if(s.z <= 0) s.z = innerWidth;
+        s.z -= 1.8; if(s.z <= 0) s.z = innerWidth;
         let sx = (s.x - innerWidth/2) * (innerWidth/s.z) + innerWidth/2;
         let sy = (s.y - innerHeight/2) * (innerWidth/s.z) + innerHeight/2;
         let size = (1 - s.z/innerWidth) * 3 * s.s;
         sCtx.fillStyle = `rgba(255,255,255, ${1 - s.z/innerWidth})`;
-        sCtx.beginPath();
-        sCtx.arc(sx, sy, size, 0, Math.PI*2);
-        sCtx.fill();
+        sCtx.beginPath(); sCtx.arc(sx, sy, size, 0, Math.PI*2); sCtx.fill();
     });
 
     planets.forEach((p, i) => {
         p.y += p.speed;
         let pGrad = sCtx.createRadialGradient(p.x - p.size*0.3, p.y - p.size*0.3, p.size*0.1, p.x, p.y, p.size);
-        pGrad.addColorStop(0, `hsl(${p.hue}, 60%, 40%)`);
-        pGrad.addColorStop(0.6, `hsl(${p.hue}, 80%, 10%)`);
-        pGrad.addColorStop(1, '#000');
-        
-        sCtx.shadowBlur = 20; sCtx.shadowColor = `hsl(${p.hue}, 60%, 20%)`;
-        sCtx.fillStyle = pGrad;
-        sCtx.beginPath(); sCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); sCtx.fill();
-        sCtx.shadowBlur = 0;
-        
+        pGrad.addColorStop(0, `hsl(${p.hue}, 60%, 40%)`); pGrad.addColorStop(1, '#000');
+        sCtx.fillStyle = pGrad; sCtx.beginPath(); sCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); sCtx.fill();
         if(p.y > innerHeight+500) { planets.splice(i,1); spawnPlanet(); }
     });
 }
 
 class Enemy {
     constructor() {
-        this.x = Math.random()*(innerWidth-100)+50; this.y = -80;
-        this.speed = 1.2 + (score/5000);
+        this.x = Math.random()*(innerWidth-100)+50; this.y = -100;
+        this.speed = 1.3 + (score/5000);
         this.type = Math.floor(Math.random()*3);
         this.phase = Math.random()*Math.PI*2;
     }
     draw() {
         gCtx.save(); gCtx.translate(this.x, this.y);
-        gCtx.strokeStyle = "#ff3333"; gCtx.lineWidth = 3;
-        gCtx.shadowBlur = 15; gCtx.shadowColor = "#ff0000";
+        gCtx.strokeStyle = "#ff3333"; gCtx.lineWidth = 3; gCtx.shadowBlur = 15; gCtx.shadowColor = "#f00";
         let anim = Math.sin(tick * 0.08 + this.phase) * 6;
-        
         gCtx.beginPath();
-        if(this.type === 0) { // O Vigia Bio-Mecânico
-            gCtx.ellipse(0, 0, 25, 18, 0, 0, Math.PI*2);
-            gCtx.moveTo(0,0); gCtx.arc(0, 0, 8, 0, Math.PI*2);
-            for(let i=0; i<5; i++) {
-                gCtx.moveTo(-15+i*8, 15); gCtx.quadraticCurveTo(-15+i*8+anim, 25, -15+i*8, 40);
-            }
-        } else if(this.type === 1) { // Caçador Vermelho
+        if(this.type === 0) { // O Vigia
+            gCtx.ellipse(0, 0, 25, 18, 0, 0, Math.PI*2); gCtx.stroke(); gCtx.beginPath(); gCtx.arc(0, 0, 8, 0, Math.PI*2);
+            for(let i=0; i<4; i++) { gCtx.moveTo(-12+i*8, 15); gCtx.lineTo(-12+i*8+anim, 35); }
+        } else if(this.type === 1) { // Caçador
             gCtx.moveTo(0, -25); gCtx.lineTo(25, 15); gCtx.lineTo(0, 5); gCtx.lineTo(-25, 15); gCtx.closePath();
-            gCtx.moveTo(-10, 10); gCtx.lineTo(-20, 30+anim);
-            gCtx.moveTo(10, 10); gCtx.lineTo(20, 30+anim);
-        } else { // Medusa SOC
-            gCtx.arc(0, 0, 20, Math.PI, 0);
-            gCtx.lineTo(20, 5); gCtx.lineTo(-20, 5); gCtx.closePath();
-            for(let i=0; i<4; i++) {
-                gCtx.moveTo(-15+i*10, 5); gCtx.lineTo(-15+i*10+anim, 35);
-            }
+        } else { // Medusa
+            gCtx.arc(0, 0, 20, Math.PI, 0); gCtx.lineTo(20, 5); gCtx.lineTo(-20, 5); gCtx.closePath();
+            for(let i=0; i<3; i++) { gCtx.moveTo(-10+i*10, 5); gCtx.lineTo(-10+i*10+anim, 30); }
         }
         gCtx.stroke(); gCtx.restore();
     }
 }
 
 class Particle {
-    constructor(x,y, color="rgba(0, 255, 0, 1)") {
-        this.x=x; this.y=y; this.v={x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4}; this.l=1; this.c=color;
-    }
-    draw() {
-        gCtx.fillStyle=this.c.replace('1)', `${this.l})`);
-        gCtx.shadowBlur = 5 * this.l; gCtx.shadowColor = this.c;
-        gCtx.fillRect(this.x,this.y,3,3);
-        this.x+=this.v.x; this.y+=this.v.y; this.l-=0.02;
-    }
+    constructor(x,y, color="rgba(0, 255, 0, 1)") { this.x=x; this.y=y; this.v={x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4}; this.l=1; this.c=color; }
+    draw() { gCtx.fillStyle=this.c.replace('1)', `${this.l})`); gCtx.fillRect(this.x,this.y,3,3); this.x+=this.v.x; this.y+=this.v.y; this.l-=0.02; }
 }
 
 function gameLoop() {
     tick++; drawUniverse(); gCtx.clearRect(0,0,innerWidth,innerHeight);
-    
-    // Mouse Trail Persistente
     if(tick % 3 === 0) mouseTrail.push(new Particle(mouseX, mouseY));
     mouseTrail.forEach((p, i) => { p.draw(); if(p.l <= 0) mouseTrail.splice(i, 1); });
 
-    // Nave do Jogador (Cursor Estilizado)
+    // Cursor Nave
     gCtx.save(); gCtx.translate(mouseX, mouseY);
-    gCtx.strokeStyle = "#00ff00"; gCtx.lineWidth = 3; gCtx.shadowBlur = 20; gCtx.shadowColor = "#00ff00";
-    gCtx.beginPath();
-    gCtx.moveTo(0, -25); gCtx.lineTo(-20, 15); gCtx.lineTo(0, 5); gCtx.lineTo(20, 15); gCtx.closePath();
-    gCtx.stroke();
-    // Brilho dos motores
-    gCtx.fillStyle = "rgba(0, 255, 255, 0.5)";
-    gCtx.beginPath(); gCtx.arc(-8, 12, 4 + Math.random()*4, 0, Math.PI*2); gCtx.fill();
-    gCtx.beginPath(); gCtx.arc(8, 12, 4 + Math.random()*4, 0, Math.PI*2); gCtx.fill();
+    gCtx.strokeStyle = "#00ff00"; gCtx.lineWidth = 3; gCtx.shadowBlur = 20; gCtx.shadowColor = "#0f0";
+    gCtx.beginPath(); gCtx.moveTo(0, -25); gCtx.lineTo(-20, 15); gCtx.lineTo(0, 5); gCtx.lineTo(20, 15); gCtx.closePath(); gCtx.stroke();
     gCtx.restore();
 
     if(gameRunning) {
         if(Math.random() < 0.045) enemies.push(new Enemy());
         bullets.forEach((b, bi) => {
-            b.y -= 25; 
-            gCtx.fillStyle = "#00ffff"; gCtx.shadowBlur = 15; gCtx.shadowColor = "#00ffff";
-            gCtx.fillRect(b.x-2, b.y, 4, 25);
+            b.y -= 25; gCtx.fillStyle = "#0ff"; gCtx.shadowBlur = 15; gCtx.fillRect(b.x-2, b.y, 4, 25);
             if(b.y < -50) bullets.splice(bi, 1);
         });
         enemies.forEach((e, ei) => {
@@ -226,9 +195,8 @@ function gameLoop() {
             if(e.y > innerHeight + 100) { leaks++; enemies.splice(ei, 1); if(leaks>=30) endGame(); }
             bullets.forEach((b, bi) => {
                 if(Math.hypot(e.x - b.x, e.y - b.y) < 45) { 
-                    score += 10; 
-                    // Explosão de destroços
-                    for(let k=0; k<8; k++) mouseTrail.push(new Particle(e.x, e.y, "rgba(255, 50, 50, 1)"));
+                    score += 10; playExplosion();
+                    for(let k=0; k<10; k++) mouseTrail.push(new Particle(e.x, e.y, "rgba(255, 50, 50, 1)"));
                     enemies.splice(ei, 1); bullets.splice(bi, 1); 
                 }
             });
@@ -239,38 +207,24 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Funções de Controle e API
-async function startGame() {
+function startGame() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     document.getElementById("start-screen").style.display = "none";
     document.getElementById("game-over-screen").style.display = "none";
     document.getElementById("game-hud").style.display = "block";
     score = 0; leaks = 0; enemies = []; bullets = []; gameRunning = true;
-    fetch('https://jbrasillabs-1.onrender.com/log', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ entry: userLoc }) });
 }
 
-async function endGame() {
-    gameRunning = false;
+function endGame() {
+    gameRunning = false; playGameOver();
     document.getElementById("final-score").innerText = score;
     document.getElementById("game-over-screen").style.display = "flex";
-    try {
-        await fetch('https://jbrasillabs-1.onrender.com/score', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ score }) });
-        fetchTop10();
-    } catch(e) {}
-}
-
-async function fetchTop10() {
-    try {
-        const res = await fetch('https://jbrasillabs-1.onrender.com/leaderboard');
-        const data = await res.json();
-        let html = ""; data.slice(0, 10).forEach((d, i) => html += `${i+1}º - ${d.score} PTS<br>`);
-        document.getElementById("rank-list").innerHTML = html || "NO DATA";
-    } catch(e) { document.getElementById("rank-list").innerHTML = "SOC OFFLINE"; }
 }
 
 addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
-addEventListener("mousedown", () => { if(gameRunning) bullets.push({x: mouseX, y: mouseY}); });
-resize(); fetchTop10(); gameLoop();
+addEventListener("mousedown", () => { if(gameRunning) { bullets.push({x: mouseX, y: mouseY}); playLaser(); } });
 
+resize(); gameLoop();
 fetch('https://jbrasillabs-1.onrender.com/geoip').then(r => r.json()).then(d => {
     userLoc = d.entry; document.getElementById("geo-terminal").innerHTML += `<br>> [SOC] ORIGIN: ${userLoc.toUpperCase()}`;
 });
