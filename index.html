@@ -6,54 +6,50 @@
 <title>JBrasil Labs - Cyber Defense AAA</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body,html{
-margin:0;
-padding:0;
-overflow:hidden;
-background:radial-gradient(circle at center,#001100,#000);
-font-family:monospace;
-cursor:none;
-color:#00ff00;
+body, html {
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background: radial-gradient(circle at center,#001100,#000);
+    font-family: monospace;
+    cursor: none;
+    color: #00ff00;
 }
-canvas{position:fixed;top:0;left:0}
-#hud{
-position:fixed;
-top:20px;
-left:20px;
-font-size:14px;
-z-index:100;
+canvas { position: fixed; top:0; left:0; }
+#hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 14px;
+    z-index: 100;
 }
-#bossBar{
-position:fixed;
-top:10px;
-left:50%;
-transform:translateX(-50%);
-width:400px;
-height:20px;
-border:2px solid red;
-display:none;
+#bossBar {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 20px;
+    border: 2px solid red;
+    display: none;
 }
-#bossHealth{
-height:100%;
-background:red;
-width:100%;
+#bossHealth { height: 100%; background: red; width: 100%; }
+#start {
+    position: fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:black;
+    z-index:200;
+    cursor:pointer;
+    font-size:20px;
 }
-#start{
-position:fixed;
-inset:0;
-display:flex;
-justify-content:center;
-align-items:center;
-background:black;
-z-index:200;
-cursor:pointer;
-font-size:20px;
-}
-#leaderboard{
-position:fixed;
-right:20px;
-top:20px;
-font-size:12px;
+#leaderboard {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    font-size: 12px;
 }
 </style>
 </head>
@@ -72,167 +68,184 @@ Leaks: <span id="leaks">0</span>
 <div id="start">CLICK TO START</div>
 
 <script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+canvas.width = innerWidth;
+canvas.height = innerHeight;
 
-let score=0,leaks=0,game=true;
-let enemies=[],bullets=[],boss=null,bossBullets=[];
-let difficulty=1;
+let score = 0, leaks = 0, gameRunning = true;
+let enemies = [], bullets = [], boss = null;
+let difficulty = 1;
 
-let mouseX=canvas.width/2;
-let mouseY=canvas.height/2;
+let mouseX = canvas.width/2;
+let mouseY = canvas.height/2;
 
-addEventListener("mousemove",e=>{
-mouseX=e.clientX;
-mouseY=e.clientY;
+addEventListener("mousemove", e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 });
 
-class Enemy{
-constructor(){
-this.x=Math.random()*canvas.width;
-this.y=-20;
-this.speed=2*difficulty;
-}
-draw(){
-ctx.fillStyle="#00ff00";
-ctx.beginPath();
-ctx.arc(this.x,this.y,10,0,Math.PI*2);
-ctx.fill();
-}
-}
-
-class Boss{
-constructor(){
-this.x=canvas.width/2;
-this.y=100;
-this.health=300;
-this.maxHealth=300;
-}
-draw(){
-ctx.fillStyle="red";
-ctx.beginPath();
-ctx.arc(this.x,this.y,40,0,Math.PI*2);
-ctx.fill();
-}
+// --- Classes ---
+class Enemy {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.speed = 2 * difficulty;
+    }
+    draw() {
+        ctx.fillStyle = "#00ff00";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
+        ctx.fill();
+    }
 }
 
-class Bullet{
-constructor(x,y){
-this.x=x;
-this.y=y;
-this.speed=10;
-}
-draw(){
-ctx.fillStyle="#00ffff";
-ctx.fillRect(this.x,this.y,3,10);
-}
-}
-
-function spawnEnemy(){
-if(!boss){
-enemies.push(new Enemy());
-}
+class Boss {
+    constructor() {
+        this.x = canvas.width/2;
+        this.y = 100;
+        this.health = 300;
+        this.maxHealth = 300;
+    }
+    draw() {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 40, 0, Math.PI*2);
+        ctx.fill();
+    }
 }
 
-function shoot(){
-bullets.push(new Bullet(mouseX,mouseY));
+class Bullet {
+    constructor(x,y) {
+        this.x = x;
+        this.y = y;
+        this.speed = 10;
+    }
+    draw() {
+        ctx.fillStyle = "#00ffff";
+        ctx.fillRect(this.x, this.y, 3, 10);
+    }
 }
 
-addEventListener("click",shoot);
-
-function gameLoop(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-difficulty=1+score/500;
-
-if(Math.random()<0.02*difficulty)spawnEnemy();
-
-bullets.forEach((b,i)=>{
-b.y-=b.speed;
-b.draw();
-if(b.y<0)bullets.splice(i,1);
-});
-
-enemies.forEach((e,i)=>{
-e.y+=e.speed;
-e.draw();
-if(e.y>canvas.height){
-leaks++;
-enemies.splice(i,1);
-}
-bullets.forEach((b,bi)=>{
-if(Math.hypot(e.x-b.x,e.y-b.y)<15){
-score+=10;
-enemies.splice(i,1);
-bullets.splice(bi,1);
-}
-});
-});
-
-if(score>=1000&&!boss){
-boss=new Boss();
-document.getElementById("bossBar").style.display="block";
+// --- Funções de Jogo ---
+function spawnEnemy() {
+    if(!boss) enemies.push(new Enemy());
 }
 
-if(boss){
-boss.draw();
-bullets.forEach((b,bi)=>{
-if(Math.hypot(boss.x-b.x,boss.y-b.y)<45){
-boss.health-=5;
-bullets.splice(bi,1);
-}
-});
-document.getElementById("bossHealth").style.width=
-(boss.health/boss.maxHealth*100)+"%";
-
-if(boss.health<=0){
-score+=500;
-boss=null;
-document.getElementById("bossBar").style.display="none";
-}
+function shoot() {
+    bullets.push(new Bullet(mouseX, mouseY));
 }
 
-ctx.fillStyle="#00ff00";
-ctx.beginPath();
-ctx.moveTo(mouseX,mouseY-15);
-ctx.lineTo(mouseX-10,mouseY+10);
-ctx.lineTo(mouseX+10,mouseY+10);
-ctx.closePath();
-ctx.stroke();
+addEventListener("click", shoot);
 
-document.getElementById("score").innerText=score;
-document.getElementById("leaks").innerText=leaks;
-
-if(game)requestAnimationFrame(gameLoop);
+function gameOver() {
+    gameRunning = false;
+    saveScore(score);
+    alert("Game Over! Score final: " + score);
 }
 
-document.getElementById("start").onclick=()=>{
-document.getElementById("start").style.display="none";
-gameLoop();
-loadLeaderboard();
+function gameLoop() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    difficulty = 1 + score/500;
+
+    if(Math.random() < 0.02 * difficulty) spawnEnemy();
+
+    bullets.forEach((b,i)=>{
+        b.y -= b.speed;
+        b.draw();
+        if(b.y < 0) bullets.splice(i,1);
+    });
+
+    enemies.forEach((e,i)=>{
+        e.y += e.speed;
+        e.draw();
+
+        if(e.y > canvas.height) {
+            leaks++;
+            enemies.splice(i,1);
+            if(leaks >= 10) gameOver(); // Fim do jogo
+        }
+
+        bullets.forEach((b,bi)=>{
+            if(Math.hypot(e.x-b.x,e.y-b.y)<15){
+                score += 10;
+                enemies.splice(i,1);
+                bullets.splice(bi,1);
+            }
+        });
+    });
+
+    if(score >= 1000 && !boss){
+        boss = new Boss();
+        document.getElementById("bossBar").style.display = "block";
+    }
+
+    if(boss){
+        boss.draw();
+        bullets.forEach((b,bi)=>{
+            if(Math.hypot(boss.x-b.x,boss.y-b.y)<45){
+                boss.health -= 5;
+                bullets.splice(bi,1);
+            }
+        });
+        document.getElementById("bossHealth").style.width = (boss.health/boss.maxHealth*100)+"%";
+
+        if(boss.health <= 0){
+            score += 500;
+            boss = null;
+            document.getElementById("bossBar").style.display = "none";
+        }
+    }
+
+    // Cursor
+    ctx.fillStyle="#00ff00";
+    ctx.beginPath();
+    ctx.moveTo(mouseX,mouseY-15);
+    ctx.lineTo(mouseX-10,mouseY+10);
+    ctx.lineTo(mouseX+10,mouseY+10);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Atualiza HUD
+    document.getElementById("score").innerText = score;
+    document.getElementById("leaks").innerText = leaks;
+
+    if(gameRunning) requestAnimationFrame(gameLoop);
+}
+
+// --- Leaderboard ---
+async function saveScore(score) {
+    try {
+        await fetch("https://jbrasillabs-1.onrender.com/score", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({score})
+        });
+        loadLeaderboard();
+    } catch(e) { console.error("Erro ao salvar score:", e); }
+}
+
+async function loadLeaderboard() {
+    try {
+        const res = await fetch("https://jbrasillabs-1.onrender.com/leaderboard");
+        const data = await res.json();
+        let html = "<h3>TOP 10</h3>";
+        data.forEach((d,i)=>{ html += `${i+1}. ${d.score}<br>`; });
+        document.getElementById("leaderboard").innerHTML = html;
+    } catch(e){ console.error("Erro ao carregar leaderboard:", e); }
+}
+
+// --- Start Game ---
+document.getElementById("start").onclick = () => {
+    document.getElementById("start").style.display = "none";
+    gameLoop();
+    loadLeaderboard();
 };
 
-// --------- RANKING API ---------
+// Atualiza leaderboard ao carregar a página
+window.addEventListener("DOMContentLoaded", loadLeaderboard);
 
-async function saveScore(){
-await fetch("https://SEU_BACKEND_RENDER_URL/score",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({score})
-});
-}
-
-async function loadLeaderboard(){
-const res=await fetch("https://SEU_BACKEND_RENDER_URL/leaderboard");
-const data=await res.json();
-let html="<h3>TOP 10</h3>";
-data.forEach((d,i)=>{
-html+=`${i+1}. ${d.score}<br>`;
-});
-document.getElementById("leaderboard").innerHTML=html;
-}
 </script>
 </body>
 </html>
