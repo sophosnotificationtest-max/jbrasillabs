@@ -19,86 +19,12 @@ body, html {
     font-family:'Orbitron',sans-serif;
     cursor:none;
 }
-
-.glitch-active {
-    animation: glitch-shake 0.2s infinite;
-    filter: hue-rotate(90deg) contrast(1.5);
-}
-
-@keyframes glitch-shake {
-    0% { transform: translate(0); }
-    50% { transform: translate(-5px,5px); }
-    100% { transform: translate(0); }
-}
-
-#bg-circuits {
-    position:fixed;
-    inset:0;
-    z-index:0;
-    opacity:0.5;
-}
-
-.hud {
-    position:fixed;
-    top:20px;
-    left:20px;
-    z-index:100;
-    font-family:'Press Start 2P',cursive;
-    font-size:10px;
-    color:#00ff00;
-    text-shadow:0 0 10px #00ff00;
-    line-height:2.5;
-}
-
-#start-screen {
-    position:fixed;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    background:black;
-    z-index:300;
-    transition:0.8s;
-}
-
-.start-prompt {
-    font-family:'Press Start 2P',cursive;
-    font-size:16px;
-    color:#00ff00;
-    animation:blink 1s infinite;
-    cursor:pointer;
-}
-
-@keyframes blink {
-    50% { opacity:0; }
-}
-
-#terminal {
-    position:fixed;
-    bottom:50px;
-    left:15px;
-    font-family:monospace;
-    color:#00ff00;
-    width:45%;
-    max-height:100px;
-    overflow:hidden;
-    z-index:150;
-}
-
-.terminal-line {
-    background:rgba(0,0,0,0.8);
-    margin-bottom:2px;
-    padding:3px 8px;
-    font-size:10px;
-    border-left:2px solid #00ff00;
-}
 </style>
 </head>
-
 <body>
 
 <canvas id="bg-circuits"></canvas>
+<canvas id="game-canvas"></canvas>
 
 <div class="hud" id="hud" style="display:none;">
 SCORE: <span id="score">0000</span><br>
@@ -107,20 +33,14 @@ LEAKS: <span id="leaks">0</span>/30
 
 <div id="terminal"></div>
 
-<div id="game-container">
-<canvas id="game-canvas"></canvas>
-</div>
-
 <div id="start-screen">
 <h1 style="color:#00ff00;">JBrasil Labs</h1>
 <div class="start-prompt" id="start-btn">INITIALIZE DEFENSE</div>
 </div>
 
 <script>
-
 // ---------------- AUDIO ----------------
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
 function playSound(freq,type,dur){
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -134,53 +54,45 @@ function playSound(freq,type,dur){
     osc.stop(audioCtx.currentTime+dur);
 }
 
-// ---------------- CIRCUITOS ----------------
-const cCanvas=document.getElementById("bg-circuits");
-const cCtx=cCanvas.getContext("2d");
-let dots=[];
-let circuitColor="0,255,0";
+// ---------------- FUNDO COM TÚNEL 3D ----------------
+const bgCanvas=document.getElementById("bg-circuits");
+const bgCtx=bgCanvas.getContext("2d");
+let stars=[];
 
-function initCircuits(){
-    cCanvas.width=window.innerWidth;
-    cCanvas.height=window.innerHeight;
-    dots=[];
-    for(let i=0;i<70;i++){
-        dots.push({
-            x:Math.random()*cCanvas.width,
-            y:Math.random()*cCanvas.height,
-            vx:(Math.random()-0.5)*0.8,
-            vy:(Math.random()-0.5)*0.8
+function initStars(){
+    bgCanvas.width=window.innerWidth;
+    bgCanvas.height=window.innerHeight;
+    stars=[];
+    for(let i=0;i<300;i++){
+        stars.push({
+            x:(Math.random()-0.5)*bgCanvas.width,
+            y:(Math.random()-0.5)*bgCanvas.height,
+            z:Math.random()*bgCanvas.width
         });
     }
 }
 
-function drawCircuits(){
-    cCtx.clearRect(0,0,cCanvas.width,cCanvas.height);
-    cCtx.strokeStyle=`rgba(${circuitColor},0.15)`;
-
-    dots.forEach((d,i)=>{
-        d.x+=d.vx;
-        d.y+=d.vy;
-        if(d.x<0||d.x>cCanvas.width) d.vx*=-1;
-        if(d.y<0||d.y>cCanvas.height) d.vy*=-1;
-
-        dots.slice(i+1).forEach(d2=>{
-            if(Math.hypot(d.x-d2.x,d.y-d2.y)<180){
-                cCtx.beginPath();
-                cCtx.moveTo(d.x,d.y);
-                cCtx.lineTo(d2.x,d2.y);
-                cCtx.stroke();
-            }
-        });
+function drawStars(){
+    bgCtx.fillStyle="black";
+    bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+    stars.forEach(s=>{
+        s.z-=4;
+        if(s.z<=0) s.z=bgCanvas.width;
+        let k=128/s.z;
+        let px=s.x*k+bgCanvas.width/2;
+        let py=s.y*k+bgCanvas.height/2;
+        if(px>=0 && px<bgCanvas.width && py>=0 && py<bgCanvas.height){
+            let size=(1-s.z/bgCanvas.width)*2;
+            bgCtx.fillStyle="#0f0";
+            bgCtx.fillRect(px,py,size,size);
+        }
     });
-
-    requestAnimationFrame(drawCircuits);
+    requestAnimationFrame(drawStars);
 }
 
-// ---------------- JOGO 2D ----------------
+// ---------------- JOGO ----------------
 const canvas=document.getElementById("game-canvas");
 const ctx=canvas.getContext("2d");
-
 let score=0, leaks=0;
 let enemies=[], bullets=[];
 let gameActive=false;
@@ -190,19 +102,22 @@ let mouseY=window.innerHeight/2;
 function resize(){
     canvas.width=window.innerWidth;
     canvas.height=window.innerHeight;
+    bgCanvas.width=window.innerWidth;
+    bgCanvas.height=window.innerHeight;
 }
 resize();
-window.addEventListener("resize",()=>{resize();initCircuits();});
+window.addEventListener("resize",()=>{resize();initStars();});
 window.addEventListener("mousemove",e=>{
     mouseX=e.clientX;
     mouseY=e.clientY;
 });
 
+// Nave com efeito 3D
 function drawShip(x,y){
     ctx.save();
     ctx.translate(x,y);
     ctx.strokeStyle="#00ff00";
-    ctx.shadowBlur=20;
+    ctx.shadowBlur=30;
     ctx.shadowColor="#00ff00";
     ctx.beginPath();
     ctx.moveTo(0,-25);
@@ -211,30 +126,48 @@ function drawShip(x,y){
     ctx.lineTo(20,15);
     ctx.closePath();
     ctx.stroke();
+    ctx.fillStyle="rgba(0,255,0,0.2)";
+    ctx.fill();
     ctx.restore();
 }
 
 class Enemy{
     constructor(){
-        this.x=Math.random()*(canvas.width-60)+30;
+        this.x=Math.random()*canvas.width;
         this.y=-40;
+        this.z=Math.random()*400;
         this.speed=2+(score/1000);
     }
     draw(){
-        ctx.font="28px Arial";
-        ctx.fillText("👾",this.x-14,this.y);
+        let scale=200/(this.z+200);
+        ctx.save();
+        ctx.font=`${28*scale}px Arial`;
+        ctx.fillStyle="#0f0";
+        ctx.shadowBlur=20;
+        ctx.shadowColor="#0f0";
+        ctx.fillText("👾",this.x,this.y);
+        ctx.restore();
+    }
+    update(){
+        this.y+=this.speed;
+        this.z-=1;
     }
 }
 
 class Bullet{
     constructor(x,y){
-        this.x=x;
-        this.y=y-25;
-        this.speed=20;
+        this.x=x; this.y=y;
+        this.z=0;
+        this.speed=15;
     }
     draw(){
+        let scale=1+this.z*0.01;
         ctx.fillStyle="#00ff00";
-        ctx.fillRect(this.x-1,this.y,2,20);
+        ctx.fillRect(this.x-2*scale,this.y-20*scale,4*scale,20*scale);
+    }
+    update(){
+        this.y-=this.speed;
+        this.z+=5;
     }
 }
 
@@ -243,27 +176,18 @@ function shoot(){
     bullets.push(new Bullet(mouseX,mouseY));
     playSound(440,"square",0.1);
 }
-
 window.addEventListener("mousedown",shoot);
 window.addEventListener("keydown",e=>{
     if(e.code==="Space") shoot();
 });
 
 function gameLoop(){
-    ctx.fillStyle="rgba(0,0,0,0.3)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     if(gameActive){
-
         drawShip(mouseX,mouseY);
-
-        if(Math.random()<0.05)
-            enemies.push(new Enemy());
-
+        if(Math.random()<0.05) enemies.push(new Enemy());
         bullets.forEach((b,bi)=>{
-            b.y-=b.speed;
-            b.draw();
-
+            b.update(); b.draw();
             enemies.forEach((e,ei)=>{
                 if(Math.hypot(e.x-b.x,e.y-b.y)<35){
                     enemies.splice(ei,1);
@@ -273,48 +197,29 @@ function gameLoop(){
                     playSound(150,"sine",0.05);
                 }
             });
-
             if(b.y<0) bullets.splice(bi,1);
         });
-
         enemies.forEach((e,i)=>{
-            e.y+=e.speed;
-            e.draw();
-
+            e.update(); e.draw();
             if(e.y>canvas.height){
                 enemies.splice(i,1);
                 leaks++;
                 document.getElementById("leaks").innerText=leaks;
-
-                document.body.classList.add("glitch-active");
-                setTimeout(()=>document.body.classList.remove("glitch-active"),200);
-
                 if(leaks>=30) systemReboot();
             }
         });
     }
-
     requestAnimationFrame(gameLoop);
 }
 
 function systemReboot(){
     gameActive=false;
-    leaks=0;
-    score=0;
-    enemies=[];
-    bullets=[];
+    leaks=0; score=0;
+    enemies=[]; bullets=[];
     document.getElementById("score").innerText="0000";
     document.getElementById("leaks").innerText="0";
     document.getElementById("hud").style.display="none";
     document.getElementById("start-screen").style.display="flex";
-}
-
-function logTerminal(msg){
-    const p=document.createElement("p");
-    p.className="terminal-line";
-    p.textContent="> "+msg;
-    document.getElementById("terminal").appendChild(p);
-    setTimeout(()=>p.remove(),8000);
 }
 
 document.getElementById("start-btn").addEventListener("click",()=>{
@@ -322,13 +227,11 @@ document.getElementById("start-btn").addEventListener("click",()=>{
     document.getElementById("start-screen").style.display="none";
     document.getElementById("hud").style.display="block";
     gameActive=true;
-    logTerminal("SECURE PERIMETER ESTABLISHED.");
 });
 
-initCircuits();
-drawCircuits();
+initStars();
+drawStars();
 gameLoop();
-
 </script>
 </body>
 </html>
