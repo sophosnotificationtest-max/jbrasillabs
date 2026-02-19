@@ -3,34 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil Labs - Cyber SOC Defense</title>
+    <title>JBrasil Labs - Interstellar SOC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Orbitron', sans-serif; cursor: none; color: #00ff00; }
         canvas { position: fixed; inset: 0; z-index: 1; }
-        #bg-stars { z-index: 0; }
+        #bg-space { z-index: 0; }
         
         .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-family: 'Press Start 2P', cursive; font-size: 10px; line-height: 2.5; pointer-events: none; }
         
-        /* Terminal GeoIP */
-        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-family: monospace; font-size: 11px; color: #00ff00; text-shadow: 0 0 5px #00ff00; background: rgba(0,20,0,0.7); padding: 12px; border-left: 3px solid #00ff00; min-width: 280px; box-shadow: 0 0 15px rgba(0,255,0,0.2); }
+        #geo-terminal { position: fixed; bottom: 100px; left: 20px; z-index: 200; font-family: monospace; font-size: 11px; color: #00ff00; background: rgba(0,20,0,0.8); padding: 12px; border-left: 3px solid #00ff00; min-width: 280px; box-shadow: 0 0 15px rgba(0,255,0,0.1); }
 
-        #overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 300; transition: opacity 0.8s; }
-        #main-logo { width: 550px; max-width: 85%; filter: drop-shadow(0 0 30px #00ff00); margin-bottom: 40px; transition: 0.5s; }
-        #main-logo:hover { filter: drop-shadow(0 0 50px #00ff00); transform: scale(1.02); }
+        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-family: monospace; font-size: 10px; color: #4e9eff; background: rgba(0,0,0,0.6); padding: 15px; border: 1px solid #4e9eff33; text-align: right; backdrop-filter: blur(4px); }
+
+        /* Telas de Overlay */
+        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 300; transition: opacity 0.5s; }
+        #main-logo { width: 500px; max-width: 80%; filter: drop-shadow(0 0 30px #00ff00); margin-bottom: 50px; }
         
-        .prompt { font-family: 'Press Start 2P', cursive; font-size: 16px; animation: blink 1s infinite; cursor: pointer; border: 1px solid #00ff00; padding: 15px 30px; background: rgba(0,255,0,0.1); transition: 0.3s; }
-        .prompt:hover { background: #00ff00; color: #000; box-shadow: 0 0 20px #00ff00; }
-        
-        #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,15,0,0.95); border-top: 1px solid #00ff0033; padding: 10px 20px; z-index: 100; display: flex; justify-content: space-between; align-items: center; font-size: 10px; letter-spacing: 1px; }
+        .btn-ui { font-family: 'Press Start 2P', cursive; font-size: 16px; animation: blink 1s infinite; cursor: pointer; border: 1px solid #00ff00; padding: 18px 36px; background: rgba(0,255,0,0.1); transition: 0.3s; text-align: center; }
+        .btn-ui:hover { background: #00ff00; color: #000; box-shadow: 0 0 25px #00ff00; animation: none; }
+
+        #game-over-screen { display: none; background: rgba(20, 0, 0, 0.95); border: 2px solid #ff000033; }
+        #game-over-screen h1 { font-family: 'Press Start 2P', cursive; color: #ff0000; font-size: 40px; margin-bottom: 20px; text-shadow: 0 0 20px #ff0000; }
+
+        #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,10,0,0.95); border-top: 1px solid #00ff0033; padding: 10px 20px; z-index: 100; font-size: 9px; letter-spacing: 1px; }
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-<canvas id="bg-stars"></canvas>
+<canvas id="bg-space"></canvas>
 <canvas id="game-layer"></canvas>
 
 <div class="hud" id="game-hud" style="display: none;">
@@ -38,108 +42,126 @@
     BREACHES: <span id="leaks">0</span>/30
 </div>
 
-<div id="geo-terminal">
-    > [SYSTEM] INITIALIZING DEFENSE CORE...<br>
-    > [SOC] SCANNING SOURCE IP...
+<div id="leaderboard-fixed">
+    <div style="font-weight: bold; margin-bottom: 8px; color: #00ff00; border-bottom: 1px solid #00ff0033;">TOP 10 DEFENDERS</div>
+    <div id="rank-list">CONNECTING...</div>
 </div>
 
-<div id="overlay">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo">
-    <div class="prompt" id="start-btn">INITIALIZE DEFENSE</div>
-    <div style="margin-top: 25px; color: #4e9eff; font-size: 11px; letter-spacing: 3px; font-weight: bold;">SOPHOS CERTIFIED SPECIALIST</div>
+<div id="geo-terminal">
+    > [SYSTEM] JBRASIL CORE ONLINE...<br>
+    > [SOC] SCANNING DEEP SPACE...
+</div>
+
+<div id="start-screen" class="overlay">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" id="main-logo" alt="JBrasil Labs">
+    <div class="btn-ui" onclick="startGame()">INITIALIZE DEFENSE</div>
+</div>
+
+<div id="game-over-screen" class="overlay">
+    <h1>GAME OVER</h1>
+    <div style="font-family: 'Press Start 2P'; font-size: 14px; margin-bottom: 30px;">FINAL SCORE: <span id="final-score">0</span></div>
+    <div class="btn-ui" style="border-color: #ff0000; color: #ff0000;" onclick="startGame()">REBOOT SYSTEM</div>
 </div>
 
 <div id="footer-bar">
-    <div>JBRASIL LABS // NETWORK DEFENSE UNIT</div>
-    <div style="color: #4e9eff;">SECURE CONNECTION: AES-256</div>
+    JBRASIL LABS // INTERSTELLAR SECURITY PROTOCOL // NEURAL CORE v2.6
 </div>
 
 <script>
-const starCanvas = document.getElementById("bg-stars");
-const sCtx = starCanvas.getContext("2d");
+const spaceCanvas = document.getElementById("bg-space");
+const sCtx = spaceCanvas.getContext("2d");
 const gameCanvas = document.getElementById("game-layer");
 const gCtx = gameCanvas.getContext("2d");
 
-let score = 0, leaks = 0, gameRunning = false, userLocation = "UNKNOWN";
-let stars = [], particles = [], enemies = [], bullets = [], mouseParticles = [];
+let score = 0, leaks = 0, gameRunning = false, userLoc = "UNKNOWN";
+let stars = [], planets = [], enemies = [], bullets = [], mouseTrail = [];
 let mouseX = innerWidth/2, mouseY = innerHeight/2;
 
 function resize() {
-    starCanvas.width = gameCanvas.width = innerWidth;
-    starCanvas.height = gameCanvas.height = innerHeight;
-    initStars();
+    spaceCanvas.width = gameCanvas.width = innerWidth;
+    spaceCanvas.height = gameCanvas.height = innerHeight;
+    initUniverse();
 }
 window.addEventListener("resize", resize);
-resize();
 
-// --- Efeito Galáxia (Space Move) ---
-function initStars() {
-    stars = [];
-    for(let i=0; i<250; i++) {
-        stars.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, z: Math.random()*innerWidth });
-    }
+function initUniverse() {
+    stars = []; planets = [];
+    for(let i=0; i<300; i++) stars.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, z: Math.random()*innerWidth });
+    for(let i=0; i<3; i++) spawnPlanet();
 }
 
-function drawGalaxy() {
-    sCtx.fillStyle = "black";
+function spawnPlanet() {
+    planets.push({
+        x: Math.random() * innerWidth,
+        y: -300,
+        size: Math.random() * 80 + 40,
+        speed: Math.random() * 0.4 + 0.1,
+        color: `hsl(${Math.random()*360}, 50%, 20%)`
+    });
+}
+
+function drawUniverse() {
+    sCtx.fillStyle = "#000308";
     sCtx.fillRect(0, 0, innerWidth, innerHeight);
     stars.forEach(s => {
-        s.z -= 1.5;
-        if(s.z <= 0) s.z = innerWidth;
+        s.z -= 1.2; if(s.z <= 0) s.z = innerWidth;
         let sx = (s.x - innerWidth/2) * (innerWidth/s.z) + innerWidth/2;
         let sy = (s.y - innerHeight/2) * (innerWidth/s.z) + innerHeight/2;
         let size = (1 - s.z/innerWidth) * 2.5;
         sCtx.fillStyle = `rgba(255, 255, 255, ${1 - s.z/innerWidth})`;
         sCtx.fillRect(sx, sy, size, size);
     });
+    planets.forEach((p, i) => {
+        p.y += p.speed;
+        let grad = sCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        grad.addColorStop(0, p.color); grad.addColorStop(1, 'transparent');
+        sCtx.fillStyle = grad;
+        sCtx.beginPath(); sCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); sCtx.fill();
+        if(p.y > innerHeight + 300) { planets.splice(i, 1); spawnPlanet(); }
+    });
 }
 
-// --- Rastro de Dados do Mouse ---
-class MouseTrail {
-    constructor(x, y) {
-        this.x = x; this.y = y;
-        this.size = Math.random() * 3 + 1;
-        this.life = 1;
-        this.vx = (Math.random()-0.5)*1.5;
-        this.vy = (Math.random()-0.5)*1.5;
-    }
-    update() { this.x+=this.vx; this.y+=this.vy; this.life -= 0.02; }
-    draw(ctx) {
-        ctx.fillStyle = `rgba(0, 255, 0, ${this.life})`;
-        ctx.fillRect(this.x, this.y, this.size, this.size);
-    }
-}
-
-// --- Lógica do Jogo ---
 class Enemy {
     constructor() {
-        this.x = Math.random() * (innerWidth-60)+30; this.y = -30;
-        this.speed = 1.6 + (score/2500);
+        this.x = Math.random() * (innerWidth-60)+30;
+        this.y = -50;
+        this.speed = 1.4 + (score/3500);
+        this.type = Math.floor(Math.random() * 3);
+        this.rot = 0;
     }
-    draw() { gCtx.font = "26px Arial"; gCtx.fillText("👾", this.x-13, this.y+10); }
+    draw() {
+        gCtx.save(); gCtx.translate(this.x, this.y); gCtx.rotate(this.rot);
+        gCtx.strokeStyle = "#ff3333"; gCtx.lineWidth = 2; gCtx.beginPath();
+        if(this.type === 0) gCtx.rect(-15, -15, 30, 30);
+        else if(this.type === 1) { gCtx.moveTo(0, -20); gCtx.lineTo(18, 15); gCtx.lineTo(-18, 15); gCtx.closePath(); }
+        else { gCtx.arc(0, 0, 15, 0, Math.PI*2); gCtx.moveTo(-20, 0); gCtx.lineTo(20, 0); gCtx.moveTo(0, -20); gCtx.lineTo(0, 20); }
+        gCtx.stroke(); gCtx.restore();
+        this.rot += 0.04;
+    }
+}
+
+class Particle {
+    constructor(x,y) { this.x=x; this.y=y; this.v={x:(Math.random()-0.5)*2.5, y:(Math.random()-0.5)*2.5}; this.l=1; }
+    draw() { gCtx.fillStyle=`rgba(0,255,0,${this.l})`; gCtx.fillRect(this.x,this.y,2,2); this.x+=this.v.x; this.y+=this.v.y; this.l-=0.025; }
 }
 
 class Bullet {
-    constructor(x, y) { this.x = x; this.y = y-20; this.speed = 20; }
-    draw() { gCtx.fillStyle = "#00ffff"; gCtx.fillRect(this.x-1, this.y, 2, 18); }
+    constructor(x, y) { this.x = x; this.y = y-22; this.speed = 22; }
+    draw() { gCtx.fillStyle = "#00ffff"; gCtx.fillRect(this.x-1, this.y, 2, 20); }
 }
 
 addEventListener("mousemove", e => { 
     mouseX = e.clientX; mouseY = e.clientY; 
-    mouseParticles.push(new MouseTrail(mouseX, mouseY));
+    for(let i=0; i<2; i++) mouseTrail.push(new Particle(mouseX, mouseY));
 });
 
 function gameLoop() {
-    drawGalaxy();
+    drawUniverse();
     gCtx.clearRect(0,0,innerWidth,innerHeight);
-
-    mouseParticles.forEach((p, i) => {
-        p.update(); p.draw(gCtx);
-        if(p.life <= 0) mouseParticles.splice(i, 1);
-    });
+    mouseTrail.forEach((p, i) => { p.draw(); if(p.l <= 0) mouseTrail.splice(i, 1); });
 
     if(gameRunning) {
-        if(Math.random() < 0.035 + (score/30000)) enemies.push(new Enemy());
+        if(Math.random() < 0.038) enemies.push(new Enemy());
         bullets.forEach((b, bi) => {
             b.y -= b.speed; b.draw();
             if(b.y < 0) bullets.splice(bi, 1);
@@ -148,18 +170,15 @@ function gameLoop() {
             e.y += e.speed; e.draw();
             if(e.y > innerHeight) { 
                 leaks++; enemies.splice(ei, 1); 
-                if(leaks>=30) { gameRunning = false; document.getElementById("overlay").style.display = "flex"; }
+                if(leaks>=30) endGame(); 
             }
             bullets.forEach((b, bi) => {
-                if(Math.hypot(e.x - b.x, e.y - b.y) < 25) {
-                    score += 10; enemies.splice(ei, 1); bullets.splice(bi, 1);
-                }
+                if(Math.hypot(e.x - b.x, e.y - b.y) < 28) { score += 10; enemies.splice(ei, 1); bullets.splice(bi, 1); }
             });
         });
-        // Nave
         gCtx.save(); gCtx.translate(mouseX, mouseY);
         gCtx.strokeStyle = "#00ff00"; gCtx.lineWidth = 2;
-        gCtx.beginPath(); gCtx.moveTo(0, -20); gCtx.lineTo(-15, 12); gCtx.lineTo(0, 4); gCtx.lineTo(15, 12); gCtx.closePath(); gCtx.stroke();
+        gCtx.beginPath(); gCtx.moveTo(0, -22); gCtx.lineTo(-16, 14); gCtx.lineTo(0, 5); gCtx.lineTo(16, 14); gCtx.closePath(); gCtx.stroke();
         gCtx.restore();
     }
     document.getElementById("score").innerText = score;
@@ -167,44 +186,60 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// --- GeoIP e Envio de Logs ---
-function updateTerminal(msg) {
-    const term = document.getElementById("geo-terminal");
-    term.innerHTML += `<br>> ${msg}`;
-}
-
-async function startSystem() {
-    // 1. Identifica o IP imediatamente ao carregar
-    try {
-        const res = await fetch('https://jbrasillabs-1.onrender.com/geoip');
-        const data = await res.json();
-        userLocation = data.entry;
-        updateTerminal(`[SOC] LOCATION DETECTED: ${userLocation.toUpperCase()}`);
-    } catch(e) { updateTerminal("[!] FAILOVER: SECURE NODE ACTIVE"); }
-}
-
-document.getElementById("start-btn").onclick = async () => {
-    // 2. Envia o LOG para o Sheets no clique do botão
-    updateTerminal("[SOC] SENDING SESSION LOG...");
-    
-    fetch('https://jbrasillabs-1.onrender.com/log', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ entry: userLocation })
-    }).then(() => updateTerminal("[SOC] LOG SYNCHRONIZED."))
-      .catch(() => updateTerminal("[!] LOG OFFLINE - LOCAL ONLY"));
-
-    // Inicia o Jogo
-    document.getElementById("overlay").style.display = "none";
+// --- FUNÇÕES DE NAVEGAÇÃO ---
+async function startGame() {
+    // Esconde todas as telas
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("game-over-screen").style.display = "none";
     document.getElementById("game-hud").style.display = "block";
+    
+    // Envio do log (opcional no reinício, mas deixado aqui por segurança)
+    fetch('https://jbrasillabs-1.onrender.com/log', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ entry: userLoc })
+    });
+
+    // Reset de variáveis
     score = 0; leaks = 0; enemies = []; bullets = [];
     gameRunning = true;
-};
+}
 
-addEventListener("mousedown", () => { if(gameRunning) bullets.push(new Bullet(mouseX, mouseY)); });
+async function endGame() {
+    gameRunning = false;
+    document.getElementById("final-score").innerText = score;
+    document.getElementById("game-over-screen").style.display = "flex";
+    
+    // Salva pontuação e atualiza ranking
+    try {
+        await fetch('https://jbrasillabs-1.onrender.com/score', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ score })
+        });
+        fetchTop10();
+    } catch(e) {}
+}
 
-startSystem();
+async function fetchTop10() {
+    try {
+        const res = await fetch('https://jbrasillabs-1.onrender.com/leaderboard');
+        const data = await res.json();
+        let html = "";
+        data.slice(0, 10).forEach((d, i) => html += `${i+1}º - ${d.score} pts<br>`);
+        document.getElementById("rank-list").innerHTML = html || "NO DATA";
+    } catch(e) { document.getElementById("rank-list").innerHTML = "LINK OFFLINE"; }
+}
+
+// --- STARTUP ---
+fetch('https://jbrasillabs-1.onrender.com/geoip')
+    .then(r => r.json()).then(d => {
+        userLoc = d.entry;
+        document.getElementById("geo-terminal").innerHTML += `<br>> [SOC] ORIGIN: ${userLoc.toUpperCase()}`;
+    });
+
+resize();
+fetchTop10();
 gameLoop();
+addEventListener("mousedown", () => { if(gameRunning) bullets.push(new Bullet(mouseX, mouseY)); });
 </script>
 </body>
 </html>
