@@ -2,150 +2,196 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>JBrasil Labs - Atari SOC</title>
+    <title>JBrasil Labs - Interstellar SOC Atari</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Press Start 2P', cursive; cursor: none; color: #00ff00; }
-        canvas { position: fixed; inset: 0; z-index: 1; image-rendering: pixelated; }
-        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 12px; pointer-events: none; color: #fff; }
-        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 10px; background: rgba(0,0,0,0.8); padding: 10px; border: 2px solid #00ff00; }
-        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 300; }
-        .btn-ui { font-size: 16px; cursor: pointer; border: 4px solid #00ff00; padding: 20px; background: #000; color: #00ff00; }
-        .btn-ui:hover { background: #00ff00; color: #000; }
-        #game-over-screen { display: none; }
+        canvas { position: fixed; inset: 0; }
+        #bg-space { z-index: 0; }
+        #game-layer { z-index: 1; image-rendering: pixelated; }
+        
+        /* Efeito de Tremor (Glitch) */
+        .shake { animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; pointer-events: none; color: #fff; text-shadow: 0 0 8px #00ff00; }
+        #geo-terminal { position: fixed; bottom: 80px; left: 20px; z-index: 200; font-size: 9px; background: rgba(0,0,0,0.8); padding: 12px; border-left: 3px solid #00ff00; border-top: 1px solid rgba(0,255,0,0.2); backdrop-filter: blur(5px); min-width: 250px; }
+        
+        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.85); z-index: 300; }
+        .btn-ui { font-size: 14px; cursor: pointer; border: 3px solid #00ff00; padding: 15px 35px; background: transparent; color: #00ff00; transition: 0.3s; margin-top: 20px; }
+        .btn-ui:hover { background: #00ff00; color: #000; box-shadow: 0 0 40px #00ff00; }
+        
+        #game-over-screen { display: none; background: rgba(20,0,0,0.95); }
+        #footer-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.9); border-top: 1px solid #00ff0033; padding: 10px 20px; z-index: 100; font-size: 9px; opacity: 0.7; }
     </style>
 </head>
-<body>
+<body id="main-body">
 
+<canvas id="bg-space"></canvas>
 <canvas id="game-layer"></canvas>
 
-<div class="hud" id="game-hud" style="display: none;">
+<div class="hud" id="game-hud">
     SCORE: <span id="score">0</span><br>
-    LIVES: <span id="lives">3</span>
+    SHIELD: <span id="lives">3</span>
 </div>
 
-<div id="geo-terminal">> JBRASIL ATARI CORE...<br>> LOADING PIXELS...</div>
+<div id="geo-terminal">
+    > [SYSTEM] JBRASIL NEURAL CORE v4.2<br>
+    > [SOC] ANALYZING SECTOR...<br>
+    <span id="location-data">> [GEO] LOCATING ORIGIN...</span>
+</div>
 
 <div id="start-screen" class="overlay">
-    <h1 style="font-size: 30px; margin-bottom: 50px; text-align: center;">JBRASIL LABS<br>INVADERS</h1>
-    <div class="btn-ui" onclick="startGame()">START MISSION</div>
+    <h1 style="font-size: 26px; text-align: center; line-height: 1.6; margin-bottom: 30px;">JBRASIL LABS<br><span style="color: #4e9eff; font-size: 12px;">INTERSTELLAR INVADERS</span></h1>
+    <div class="btn-ui" onclick="startGame()">INITIALIZE MISSION</div>
 </div>
 
 <div id="game-over-screen" class="overlay">
-    <h1 style="color: #f00; font-size: 40px; margin-bottom: 20px;">GAME OVER</h1>
-    <div class="btn-ui" onclick="startGame()">RETRY</div>
+    <h1 style="color: #ff3333; font-size: 32px; margin-bottom: 10px;">SYSTEM DOWN</h1>
+    <div style="font-size: 12px; margin-bottom: 20px;">FINAL SCORE: <span id="final-score">0</span></div>
+    <div class="btn-ui" style="border-color: #ff3333; color: #ff3333;" onclick="startGame()">REBOOT SYSTEM</div>
 </div>
 
+<div id="footer-bar">JBRASIL LABS // SECURE PROTOCOL // 2026 INTERSTELLAR DEFENSE</div>
+
 <script>
-const canvas = document.getElementById("game-layer");
-const ctx = canvas.getContext("2d");
+// --- AUDIO ENGINE ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSfx(freq, type, dec, vol=0.1) {
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + dec);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dec);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dec);
+}
+
+// --- PIXEL ART SPRITES ---
+const INVADER_A = [[0,0,1,0,0,1,0,0],[0,0,0,1,1,0,0,0],[0,1,1,1,1,1,1,0],[1,1,0,1,1,0,1,1],[1,1,1,1,1,1,1,1],[0,0,1,0,0,1,0,0],[0,1,0,1,1,0,1,0],[1,0,1,0,0,1,0,1]];
+const INVADER_B = [[0,1,0,0,0,0,1,0],[0,0,1,1,1,1,0,0],[0,1,1,0,0,1,1,0],[1,1,1,1,1,1,1,1],[1,0,1,1,1,1,0,1],[1,0,1,0,0,1,0,1],[0,0,0,1,1,0,0,0]];
+
+// --- CORE VARIABLES ---
+const bgCanvas = document.getElementById("bg-space"), sCtx = bgCanvas.getContext("2d");
+const gCanvas = document.getElementById("game-layer"), gCtx = gCanvas.getContext("2d");
 let score = 0, lives = 3, gameRunning = false, tick = 0;
-let enemies = [], bullets = [], particles = [];
-let mouseX = innerWidth/2;
+let galaxyStars = [], enemies = [], bullets = [], mouseTrail = [];
+let mouseX = innerWidth/2, mouseY = innerHeight/2;
 
-// Desenhos em Pixel Art (8x8)
-const INVADER_A = [
-    [0,0,1,0,0,1,0,0],
-    [0,0,0,1,1,0,0,0],
-    [0,1,1,1,1,1,1,0],
-    [1,1,0,1,1,0,1,1],
-    [1,1,1,1,1,1,1,1],
-    [0,0,1,0,0,1,0,0],
-    [0,1,0,1,1,0,1,0],
-    [1,0,1,0,0,1,0,1]
-];
+function resize() {
+    bgCanvas.width = gCanvas.width = innerWidth;
+    bgCanvas.height = gCanvas.height = innerHeight;
+    initGalaxy();
+}
 
-const INVADER_B = [
-    [0,0,0,1,1,0,0,0],
-    [0,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1],
-    [1,1,0,1,1,0,1,1],
-    [1,1,1,1,1,1,1,1],
-    [0,0,1,0,0,1,0,0],
-    [0,1,0,1,1,0,1,0],
-    [0,0,1,0,0,1,0,0]
-];
-
-function drawPixelObject(matrix, x, y, size, color) {
-    ctx.fillStyle = color;
-    for(let row = 0; row < matrix.length; row++) {
-        for(let col = 0; col < matrix[row].length; col++) {
-            if(matrix[row][col]) {
-                ctx.fillRect(x + (col * size), y + (row * size), size, size);
-            }
-        }
+function initGalaxy() {
+    galaxyStars = [];
+    for(let i=0; i<600; i++) {
+        galaxyStars.push({
+            angle: Math.random() * Math.PI * 2,
+            distance: Math.random() * (innerWidth > innerHeight ? innerWidth : innerHeight) * 0.8,
+            arm: (Math.floor(Math.random() * 3) * (Math.PI * 2 / 3)),
+            size: Math.random() * 2,
+            speed: 0.001 + (Math.random() * 0.0015)
+        });
     }
 }
 
-function resize() {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
+function drawPixel(ctx, matrix, x, y, size, color) {
+    ctx.fillStyle = color;
+    matrix.forEach((row, rIdx) => {
+        row.forEach((col, cIdx) => {
+            if(col) ctx.fillRect(x + (cIdx * size), y + (rIdx * size), size, size);
+        });
+    });
 }
-window.addEventListener("resize", resize);
+
+function drawGalaxy() {
+    let grad = sCtx.createRadialGradient(innerWidth/2, innerHeight/2, 0, innerWidth/2, innerHeight/2, innerWidth);
+    grad.addColorStop(0, '#000c24'); grad.addColorStop(1, '#000000');
+    sCtx.fillStyle = grad; sCtx.fillRect(0,0,innerWidth,innerHeight);
+
+    galaxyStars.forEach(s => {
+        s.angle += s.speed;
+        const x = innerWidth/2 + Math.cos(s.angle + s.arm) * s.distance;
+        const y = innerHeight/2 + Math.sin(s.angle + s.arm) * (s.distance * 0.5); 
+        sCtx.fillStyle = `rgba(200, 230, 255, ${0.4 + Math.random()*0.4})`;
+        sCtx.fillRect(x, y, s.size, s.size);
+    });
+}
 
 class Enemy {
     constructor() {
-        this.x = Math.random() * (innerWidth - 60);
-        this.y = -50;
-        this.speed = 2 + (score/1000);
+        this.x = Math.random() * (innerWidth - 80) + 40;
+        this.y = -60;
         this.type = Math.random() > 0.5 ? INVADER_A : INVADER_B;
-        this.color = ["#f00", "#0f0", "#ff0", "#f0f"][Math.floor(Math.random()*4)];
+        this.color = ["#ff3333", "#33ff33", "#ffff33", "#ff33ff"][Math.floor(Math.random()*4)];
+        this.speed = 1.5 + (score/2000);
     }
     update() {
         this.y += this.speed;
-        drawPixelObject(this.type, this.x, this.y, 5, this.color);
+        drawPixel(gCtx, this.type, this.x, this.y, 5, this.color);
     }
 }
 
+function triggerShake() {
+    const body = document.getElementById("main-body");
+    body.classList.add("shake");
+    setTimeout(() => body.classList.remove("shake"), 200);
+}
+
 function gameLoop() {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Estrelas estilo Atari (quadrados simples)
-    ctx.fillStyle = "#fff";
-    for(let i=0; i<50; i++) {
-        ctx.fillRect(Math.random()*canvas.width, (tick + i*20)%canvas.height, 2, 2);
-    }
+    drawGalaxy();
+    gCtx.clearRect(0,0,innerWidth,innerHeight);
+
+    // Mouse Trail (Sempre ativo)
+    if(tick % 3 === 0) mouseTrail.push({x: mouseX, y: mouseY, l: 1});
+    mouseTrail.forEach((p, i) => {
+        gCtx.fillStyle = `rgba(0, 255, 0, ${p.l})`;
+        gCtx.fillRect(p.x, p.y, 3, 3);
+        p.l -= 0.05;
+        if(p.l <= 0) mouseTrail.splice(i, 1);
+    });
+
+    // Cursor Nave Atari
+    const ship = [[0,0,0,1,1,0,0,0],[0,0,1,1,1,1,0,0],[1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1]];
+    drawPixel(gCtx, ship, mouseX - 20, mouseY - 20, 5, "#00ff00");
 
     if(gameRunning) {
         tick++;
-        if(tick % 60 === 0) enemies.push(new Enemy());
+        if(tick % 50 === 0) enemies.push(new Enemy());
 
-        // Tiros (Pixels retangulares)
         bullets.forEach((b, bi) => {
-            b.y -= 10;
-            ctx.fillStyle = "#fff";
-            ctx.fillRect(b.x, b.y, 4, 12);
+            b.y -= 15;
+            gCtx.fillStyle = "#fff";
+            gCtx.fillRect(b.x, b.y, 4, 15);
             if(b.y < 0) bullets.splice(bi, 1);
         });
 
-        // Inimigos
         enemies.forEach((e, ei) => {
             e.update();
-            if(e.y > canvas.height) {
+            // Colisão com o fim da tela ou jogador (simplificada)
+            if(e.y > innerHeight) {
                 enemies.splice(ei, 1);
                 lives--;
+                triggerShake();
+                playSfx(100, 'square', 0.5, 0.2);
                 if(lives <= 0) endGame();
             }
-
             bullets.forEach((b, bi) => {
                 if(b.x > e.x && b.x < e.x + 40 && b.y > e.y && b.y < e.y + 40) {
-                    enemies.splice(ei, 1);
-                    bullets.splice(bi, 1);
+                    playSfx(150, 'sawtooth', 0.1, 0.1);
                     score += 10;
+                    enemies.splice(ei, 1); bullets.splice(bi, 1);
                 }
             });
         });
-
-        // Nave Jogador (Pixel Art simples)
-        const playerShip = [
-            [0,0,0,1,1,0,0,0],
-            [0,0,1,1,1,1,0,0],
-            [1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1]
-        ];
-        drawPixelObject(playerShip, mouseX - 20, canvas.height - 60, 5, "#0f0");
     }
 
     document.getElementById("score").innerText = score;
@@ -154,20 +200,36 @@ function gameLoop() {
 }
 
 function startGame() {
+    if(audioCtx.state === 'suspended') audioCtx.resume();
     document.getElementById("start-screen").style.display = "none";
     document.getElementById("game-over-screen").style.display = "none";
-    document.getElementById("game-hud").style.display = "block";
     score = 0; lives = 3; enemies = []; bullets = [];
     gameRunning = true;
 }
 
 function endGame() {
     gameRunning = false;
+    playSfx(60, 'sine', 1, 0.3);
+    document.getElementById("final-score").innerText = score;
     document.getElementById("game-over-screen").style.display = "flex";
 }
 
-addEventListener("mousemove", e => { mouseX = e.clientX; });
-addEventListener("mousedown", () => { if(gameRunning) bullets.push({x: mouseX, y: canvas.height - 60}); });
+// --- LISTENERS ---
+window.addEventListener("mousemove", e => { mouseX = e.clientX; mouseY = e.clientY; });
+window.addEventListener("mousedown", () => { 
+    if(gameRunning) { 
+        bullets.push({x: mouseX, y: mouseY - 20}); 
+        playSfx(600, 'triangle', 0.1, 0.05); 
+    } 
+});
+window.addEventListener("resize", resize);
+
+// --- GEO IP SIMULATION/API ---
+fetch('https://ipapi.co/json/').then(res => res.json()).then(data => {
+    document.getElementById("location-data").innerHTML = `> [GEO] ORIGIN: ${data.city.toUpperCase()}, ${data.country_name.toUpperCase()}<br>> [IP] ${data.ip}`;
+}).catch(() => {
+    document.getElementById("location-data").innerText = "> [GEO] ORIGIN: UNKNOWN SECTOR";
+});
 
 resize();
 gameLoop();
