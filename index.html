@@ -126,6 +126,21 @@
             transition: 0.3s;
         }
 
+        .plan-card h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            color: #fff;
+        }
+
+        .plan-card > p {
+            text-align: center;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
         .plan-card:hover {
             border-color: var(--primary);
             transform: translateY(-5px);
@@ -137,10 +152,15 @@
             position: relative;
         }
 
-        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; }
+        .price-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .price { font-size: 3rem; font-weight: 800; }
         .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
 
-        .features { list-style: none; margin-bottom: 30px; flex-grow: 1; }
+        .features { list-style: none; margin-bottom: 30px; flex-grow: 1; margin-top: 20px; }
         .features li { margin-bottom: 12px; display: flex; align-items: center; color: #cbd5e1; font-size: 0.95rem; }
         .features li::before { content: "✓"; color: var(--primary); margin-right: 10px; font-weight: bold; }
 
@@ -179,6 +199,7 @@
             font-size: 0.8rem;
             color: var(--text-muted);
         }
+        .footer-info { margin-top: 10px; opacity: 0.8; letter-spacing: 0.05em; }
 
         /* WhatsApp */
         .whatsapp-float {
@@ -225,7 +246,9 @@
             <div class="plan-card">
                 <h3>Start Remote</h3>
                 <p>Suporte essencial para microempresas.</p>
-                <div class="price">R$ <span id="price-start">697</span><span class="period">/mês</span></div>
+                <div class="price-container">
+                    <div class="price">R$ <span id="price-start">697</span><span class="period">/mês</span></div>
+                </div>
                 <ul class="features">
                     <li>Até 03 equipamentos</li>
                     <li>04 horas mensais inclusas</li>
@@ -239,7 +262,9 @@
                 <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--primary); color:#000; padding:2px 12px; border-radius:20px; font-size:10px; font-weight:800;">MAIS ESCOLHIDO</div>
                 <h3>Business Care</h3>
                 <p>Estabilidade para empresas em crescimento.</p>
-                <div class="price">R$ <span id="price-business">1.297</span><span class="period">/mês</span></div>
+                <div class="price-container">
+                    <div class="price">R$ <span id="price-business">1.297</span><span class="period">/mês</span></div>
+                </div>
                 <ul class="features">
                     <li>Até 08 equipamentos</li>
                     <li>08 horas mensais inclusas</li>
@@ -252,7 +277,9 @@
             <div class="plan-card">
                 <h3>Enterprise Plus</h3>
                 <p>Gestão completa de TI e infraestrutura.</p>
-                <div class="price">R$ <span id="price-enterprise">2.497</span><span class="period">/mês</span></div>
+                <div class="price-container">
+                    <div class="price">R$ <span id="price-enterprise">2.497</span><span class="period">/mês</span></div>
+                </div>
                 <ul class="features">
                     <li>Até 20 equipamentos</li>
                     <li>20 horas mensais inclusas</li>
@@ -267,21 +294,18 @@
             <h2>Dúvidas Frequentes</h2>
             <details>
                 <summary>Como funciona o atendimento remoto?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">Utilizamos softwares seguros de última geração para resolver problemas técnicos em minutos, sem necessidade de deslocamento físico na maioria dos casos.</div>
-            </details>
-            <details>
-                <summary>O que acontece se eu exceder as horas do plano?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">As horas excedentes são cobradas conforme a tabela vigente com desconto para assinantes, sempre mediante sua autorização prévia.</div>
+                <div style="padding-top:15px; color:var(--text-muted);">Utilizamos softwares seguros de última geração para resolver problemas técnicos em minutos, sem necessidade de deslocamento físico.</div>
             </details>
             <details>
                 <summary>Existe fidelidade no contrato?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">Nossos planos possuem períodos mínimos de 3 a 6 meses para garantir a estabilização do seu ambiente de TI. No plano anual, você garante 20% de desconto.</div>
+                <div style="padding-top:15px; color:var(--text-muted);">Nossos planos possuem períodos mínimos de 3 a 6 meses. No plano anual, você garante 20% de desconto.</div>
             </details>
         </section>
 
         <footer>
             <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" style="width:100px; opacity:0.3; margin-bottom:20px;">
             <p>© 2026 JBrasil TI — Suporte de TI por Assinatura Brasil</p>
+            <div class="footer-info">CNPJ: 65.109.396/0001-55</div>
         </footer>
 
     </div>
