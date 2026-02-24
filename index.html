@@ -4,196 +4,147 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JBrasil Labs | Suporte de TI Especializado</title>
-<meta name="description" content="Suporte técnico para empresas, clínicas e administradoras.">
+<title>JBrasil Labs | Planos de Suporte TI por Assinatura</title>
 
 <meta property="og:site_name" content="JBrasil Labs">
-<meta property="og:title" content="JBrasil Labs - Outsourcing de TI">
-<meta property="og:description" content="Atendimento especializado 8x5 para o seu negócio.">
-<meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png">
+<meta property="og:title" content="Planos de Suporte TI por Assinatura - JBrasil Labs">
+<meta property="og:description" content="Chega de dor de cabeça com tecnologia. Você foca no seu negócio, nós cuidamos da TI.">
+<meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png?v=4">
 <meta property="og:type" content="website">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    * { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-    body {
-        font-family: 'Inter', sans-serif;
-        background: radial-gradient(circle at 50% -20%, rgba(59,130,246,0.15), transparent 60%), #050507;
-        color: #e5e7eb;
-        overflow-x: hidden;
-    }
-
-    .nav-glass {
-        background: rgba(5,5,7,0.7);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .accent-text {
-        background: linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .plan-card {
-        background:#111115;
-        border:1px solid rgba(255,255,255,0.06);
-        border-radius:24px;
-        transition: all .4s ease;
-    }
-
-    .plan-card:hover {
-        transform: translateY(-10px);
-        border-color:#3b82f6;
-        box-shadow:0 25px 60px rgba(59,130,246,0.15);
-    }
-
-    /* BOTÃO FLUTUANTE COM LOGO */
+    :root { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #050507; color: #e5e7eb; }
+    .accent-text { background: linear-gradient(135deg, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    .plan-card { background: #111115; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; transition: 0.3s; }
+    .plan-card:hover { border-color: #3b82f6; transform: translateY(-5px); }
+    
+    .check-icon { color: #3b82f6; margin-right: 8px; font-weight: bold; }
+    
     .wa-float {
-        position:fixed;
-        bottom:30px;
-        right:30px;
-        width:65px;
-        height:65px;
-        background:#ffffff;
-        border-radius:50%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        box-shadow:0 15px 40px rgba(59,130,246,0.3);
-        z-index:100;
-        transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 2px solid #25d366;
+        position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #ffffff;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #25D366; z-index: 100;
     }
-
-    .wa-float:hover { transform: scale(1.1); }
-    .wa-logo-img { width: 40px; height: 40px; object-fit: contain; }
-
-    .segment-pill {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.08);
-        padding: 6px 14px;
-        border-radius: 100px;
-        font-size: 11px;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
+    .wa-float img { width: 40px; }
 </style>
 </head>
 
 <body>
 
-<a href="https://wa.me/5541996186960?text=Olá%20JBrasil%20Labs!%20Gostaria%20de%20consultar%20as%20soluções%20de%20TI%20para%20minha%20empresa." target="_blank" class="wa-float">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs" class="wa-logo-img">
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="wa-float" title="Falar com JBrasil Labs">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo">
 </a>
 
-<nav class="nav-glass sticky top-0 py-5 px-6 z-40">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="h-9">
-            <span class="font-bold text-lg tracking-tight">JBrasil Labs</span>
+<nav class="sticky top-0 bg-[#050507]/90 backdrop-blur-md border-b border-white/5 py-4 px-6 z-50">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="h-8">
+            <span class="font-bold text-xl uppercase tracking-tighter">JBrasil<span class="text-blue-500">Labs</span></span>
         </div>
-        <a href="#planos" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl text-sm transition">Ver Planos</a>
+        <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="text-sm font-bold bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg transition">Solicitar Visita</a>
     </div>
 </nav>
 
-<header class="pt-28 pb-20 text-center px-6">
+<header class="py-20 px-6 text-center">
     <div class="max-w-4xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black mb-6 uppercase tracking-widest">
-            Tecnologia de Alta Disponibilidade
-        </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-            Sua operação blindada,<br>
-            <span class="accent-text">seu foco no lucro.</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+            Sua empresa mais produtiva com o nosso <br>
+            <span class="accent-text">Suporte em T.I. por Assinatura.</span>
         </h1>
-        <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-            Suporte de TI estratégico para administradoras, clínicas e escritórios. Atendimento ágil e consultoria especializada.
+        <p class="text-gray-400 text-lg md:text-xl mb-8">
+            O Wi-Fi cai? Computador lento? Impressora não funciona? <br class="hidden md:block">
+            Terceirizar sua T.I. permite que você foque no que faz de melhor.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#planos" class="bg-white text-black font-bold py-4 px-10 rounded-2xl hover:bg-gray-200 transition">Ver Planos e Preços</a>
-            <a href="https://wa.me/5541996186960" class="border border-white/20 bg-white/5 text-white font-bold py-4 px-10 rounded-2xl hover:bg-white/10 transition">Falar com JBrasil Labs</a>
+        <div class="flex justify-center gap-4">
+            <a href="#planos" class="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition">Ver Planos Mensais</a>
         </div>
     </div>
 </header>
 
-<section class="py-12 bg-[#07070a] px-6">
-    <div class="max-w-5xl mx-auto flex flex-wrap justify-center gap-2 opacity-80">
-        <span class="segment-pill">Administradoras</span>
-        <span class="segment-pill">Clínicas Médicas</span>
-        <span class="segment-pill">Contabilidade</span>
-        <span class="segment-pill">Advogados</span>
-        <span class="segment-pill">Varejo</span>
-        <span class="segment-pill">Condomínios</span>
-        <span class="segment-pill">Facilities</span>
-        <span class="segment-pill">Marketing</span>
+<section class="py-16 bg-[#08080a] border-y border-white/5 px-6">
+    <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl font-bold mb-10 text-center">Qual a "dor" que mais trava o seu dia a dia?</h2>
+        <div class="grid md:grid-cols-2 gap-6 text-gray-400">
+            <div class="bg-[#111115] p-5 rounded-xl border border-white/5">
+                <p>❌ <strong>Lentidão:</strong> Computadores que demoram para ligar e travam durante o trabalho.</p>
+            </div>
+            <div class="bg-[#111115] p-5 rounded-xl border border-white/5">
+                <p>❌ <strong>Conectividade:</strong> Wi-fi com sinal fraco ou que desconecta sem razão aparente.</p>
+            </div>
+            <div class="bg-[#111115] p-5 rounded-xl border border-white/5">
+                <p>❌ <strong>Insegurança:</strong> Falta de backup e medo de perder arquivos importantes ou sofrer ataques.</p>
+            </div>
+            <div class="bg-[#111115] p-5 rounded-xl border border-white/5">
+                <p>❌ <strong>Perda de Tempo:</strong> Perder horas tentando resolver problemas técnicos em vez de vender.</p>
+            </div>
+        </div>
     </div>
 </section>
 
 <section id="planos" class="py-24 px-6">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-        <div class="plan-card p-8 flex flex-col border-white/5">
-            <h3 class="text-xl font-bold mb-4">Support Lite</h3>
-            <p class="text-3xl font-bold mb-6 italic">R$ 590<span class="text-sm text-gray-400 font-normal">/mês</span></p>
-            <ul class="space-y-4 text-sm text-gray-400 mb-8 flex-grow">
-                <li>✔ Suporte Remoto Ágil</li>
-                <li>✔ Até 5 estações</li>
-                <li>✔ SLA de 4 horas</li>
-            </ul>
-            <a href="https://wa.me/5541996186960" class="text-center py-3 border border-white/10 rounded-xl hover:bg-white/5 transition">Contratar</a>
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">Escolha o plano ideal para sua empresa</h2>
+            <p class="text-gray-500 italic">Atendimento 8x5 (Segunda a Sexta) com foco em resolução rápida.</p>
         </div>
 
-        <div class="plan-card p-8 flex flex-col border-blue-500/30 relative bg-gradient-to-b from-[#16161c] to-[#111115]">
-            <div class="absolute -top-3 left-6 bg-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Recomendado</div>
-            <h3 class="text-xl font-bold mb-4 text-white">Business Pro</h3>
-            <p class="text-3xl font-bold mb-6 text-white italic">R$ 1.100<span class="text-sm text-gray-400 font-normal">/mês</span></p>
-            <ul class="space-y-4 text-sm text-gray-300 mb-8 flex-grow">
-                <li>✔ Até 15 dispositivos</li>
-                <li>✔ Backup Cloud Automatizado</li>
-                <li>✔ Resposta Prioritária</li>
-            </ul>
-            <a href="https://wa.me/5541996186960" class="text-center py-3 bg-blue-600 rounded-xl font-bold hover:bg-blue-700 transition">Assinar Agora</a>
-        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="plan-card p-8">
+                <h3 class="text-xl font-bold mb-2">Suporte Remoto</h3>
+                <p class="text-gray-500 text-sm mb-6 italic">Ideal para pequenas demandas</p>
+                <p class="text-4xl font-bold mb-8">R$ 590<span class="text-sm font-normal text-gray-500">/mês</span></p>
+                <ul class="space-y-4 text-sm mb-10">
+                    <li><span class="check-icon">✓</span> Até 05 equipamentos</li>
+                    <li><span class="check-icon">✓</span> Atendimento via WhatsApp/AnyDesk</li>
+                    <li><span class="check-icon">✓</span> Consultoria em Redes e Wi-Fi</li>
+                    <li><span class="check-icon">✓</span> Configuração de Backup Cloud</li>
+                </ul>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="block text-center py-3 border border-blue-500 text-blue-500 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition">Escolher este</a>
+            </div>
 
-        <div class="plan-card p-8 flex flex-col border-white/5">
-            <h3 class="text-xl font-bold mb-4">Enterprise</h3>
-            <p class="text-3xl font-bold mb-6 italic">Customizado</p>
-            <p class="text-sm text-gray-400 mb-8 leading-relaxed">Gestão completa de servidores e infraestruturas complexas.</p>
-            <a href="https://wa.me/5541996186960" class="text-center py-3 border border-white/10 rounded-xl hover:bg-white/5 transition">Consultar</a>
+            <div class="plan-card p-8 border-blue-600 bg-[#16161c]">
+                <div class="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase w-max mb-4">Mais Procurado</div>
+                <h3 class="text-xl font-bold mb-2">Plano Business</h3>
+                <p class="text-gray-400 text-sm mb-6 italic">Remoto + Presencial Emergencial</p>
+                <p class="text-4xl font-bold mb-8">R$ 1.100<span class="text-sm font-normal text-gray-500">/mês</span></p>
+                <ul class="space-y-4 text-sm mb-10">
+                    <li><span class="check-icon">✓</span> Até 15 equipamentos</li>
+                    <li><span class="check-icon">✓</span> <strong>SLA Emergencial até 3h</strong></li>
+                    <li><span class="check-icon">✓</span> Visita técnica presencial inclusa</li>
+                    <li><span class="check-icon">✓</span> Gestão de Segurança e Antivírus</li>
+                </ul>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="block text-center py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition">Escolher este</a>
+            </div>
+
+            <div class="plan-card p-8 text-center flex flex-col justify-center border-dashed border-gray-700">
+                <h3 class="text-xl font-bold mb-4">Solução Personalizada</h3>
+                <p class="text-gray-500 text-sm mb-8 leading-relaxed">
+                    Sua empresa tem mais de 15 computadores ou precisa de atendimento em horários especiais?
+                </p>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="block py-4 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition">Falar com "O Cara da TI"</a>
+            </div>
         </div>
     </div>
 </section>
 
-<footer class="py-12 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="text-center md:text-left">
-            <p class="font-bold text-gray-400 text-lg">JBrasil Labs</p>
-            <p class="text-[10px] text-gray-600 uppercase tracking-widest mt-1">CNPJ: 65.109.396/0001-55</p>
-        </div>
-        <div class="flex items-center gap-4 text-xs text-gray-500 italic">
-            <span>Operação 8x5</span>
-            <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
-            <span>Atendimento Prioritário</span>
+<footer class="py-12 border-t border-white/5 text-center text-gray-500 text-sm">
+    <div class="max-w-4xl mx-auto px-6">
+        <p class="font-bold mb-2">JBrasil Labs Soluções em Tecnologia</p>
+        <p class="mb-6 italic">Você foca no seu negócio, nós cuidamos da T.I.</p>
+        <div class="text-[10px] opacity-50 uppercase tracking-widest">
+            CNPJ 65.109.396/0001-55 • Curitiba e Região
         </div>
     </div>
 </footer>
 
 <script>
-    const BACKEND = 'https://jbrasillabs-1.onrender.com';
-    async function initSystem() {
-        try {
-            const ipRes = await fetch('https://api.ipify.org?format=json');
-            const ipData = await ipRes.json();
-            fetch(`${BACKEND}/log`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ entry: `[PRO] Visita Business-Ready | IP: ${ipData.ip}` })
-            }).catch(() => {});
-        } catch (e) {}
-    }
-    initSystem();
+    // Log básico de visita (opcional)
+    console.log("JBrasil Labs - Pronto para o Suporte.");
 </script>
 
 </body>
