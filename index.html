@@ -4,209 +4,204 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>JBrasil Labs | Suporte de TI para Empresas</title>
+<title>Suporte de TI por Assinatura Brasil | Atendimento Remoto Empresarial</title>
 
-<meta name="description" content="Suporte de TI profissional para pequenas e médias empresas. Atendimento ágil, segurança, backup e gestão completa de tecnologia.">
+<meta name="description" content="Suporte de TI por Assinatura no Brasil. Atendimento remoto para pequenas e médias empresas. Monitoramento, suporte técnico ilimitado e gestão completa de TI empresarial.">
+<meta name="keywords" content="suporte de TI por assinatura Brasil, suporte técnico empresarial, TI para pequenas empresas, helpdesk empresarial, suporte remoto TI Brasil">
+<meta name="author" content="JBrasil TI">
 
-<meta property="og:site_name" content="JBrasil Labs">
-<meta property="og:title" content="Suporte de TI Profissional para Empresas - JBrasil Labs">
-<meta property="og:description" content="Você foca no crescimento da sua empresa. Nós cuidamos da sua TI.">
-<meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png?v=4">
-<meta property="og:type" content="website">
-
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body { font-family: 'Inter', sans-serif; background: #050507; color: #e5e7eb; scroll-behavior: smooth; }
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#0f172a;color:#fff;line-height:1.6}
 
-.accent-text {
-background: linear-gradient(135deg,#3b82f6,#06b6d4);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
+header{
+padding:100px 20px;
+text-align:center;
+background:linear-gradient(135deg,#0f172a,#1e293b);
 }
 
-.plan-card {
-background:#111115;
-border:1px solid rgba(255,255,255,0.08);
-border-radius:16px;
+header h1{
+font-size:42px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+header p{
+font-size:20px;
+color:#94a3b8;
+max-width:800px;
+margin:0 auto 40px;
+}
+
+.cta{
+display:inline-block;
+padding:15px 40px;
+background:#22c55e;
+color:#000;
+font-weight:600;
+border-radius:50px;
+text-decoration:none;
 transition:.3s;
 }
-.plan-card:hover {
-transform:translateY(-6px);
-border-color:#3b82f6;
+
+.cta:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px rgba(34,197,94,.6);
 }
 
-.segment-pill {
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-padding:6px 14px;
-border-radius:100px;
-font-size:11px;
-color:#9ca3af;
-text-transform:uppercase;
-letter-spacing:.05em;
+section{
+padding:80px 20px;
+max-width:1200px;
+margin:auto;
 }
 
-.wa-float {
+h2{
+font-size:32px;
+margin-bottom:40px;
+text-align:center;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+border-radius:15px;
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+background:#334155;
+}
+
+.card h3{
+margin-bottom:15px;
+font-size:20px;
+color:#22c55e;
+}
+
+footer{
+text-align:center;
+padding:40px 20px;
+background:#0f172a;
+color:#94a3b8;
+font-size:14px;
+}
+
+/* WhatsApp Pulsante */
+.whatsapp{
 position:fixed;
-bottom:30px;
-right:30px;
+bottom:25px;
+right:25px;
 width:65px;
 height:65px;
-background:#fff;
+background:#25d366;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-box-shadow:0 10px 30px rgba(0,0,0,.5);
-border:2px solid #25D366;
-z-index:100;
+box-shadow:0 0 0 rgba(37,211,102,0.7);
 animation:pulse 2s infinite;
+z-index:999;
 }
 
-@keyframes pulse {
-0% { box-shadow:0 0 0 0 rgba(37,211,102,.6);}
-70% { box-shadow:0 0 0 15px rgba(37,211,102,0);}
-100% { box-shadow:0 0 0 0 rgba(37,211,102,0);}
+.whatsapp img{
+width:35px;
 }
 
-.wa-float img { width:40px; }
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(37,211,102,0.7)}
+70%{box-shadow:0 0 0 25px rgba(37,211,102,0)}
+100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}
+}
 </style>
 </head>
 
 <body>
 
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="wa-float">
-<img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs">
-</a>
-
-<nav class="sticky top-0 bg-[#050507]/90 backdrop-blur-md border-b border-white/5 py-4 px-6 z-50">
-<div class="max-w-6xl mx-auto flex justify-between items-center">
-<div class="flex items-center gap-2">
-<img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="h-8">
-<span class="font-bold text-xl uppercase tracking-tight">JBrasil<span class="text-blue-500">Labs</span></span>
-</div>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-bold text-sm transition">
-Falar com Especialista
-</a>
-</div>
-</nav>
-
-<header class="py-24 px-6 text-center">
-<div class="max-w-4xl mx-auto">
-<h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
-Suporte de TI Profissional para <br>
-<span class="accent-text">Pequenas e Médias Empresas</span>
-</h1>
-
-<p class="text-gray-400 text-lg md:text-xl mb-8">
-Atendemos empresas de qualquer segmento.  
-Da clínica médica ao mini mercado, do escritório de advocacia à administradora de condomínios.
-</p>
-
-<p class="text-gray-500 mb-10 max-w-2xl mx-auto">
-Você não precisa mais perder tempo com computador travando, Wi-Fi instável ou medo de perder dados.  
-Nós assumimos sua TI para que você foque no crescimento do seu negócio.
-</p>
-
-<a href="#planos" class="bg-white text-black font-bold py-3 px-8 rounded-xl hover:bg-gray-200 transition">
-Ver Planos
-</a>
-</div>
+<header>
+<h1>Suporte de TI por Assinatura para Empresas no Brasil</h1>
+<p>Atendimento remoto especializado para pequenas e médias empresas. Reduza falhas, aumente produtividade e tenha uma equipe de TI dedicada por um valor mensal fixo.</p>
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="cta" onclick="logClick()">Falar com Especialista</a>
 </header>
 
-<section class="py-16 bg-[#08080a] border-y border-white/5 px-6 text-center">
-<div class="max-w-6xl mx-auto">
-<h2 class="text-2xl font-bold mb-10">Atendemos empresas de todos os segmentos</h2>
+<section>
+<h2>O que inclui nosso Suporte de TI por Assinatura</h2>
+<div class="grid">
 
-<div class="flex flex-wrap justify-center gap-3">
-
-<span class="segment-pill">Administradoras</span>
-<span class="segment-pill">Condomínios</span>
-<span class="segment-pill">Clínicas Médicas</span>
-<span class="segment-pill">Consultórios</span>
-<span class="segment-pill">Contabilidade</span>
-<span class="segment-pill">Advocacia</span>
-<span class="segment-pill">Mini Mercados</span>
-<span class="segment-pill">Lojas</span>
-<span class="segment-pill">Bares e Restaurantes</span>
-<span class="segment-pill">Oficinas</span>
-<span class="segment-pill">Agências</span>
-<span class="segment-pill">Empreiteiras</span>
-<span class="segment-pill">Facilities</span>
-<span class="segment-pill">Comércio Exterior</span>
-<span class="segment-pill">Estacionamentos</span>
-
+<div class="card">
+<h3>Suporte Técnico Ilimitado</h3>
+<p>Atendimento remoto para estações de trabalho, usuários, sistemas e infraestrutura empresarial.</p>
 </div>
 
-<p class="text-gray-500 mt-8 max-w-3xl mx-auto">
-Independentemente do seu ramo de atuação, se sua empresa depende de computadores, internet, sistemas e segurança de dados — nós podemos cuidar disso para você.
-</p>
-
-</div>
-</section>
-
-<section id="planos" class="py-24 px-6">
-<div class="max-w-6xl mx-auto text-center mb-16">
-<h2 class="text-3xl font-bold mb-4">Planos de Suporte por Assinatura</h2>
-<p class="text-gray-500 italic">Atendimento 8x5 com foco em resolução rápida e prevenção de problemas.</p>
+<div class="card">
+<h3>Monitoramento Preventivo</h3>
+<p>Identificamos e corrigimos falhas antes que impactem sua operação.</p>
 </div>
 
-<div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-
-<div class="plan-card p-8">
-<h3 class="text-xl font-bold mb-4">Suporte Essencial</h3>
-<p class="text-4xl font-bold mb-6">R$ 590<span class="text-sm text-gray-400">/mês</span></p>
-<ul class="space-y-3 text-sm text-gray-400 mb-8">
-<li>✓ Até 5 equipamentos</li>
-<li>✓ Suporte remoto ilimitado</li>
-<li>✓ Consultoria em redes</li>
-<li>✓ Configuração de backup</li>
-</ul>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="block py-3 border border-blue-500 text-blue-500 rounded-xl font-bold hover:bg-blue-500 hover:text-white transition">
-Contratar
-</a>
+<div class="card">
+<h3>Gestão de Rede e Servidores</h3>
+<p>Administração completa de ambientes corporativos com foco em estabilidade e desempenho.</p>
 </div>
 
-<div class="plan-card p-8 border-blue-600 bg-[#16161c]">
-<div class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full w-max mb-4">Mais Contratado</div>
-<h3 class="text-xl font-bold mb-4">Plano Business</h3>
-<p class="text-4xl font-bold mb-6">R$ 1.100<span class="text-sm text-gray-400">/mês</span></p>
-<ul class="space-y-3 text-sm text-gray-300 mb-8">
-<li>✓ Até 15 equipamentos</li>
-<li>✓ SLA prioritário</li>
-<li>✓ Visita técnica inclusa</li>
-<li>✓ Gestão de segurança</li>
-<li>✓ Monitoramento preventivo</li>
-</ul>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="block py-3 bg-blue-600 rounded-xl font-bold hover:bg-blue-700 transition">
-Solicitar Proposta
-</a>
-</div>
-
-<div class="plan-card p-8 flex flex-col justify-center text-center border-dashed border-gray-700">
-<h3 class="text-xl font-bold mb-4">Plano Personalizado</h3>
-<p class="text-gray-500 mb-6">
-Empresas maiores, múltiplas unidades ou necessidades específicas.
-</p>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="block py-3 border border-white/10 rounded-xl font-bold hover:bg-white/5 transition">
-Falar com Especialista
-</a>
+<div class="card">
+<h3>Atendimento Nacional</h3>
+<p>Suporte remoto em todo o Brasil com SLA definido e resposta rápida.</p>
 </div>
 
 </div>
 </section>
 
-<footer class="py-12 border-t border-white/5 text-center text-gray-500 text-sm">
-<div class="max-w-4xl mx-auto px-6">
-<p class="font-bold mb-2">JBrasil Labs Soluções em Tecnologia</p>
-<p class="italic mb-4">Você foca no seu negócio. Nós cuidamos da sua TI.</p>
-<p class="text-xs opacity-50 uppercase tracking-widest">
-CNPJ 65.109.396/0001-55 • Curitiba e Região
-</p>
+<section>
+<h2>Indicado para</h2>
+<div class="grid">
+
+<div class="card"><h3>Administradoras e Escritórios</h3><p>Condomínios, imobiliárias, contabilidade e advocacia.</p></div>
+<div class="card"><h3>Clínicas e Consultórios</h3><p>Médicos, odontológicos e saúde ocupacional.</p></div>
+<div class="card"><h3>Comércio e Varejo</h3><p>Lojas, mini mercados, restaurantes e estacionamentos.</p></div>
+<div class="card"><h3>Agências e Serviços</h3><p>Marketing, publicidade, fotografia e facilities.</p></div>
+
 </div>
+</section>
+
+<section style="text-align:center">
+<h2>TI Empresarial Sem Complicação</h2>
+<p style="max-width:700px;margin:0 auto 30px;color:#94a3b8">
+Transforme sua TI em um serviço previsível, seguro e escalável. 
+Elimine custos inesperados e tenha suporte técnico especializado sempre disponível.
+</p>
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="cta" onclick="logClick()">Solicitar Proposta</a>
+</section>
+
+<footer>
+© 2026 JBrasil TI — Suporte de TI por Assinatura Brasil
 </footer>
+
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="whatsapp" onclick="logClick()">
+<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Business">
+</a>
+
+<script>
+function logClick(){
+fetch("https://script.google.com/macros/s/SEU_SCRIPT_ID/exec",{
+method:"POST",
+mode:"no-cors",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+evento:"Clique WhatsApp",
+pagina:window.location.href,
+data:new Date().toISOString()
+})
+});
+}
+</script>
 
 </body>
 </html>
