@@ -4,98 +4,168 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Suporte de TI por Assinatura Brasil | Atendimento Remoto Empresarial</title>
+<title>Suporte de TI por Assinatura Brasil | Planos Empresariais</title>
 
-<meta name="description" content="Suporte de TI por Assinatura no Brasil. Atendimento remoto para pequenas e médias empresas. Monitoramento, suporte técnico ilimitado e gestão completa de TI empresarial.">
-<meta name="keywords" content="suporte de TI por assinatura Brasil, suporte técnico empresarial, TI para pequenas empresas, helpdesk empresarial, suporte remoto TI Brasil">
-<meta name="author" content="JBrasil TI">
+<meta name="description" content="Suporte de TI por Assinatura no Brasil. Planos empresariais com SLA, suporte remoto e gestão profissional de TI para pequenas e médias empresas.">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#0f172a;color:#fff;line-height:1.6}
 
-header{
-padding:100px 20px;
-text-align:center;
-background:linear-gradient(135deg,#0f172a,#1e293b);
+body{
+background:#0b1220;
+color:#fff;
+overflow-x:hidden;
 }
 
-header h1{
-font-size:42px;
-font-weight:700;
+/* Logo watermark */
+.bg-logo{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:650px;
+opacity:0.035;
+z-index:0;
+pointer-events:none;
+}
+
+/* Layout principal */
+.container{
+position:relative;
+z-index:1;
+}
+
+/* Hero */
+.hero{
+padding:120px 20px 80px;
+text-align:center;
+background:linear-gradient(135deg,#0b1220,#111c33);
+}
+
+.hero h1{
+font-size:44px;
+font-weight:800;
 margin-bottom:20px;
 }
 
-header p{
+.hero p{
 font-size:20px;
 color:#94a3b8;
-max-width:800px;
+max-width:750px;
 margin:0 auto 40px;
 }
 
-.cta{
+.btn{
 display:inline-block;
-padding:15px 40px;
-background:#22c55e;
+padding:16px 45px;
+background:linear-gradient(90deg,#22c55e,#16a34a);
 color:#000;
 font-weight:600;
 border-radius:50px;
 text-decoration:none;
 transition:.3s;
+cursor:pointer;
 }
 
-.cta:hover{
+.btn:hover{
 transform:scale(1.05);
-box-shadow:0 0 25px rgba(34,197,94,.6);
+box-shadow:0 0 30px rgba(34,197,94,.5);
 }
 
+/* Planos */
 section{
-padding:80px 20px;
+padding:90px 20px;
 max-width:1200px;
 margin:auto;
 }
 
 h2{
-font-size:32px;
-margin-bottom:40px;
 text-align:center;
+font-size:34px;
+margin-bottom:60px;
 }
 
-.grid{
+.plans{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:30px;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:35px;
 }
 
-.card{
-background:#1e293b;
-padding:30px;
-border-radius:15px;
-transition:.3s;
+.plan{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
+padding:45px;
+border-radius:25px;
+border:1px solid rgba(255,255,255,0.08);
+transition:.4s;
 }
 
-.card:hover{
-transform:translateY(-8px);
-background:#334155;
+.plan:hover{
+transform:translateY(-12px);
+border:1px solid rgba(34,197,94,.5);
 }
 
-.card h3{
-margin-bottom:15px;
-font-size:20px;
+.plan h3{
+font-size:22px;
+margin-bottom:10px;
 color:#22c55e;
 }
 
+.plan p{
+color:#94a3b8;
+margin-bottom:20px;
+min-height:60px;
+}
+
+.price{
+font-size:40px;
+font-weight:800;
+margin:20px 0;
+}
+
+.price span{
+font-size:16px;
+color:#94a3b8;
+}
+
+.plan ul{
+list-style:none;
+margin-bottom:30px;
+}
+
+.plan ul li{
+margin-bottom:10px;
+color:#cbd5e1;
+}
+
+.highlight{
+background:linear-gradient(145deg,#111c33,#16213e);
+border:1px solid #22c55e;
+transform:scale(1.05);
+}
+
+/* Rodapé */
 footer{
 text-align:center;
-padding:40px 20px;
-background:#0f172a;
+padding:60px 20px;
+background:#0b1220;
+border-top:1px solid rgba(255,255,255,0.05);
+}
+
+footer img{
+width:140px;
+margin-bottom:15px;
+opacity:.9;
+}
+
+footer p{
 color:#94a3b8;
 font-size:14px;
 }
 
-/* WhatsApp Pulsante */
+/* WhatsApp */
 .whatsapp{
 position:fixed;
 bottom:25px;
@@ -107,99 +177,123 @@ border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-box-shadow:0 0 0 rgba(37,211,102,0.7);
 animation:pulse 2s infinite;
 z-index:999;
 }
 
-.whatsapp img{
-width:35px;
-}
+.whatsapp img{width:35px}
 
 @keyframes pulse{
 0%{box-shadow:0 0 0 0 rgba(37,211,102,0.7)}
 70%{box-shadow:0 0 0 25px rgba(37,211,102,0)}
 100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}
 }
+
+@media(max-width:768px){
+.hero h1{font-size:30px}
+.hero p{font-size:16px}
+.bg-logo{width:350px}
+}
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>Suporte de TI por Assinatura para Empresas no Brasil</h1>
-<p>Atendimento remoto especializado para pequenas e médias empresas. Reduza falhas, aumente produtividade e tenha uma equipe de TI dedicada por um valor mensal fixo.</p>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="cta" onclick="logClick()">Falar com Especialista</a>
-</header>
+<img src="logo.png" class="bg-logo" alt="JBrasil TI">
+
+<div class="container">
+
+<div class="hero">
+<h1>Suporte de TI por Assinatura para Empresas</h1>
+<p>Equipe especializada, SLA definido e atendimento remoto em todo o Brasil para pequenas e médias empresas.</p>
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Hero CTA')">Solicitar Proposta</a>
+</div>
 
 <section>
-<h2>O que inclui nosso Suporte de TI por Assinatura</h2>
-<div class="grid">
+<h2>Planos Empresariais</h2>
 
-<div class="card">
-<h3>Suporte Técnico Ilimitado</h3>
-<p>Atendimento remoto para estações de trabalho, usuários, sistemas e infraestrutura empresarial.</p>
+<div class="plans">
+
+<div class="plan">
+<h3>Start Remote</h3>
+<p>Suporte essencial para microempresas que precisam de apoio técnico estruturado.</p>
+<div class="price">R$ 697 <span>/mês</span></div>
+<ul>
+<li>✔ Até 03 equipamentos</li>
+<li>✔ 04 horas mensais inclusas</li>
+<li>✔ Atendimento remoto 8x5</li>
+<li>✔ Suporte via acesso remoto e telefone</li>
+<li>✔ Contrato mínimo 03 meses</li>
+</ul>
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Start Remote')">Contratar</a>
 </div>
 
-<div class="card">
-<h3>Monitoramento Preventivo</h3>
-<p>Identificamos e corrigimos falhas antes que impactem sua operação.</p>
+<div class="plan highlight">
+<h3>Business Care</h3>
+<p>Plano mais escolhido por empresas que precisam de estabilidade e resposta rápida.</p>
+<div class="price">R$ 1.297 <span>/mês</span></div>
+<ul>
+<li>✔ Até 08 equipamentos</li>
+<li>✔ 08 horas mensais inclusas</li>
+<li>✔ Atendimento remoto prioritário</li>
+<li>✔ SLA emergencial até 03h</li>
+<li>✔ Contrato mínimo 06 meses</li>
+</ul>
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Business Care')">Mais Escolhido</a>
 </div>
 
-<div class="card">
-<h3>Gestão de Rede e Servidores</h3>
-<p>Administração completa de ambientes corporativos com foco em estabilidade e desempenho.</p>
+<div class="plan">
+<h3>Enterprise Plus</h3>
+<p>Gestão completa para empresas que dependem fortemente da TI.</p>
+<div class="price">R$ 2.497 <span>/mês</span></div>
+<ul>
+<li>✔ Até 20 equipamentos</li>
+<li>✔ 20 horas mensais inclusas</li>
+<li>✔ Monitoramento contínuo</li>
+<li>✔ SLA emergencial até 01h</li>
+<li>✔ Suporte remoto prioritário</li>
+<li>✔ Contrato mínimo 06 meses</li>
+</ul>
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Enterprise Plus')">Solicitar Proposta</a>
 </div>
 
-<div class="card">
-<h3>Atendimento Nacional</h3>
-<p>Suporte remoto em todo o Brasil com SLA definido e resposta rápida.</p>
 </div>
 
-</div>
-</section>
-
-<section>
-<h2>Indicado para</h2>
-<div class="grid">
-
-<div class="card"><h3>Administradoras e Escritórios</h3><p>Condomínios, imobiliárias, contabilidade e advocacia.</p></div>
-<div class="card"><h3>Clínicas e Consultórios</h3><p>Médicos, odontológicos e saúde ocupacional.</p></div>
-<div class="card"><h3>Comércio e Varejo</h3><p>Lojas, mini mercados, restaurantes e estacionamentos.</p></div>
-<div class="card"><h3>Agências e Serviços</h3><p>Marketing, publicidade, fotografia e facilities.</p></div>
-
-</div>
-</section>
-
-<section style="text-align:center">
-<h2>TI Empresarial Sem Complicação</h2>
-<p style="max-width:700px;margin:0 auto 30px;color:#94a3b8">
-Transforme sua TI em um serviço previsível, seguro e escalável. 
-Elimine custos inesperados e tenha suporte técnico especializado sempre disponível.
+<p style="text-align:center;margin-top:50px;color:#94a3b8;font-size:14px;">
+Horas excedentes são cobradas conforme tabela vigente. Valores podem variar conforme complexidade do ambiente.
 </p>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="cta" onclick="logClick()">Solicitar Proposta</a>
+
 </section>
 
 <footer>
-© 2026 JBrasil TI — Suporte de TI por Assinatura Brasil
+<img src="logo.png" alt="JBrasil TI">
+<p>© 2026 JBrasil TI — Suporte de TI por Assinatura Brasil</p>
 </footer>
 
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="whatsapp" onclick="logClick()">
-<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Business">
+</div>
+
+<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="whatsapp" onclick="logClick('WhatsApp Flutuante')">
+<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
 </a>
 
 <script>
-function logClick(){
-fetch("https://script.google.com/macros/s/SEU_SCRIPT_ID/exec",{
-method:"POST",
-mode:"no-cors",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-evento:"Clique WhatsApp",
-pagina:window.location.href,
-data:new Date().toISOString()
-})
-});
+function logClick(origem){
+
+const logData = {
+evento: "Clique WhatsApp",
+origem: origem,
+pagina: window.location.href,
+data: new Date().toISOString(),
+dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
+userAgent: navigator.userAgent
+};
+
+console.log("LOG SITE:", logData);
+
+let logs = JSON.parse(localStorage.getItem("jb_logs") || "[]");
+logs.push(logData);
+localStorage.setItem("jb_logs", JSON.stringify(logs));
+
 }
 </script>
 
