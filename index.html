@@ -5,146 +5,411 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JBrasil Labs | Suporte de TI Especializado</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffffff; scroll-behavior: smooth; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .gradient-text { background: linear-gradient(90deg, #00d1ff, #00ff85); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .plan-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid #222; position: relative; overflow: hidden; }
-        .plan-card:hover { transform: translateY(-12px); border-color: #00d1ff; box-shadow: 0 20px 40px rgba(0, 209, 255, 0.15); }
-        .float-whatsapp { position: fixed; bottom: 30px; right: 30px; z-index: 1000; transition: transform 0.3s; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
-        .float-whatsapp:hover { transform: scale(1.1); }
-        .logo-img { filter: drop-shadow(0 0 8px rgba(0, 209, 255, 0.3)); }
+        * { -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Inter', sans-serif; background-color: #0c0c0e; color: #e8e8ed; scroll-behavior: smooth; }
+
+        /* Nav glass */
+        .nav-glass {
+            background: rgba(12, 12, 14, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* Accent */
+        :root { --accent: #3b82f6; --accent-light: #60a5fa; }
+
+        /* Gradient text */
+        .accent-text {
+            background: linear-gradient(120deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero glow */
+        .hero-glow {
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.12), transparent);
+        }
+
+        /* Divider line */
+        .divider { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); height: 1px; }
+
+        /* Stat item */
+        .stat-item { border-right: 1px solid rgba(255,255,255,0.06); }
+        .stat-item:last-child { border-right: none; }
+
+        /* Plan card */
+        .plan-card {
+            background: #131316;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .plan-card:hover {
+            border-color: rgba(59,130,246,0.4);
+            box-shadow: 0 0 40px rgba(59,130,246,0.08);
+            transform: translateY(-4px);
+        }
+
+        /* Featured card */
+        .plan-card.featured {
+            background: #fff;
+            color: #0c0c0e;
+            border-color: transparent;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .plan-card.featured:hover {
+            border-color: transparent;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            transition: background 0.2s, transform 0.2s;
+            display: inline-block;
+        }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+
+        .btn-ghost {
+            background: transparent;
+            color: #9ca3af;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            display: inline-block;
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.05); color: #e8e8ed; border-color: rgba(255,255,255,0.18); }
+
+        .btn-dark {
+            background: #0c0c0e;
+            color: #e8e8ed;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            transition: background 0.2s;
+            display: block;
+            text-align: center;
+        }
+        .btn-dark:hover { background: #1a1a1f; }
+
+        .btn-outline-dark {
+            background: transparent;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            transition: background 0.2s, border-color 0.2s;
+            display: block;
+            text-align: center;
+        }
+        .btn-outline-dark:hover { background: #f3f4f6; }
+
+        .btn-outline-light {
+            background: transparent;
+            color: #9ca3af;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            transition: all 0.2s;
+            display: block;
+            text-align: center;
+        }
+        .btn-outline-light:hover { background: rgba(255,255,255,0.04); color: #e8e8ed; border-color: rgba(255,255,255,0.18); }
+
+        /* Service icon box */
+        .icon-box {
+            width: 44px; height: 44px;
+            background: rgba(59,130,246,0.1);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* WhatsApp float */
+        .float-wa {
+            position: fixed; bottom: 28px; right: 28px; z-index: 999;
+            width: 52px; height: 52px;
+            background: #25d366;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .float-wa:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+
+        /* Badge */
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 999px;
+            padding: 4px 14px;
+            font-size: 0.75rem;
+            color: #60a5fa;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* Check icon */
+        .check-blue { color: #3b82f6; }
+        .check-dark { color: #374151; }
     </style>
 </head>
 <body>
 
-    <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20da%20JBrasil%20Labs." target="_blank" class="float-whatsapp">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-16 h-16">
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20falar%20com%20um%20especialista%20da%20JBrasil%20Labs." target="_blank" class="float-wa" aria-label="WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.849L.057 23.427a.5.5 0 0 0 .609.61l5.69-1.456A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.797 9.797 0 0 1-4.99-1.37l-.358-.213-3.715.951.98-3.617-.234-.372A9.797 9.797 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+        </svg>
     </a>
 
-    <nav class="py-4 px-8 flex justify-between items-center border-b border-white/10 sticky top-0 z-50 glass">
-        <div class="flex items-center gap-3">
-            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo" class="h-10 w-auto logo-img">
-            <span class="font-extrabold text-xl tracking-tighter hidden sm:block">JBRASIL LABS</span>
-        </div>
-        <div class="flex gap-6 text-sm font-medium text-gray-400">
-            <a href="#planos" class="hover:text-[#00d1ff] transition">Planos</a>
-            <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20um%20orçamento." class="bg-white text-black px-4 py-2 rounded-full text-xs font-bold hover:bg-[#00d1ff] hover:text-white transition" target="_blank">CONTATO</a>
+    <!-- Navigation -->
+    <nav class="nav-glass sticky top-0 z-50 py-4 px-6 md:px-10">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs" class="h-9 w-auto">
+                <span class="font-bold text-base tracking-tight hidden sm:block text-white">JBrasil Labs</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#planos" class="text-sm text-gray-400 hover:text-white transition font-medium hidden sm:block">Planos</a>
+                <a href="#servicos" class="text-sm text-gray-400 hover:text-white transition font-medium hidden sm:block">Serviços</a>
+                <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20um%20orçamento." target="_blank" class="btn-primary">Falar Agora</a>
+            </div>
         </div>
     </nav>
 
-    <section class="py-20 px-8 max-w-6xl mx-auto text-center">
-        <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs" class="h-24 w-auto mx-auto mb-8 logo-img">
-        
-        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight leading-tight">
-            Suporte de TI para sua <br><span class="gradient-text">Operação não parar.</span>
-        </h1>
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-            Terceirização de TI ágil e inteligente. Especialistas prontos para resolver seus problemas de tecnologia em tempo real.
-        </p>
-        <div class="flex flex-col md:flex-row gap-4 justify-center">
-            <a href="#planos" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition">Ver Planos Mensais</a>
-            <a href="https://wa.me/5491136756375?text=Olá!%20Vi%20o%20site%20e%20quero%20um%20atendimento%20personalizado." target="_blank" class="border border-white/20 px-10 py-4 rounded-full font-bold text-lg hover:bg-white/5 transition">Falar com Especialista</a>
-        </div>
-    </section>
-
-    <section class="py-12 border-y border-white/5 bg-[#080808]">
-        <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div><p class="text-2xl font-bold text-[#00d1ff]">100%</p><p class="text-xs text-gray-500 uppercase">Remoto</p></div>
-            <div><p class="text-2xl font-bold text-[#00d1ff]">2h</p><p class="text-xs text-gray-500 uppercase">SLA Prioritário</p></div>
-            <div><p class="text-2xl font-bold text-[#00d1ff]">Backup</p><p class="text-xs text-gray-500 uppercase">Gerenciado</p></div>
-            <div><p class="text-2xl font-bold text-[#00d1ff]">SOC</p><p class="text-xs text-gray-500 uppercase">Active Monitoring</p></div>
-        </div>
-    </section>
-
-    <section id="planos" class="py-24 px-8 max-w-6xl mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="plan-card p-10 rounded-[2.5rem] bg-[#111]">
-                <h3 class="text-xl font-bold mb-2">SUPORTE REMOTO</h3>
-                <p class="text-gray-500 text-xs mb-6 italic">Ideal para pequenas empresas</p>
-                <p class="text-4xl font-extrabold mb-8">R$ 590<span class="text-sm font-light text-gray-500">/mês</span></p>
-                <ul class="space-y-4 mb-10 text-sm text-gray-400">
-                    <li>✓ Suporte Remoto Ilimitado</li>
-                    <li>✓ Configuração de Periféricos</li>
-                    <li>✓ Atendimento em até 4h</li>
-                    <li>✓ Relatório de Atividades</li>
-                </ul>
-                <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20assinar%20o%20Plano%20Remoto." target="_blank" class="block text-center border border-white/20 py-4 rounded-2xl font-bold hover:bg-white hover:text-black transition">Contratar Plano</a>
+    <!-- Hero -->
+    <section class="hero-glow pt-24 pb-20 px-6 md:px-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="badge mb-8 mx-auto w-fit">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                Suporte ativo — Seg a Sex, 9h às 18h
             </div>
-
-            <div class="plan-card p-10 rounded-[2.5rem] bg-white text-black scale-105 border-[#00d1ff] z-10">
-                <div class="absolute top-6 right-8 bg-[#00d1ff] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">Mais Vendido</div>
-                <h3 class="text-xl font-bold mb-2">BUSINESS FULL</h3>
-                <p class="text-gray-600 text-xs mb-6 italic">Completo e preventivo</p>
-                <p class="text-4xl font-extrabold mb-8">R$ 1.100<span class="text-sm font-light text-gray-500">/mês</span></p>
-                <ul class="space-y-4 mb-10 text-sm font-medium">
-                    <li>✓ Tudo do Plano Remoto</li>
-                    <li>✓ Gestão de Backups Profissional</li>
-                    <li>✓ Manutenção Preventiva Mensal</li>
-                    <li>✓ SLA Prioritário (até 2h)</li>
-                    <li>✓ Monitoramento de Servidores</li>
-                </ul>
-                <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20assinar%20o%20Plano%20Business%20Full." target="_blank" class="block text-center bg-black text-white py-4 rounded-2xl font-bold hover:bg-gray-800 transition shadow-xl">Assinar Agora</a>
-            </div>
-
-            <div class="plan-card p-10 rounded-[2.5rem] bg-[#111]">
-                <h3 class="text-xl font-bold mb-2">ENTERPRISE</h3>
-                <p class="text-gray-500 text-xs mb-6 italic">Projetos sob demanda</p>
-                <p class="text-4xl font-extrabold mb-8 italic">Custom</p>
-                <ul class="space-y-4 mb-10 text-sm text-gray-400">
-                    <li>✓ Consultoria em Infraestrutura</li>
-                    <li>✓ Gestão de Segurança Avançada</li>
-                    <li>✓ Suporte Híbrido (Presencial)</li>
-                    <li>✓ Gerente de Conta Dedicado</li>
-                </ul>
-                <a href="https://wa.me/5491136756375?text=Olá!%20Preciso%20de%20um%20atendimento%20Enterprise%20customizado." target="_blank" class="block text-center border border-white/20 py-4 rounded-2xl font-bold hover:bg-white hover:text-black transition">Solicitar Orçamento</a>
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight tracking-tight mb-6 text-white">
+                TI gerenciada para sua<br>
+                <span class="accent-text">empresa crescer sem parar.</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+                Terceirização de TI com suporte remoto ágil, backups gerenciados e monitoramento proativo. Do setup ao SOC, sem surpresas.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="#planos" class="btn-primary text-base px-8 py-3.5">Ver Planos</a>
+                <a href="https://wa.me/5491136756375?text=Olá!%20Vi%20o%20site%20e%20quero%20um%20atendimento%20personalizado." target="_blank" class="btn-ghost text-base px-8 py-3.5">Falar com Especialista →</a>
             </div>
         </div>
     </section>
 
-    <footer class="py-16 px-8 border-t border-white/5 text-center">
-        <div class="max-w-xs mx-auto mb-6">
-            <div class="flex items-center justify-center gap-2 mb-2">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span class="text-[10px] text-gray-500 font-mono uppercase tracking-widest" id="status-text">SOC MONITORING ACTIVE</span>
+    <!-- Stats Bar -->
+    <div class="divider"></div>
+    <section class="py-10 px-6">
+        <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-0">
+            <div class="stat-item text-center py-4 px-6">
+                <p class="text-2xl font-bold text-white mb-1">2h</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest font-medium">SLA Prioritário</p>
             </div>
-            <div id="ip-display" class="text-[9px] text-gray-700 font-mono italic">FETCHING SYSTEM LOGS...</div>
+            <div class="stat-item text-center py-4 px-6">
+                <p class="text-2xl font-bold text-white mb-1">100%</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest font-medium">Remoto</p>
+            </div>
+            <div class="stat-item text-center py-4 px-6">
+                <p class="text-2xl font-bold text-white mb-1">Backup</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest font-medium">Gerenciado</p>
+            </div>
+            <div class="text-center py-4 px-6">
+                <p class="text-2xl font-bold text-white mb-1">SOC</p>
+                <p class="text-xs text-gray-500 uppercase tracking-widest font-medium">Monitoramento Ativo</p>
+            </div>
         </div>
-        <p class="text-gray-600 text-xs">© 2026 JBrasil Labs | Soluções em Tecnologia</p>
+    </section>
+    <div class="divider"></div>
+
+    <!-- Services -->
+    <section id="servicos" class="py-20 px-6 md:px-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="mb-12">
+                <p class="text-xs uppercase tracking-widest font-medium text-blue-400 mb-3">O que entregamos</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-white">Soluções completas de TI</h2>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Service items -->
+                <div class="p-6 rounded-2xl bg-[#131316] border border-white/5 hover:border-blue-500/20 transition">
+                    <div class="icon-box mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-white mb-1.5">Suporte Remoto</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Atendimento rápido para resolver problemas de hardware, software e conectividade sem deslocamento.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#131316] border border-white/5 hover:border-blue-500/20 transition">
+                    <div class="icon-box mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-white mb-1.5">Gestão de Backups</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Rotinas automatizadas, verificação de integridade e restauração garantida dos seus dados críticos.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#131316] border border-white/5 hover:border-blue-500/20 transition">
+                    <div class="icon-box mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-white mb-1.5">Segurança & SOC</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Monitoramento contínuo de ameaças, gestão de endpoints e respostas rápidas a incidentes.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#131316] border border-white/5 hover:border-blue-500/20 transition">
+                    <div class="icon-box mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-white mb-1.5">Monitoramento de Servidores</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Acompanhamento em tempo real de desempenho, disponibilidade e alertas proativos.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#131316] border border-white/5 hover:border-blue-500/20 transition">
+                    <div class="icon-box mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-white mb-1.5">Manutenção Preventiva</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Vistorias mensais, atualizações e limpeza do ambiente para evitar falhas antes que aconteçam.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-[#131316] border border-white/5 hover:border-blue-500/20 transition">
+                    <div class="icon-box mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3 class="font-semibold text-white mb-1.5">Consultoria de Infraestrutura</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Planejamento estratégico de TI, dimensionamento e migração para ambientes mais eficientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plans -->
+    <section id="planos" class="py-20 px-6 md:px-10 bg-[#0a0a0c]">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14">
+                <p class="text-xs uppercase tracking-widest font-medium text-blue-400 mb-3">Planos mensais</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">Escolha o plano ideal</h2>
+                <p class="text-gray-500 text-sm max-w-md mx-auto">Contratos mensais sem fidelidade. Escale conforme a necessidade da sua operação.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6 items-start">
+
+                <!-- Basic -->
+                <div class="plan-card p-8">
+                    <p class="text-xs uppercase tracking-widest font-semibold text-gray-500 mb-5">Suporte Remoto</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-white">R$ 590</span>
+                        <span class="text-sm text-gray-500 ml-1">/mês</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-8 leading-relaxed">Ideal para pequenas empresas que precisam de suporte técnico ágil e confiável.</p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-400">
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Suporte Remoto Ilimitado</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Configuração de Periféricos</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Atendimento em até 4h</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Relatório Mensal de Atividades</li>
+                    </ul>
+                    <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20assinar%20o%20Plano%20Remoto." target="_blank" class="btn-outline-light w-full">Contratar Plano</a>
+                </div>
+
+                <!-- Featured -->
+                <div class="plan-card featured p-8 relative">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                        <span class="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Mais Vendido</span>
+                    </div>
+                    <p class="text-xs uppercase tracking-widest font-semibold text-gray-400 mb-5">Business Full</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-gray-900">R$ 1.100</span>
+                        <span class="text-sm text-gray-400 ml-1">/mês</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-8 leading-relaxed">Completo e preventivo para empresas que não podem perder tempo com falhas de TI.</p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-700">
+                        <li class="flex items-center gap-2.5"><svg class="check-dark flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Tudo do Plano Remoto</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-dark flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Gestão de Backups Profissional</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-dark flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Manutenção Preventiva Mensal</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-dark flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>SLA Prioritário — até 2h</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-dark flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Monitoramento de Servidores</li>
+                    </ul>
+                    <a href="https://wa.me/5491136756375?text=Olá!%20Gostaria%20de%20assinar%20o%20Plano%20Business%20Full." target="_blank" class="btn-dark w-full">Assinar Agora</a>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="plan-card p-8">
+                    <p class="text-xs uppercase tracking-widest font-semibold text-gray-500 mb-5">Enterprise</p>
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-white">Sob consulta</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-8 leading-relaxed">Para projetos e ambientes complexos que exigem atenção dedicada e soluções customizadas.</p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-400">
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Consultoria de Infraestrutura</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Gestão de Segurança Avançada</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Suporte Híbrido (Presencial)</li>
+                        <li class="flex items-center gap-2.5"><svg class="check-blue flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Gerente de Conta Dedicado</li>
+                    </ul>
+                    <a href="https://wa.me/5491136756375?text=Olá!%20Preciso%20de%20um%20atendimento%20Enterprise%20customizado." target="_blank" class="btn-outline-light w-full">Solicitar Orçamento</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 px-6 md:px-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Pronto para ter TI sem preocupações?</h2>
+            <p class="text-gray-400 mb-8 text-base">Fale com um especialista agora e receba um diagnóstico gratuito do seu ambiente.</p>
+            <a href="https://wa.me/5491136756375?text=Olá!%20Quero%20um%20diagnóstico%20gratuito." target="_blank" class="btn-primary text-base px-8 py-3.5">Solicitar Diagnóstico Gratuito →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="divider"></div>
+    <footer class="py-10 px-6 md:px-10">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs" class="h-7 w-auto opacity-70">
+                <span class="text-sm text-gray-600 font-medium">JBrasil Labs</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
+                <span class="text-xs text-gray-600">Sistemas operacionais</span>
+            </div>
+            <p class="text-xs text-gray-600">© 2026 JBrasil Labs · Soluções em Tecnologia</p>
+        </div>
     </footer>
 
     <script>
         const BACKEND = 'https://jbrasillabs-1.onrender.com';
 
-        // Sistema para acordar o Render e Logar Visita
         async function initSystem() {
             try {
-                // 1. Pega o IP
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
-                document.getElementById('ip-display').innerText = `NODE_LOG_IP: ${ipData.ip}`;
-
-                // 2. Envia Log para o Render
                 fetch(`${BACKEND}/log`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ entry: `[PRO] Visita Suporte TI | IP: ${ipData.ip}` })
-                }).catch(()=>{});
-
-                // 3. Acorda o ranking (evita hibernação)
-                fetch(`${BACKEND}/leaderboard`).then(() => {
-                    document.getElementById('status-text').innerText = "SYSTEMS STABLE - LINK ESTABLISHED";
-                });
-
-            } catch (e) {
-                console.log("Offline mode");
-            }
+                }).catch(() => {});
+                fetch(`${BACKEND}/leaderboard`).catch(() => {});
+            } catch (e) {}
         }
 
-        // Tenta acordar ao carregar e também ao primeiro movimento do mouse
         initSystem();
-        window.addEventListener('mousemove', () => { fetch(`${BACKEND}/leaderboard`).catch(()=>{}); }, { once: true });
+        window.addEventListener('mousemove', () => {
+            fetch(`${BACKEND}/leaderboard`).catch(() => {});
+        }, { once: true });
     </script>
 </body>
 </html>
