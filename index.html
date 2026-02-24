@@ -3,212 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil Labs - Suporte de TI Especializado</title>
+    <title>JBrasil Labs | Suporte de TI Especializado</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-blue: #00d1ff; --dark-bg: #0a0a0a; }
-        body { background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .retro-font { font-family: 'Press Start 2P', cursive; }
-        
-        canvas { position: absolute; top: 0; left: 0; z-index: 0; }
-        .hero-section { height: 75vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 2px solid #1a1a1a; }
-        
-        .content-overlay { z-index: 10; text-align: center; background: rgba(0,0,0,0.85); padding: 2.5rem; border: 1px solid #333; border-radius: 12px; backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        
-        .plan-card { background: #161616; border: 1px solid #222; transition: 0.3s; position: relative; }
-        .plan-card:hover { border-color: var(--neon-blue); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 209, 255, 0.1); }
-        
-        #game-container { height: 350px; width: 100%; max-width: 700px; position: relative; margin: 25px auto; border: 2px solid #222; cursor: crosshair; background: #000; overflow: hidden; }
-        .btn-whatsapp { background: #25d366; color: white; padding: 14px 28px; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .btn-whatsapp:hover { transform: scale(1.03); background: #20ba5a; }
-        
-        .benefit-list li::before { content: "✓"; color: var(--neon-blue); margin-right: 10px; font-weight: bold; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: #ffffff; scroll-behavior: smooth; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .gradient-text { background: linear-gradient(90deg, #00d1ff, #00ff85); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .plan-card { transition: all 0.3s ease; border: 1px solid #222; }
+        .plan-card:hover { transform: translateY(-10px); border-color: #00d1ff; box-shadow: 0 10px 30px rgba(0, 209, 255, 0.15); }
+        .float-whatsapp { position: fixed; bottom: 30px; right: 30px; z-index: 1000; transition: transform 0.3s; }
+        .float-whatsapp:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <section class="hero-section">
-        <canvas id="bg-space"></canvas>
-        <div class="content-overlay max-w-3xl mx-auto border-t-4 border-t-[#00d1ff]">
-            <h1 class="retro-font text-xl mb-4 text-[#00d1ff]">JBrasil Labs TI</h1>
-            <p class="text-lg mb-2 font-bold">Problemas de TI não avisam quando vão chegar.</p>
-            <p class="text-gray-400 text-sm mb-6">No simulador abaixo, tente conter os erros de sistema antes que eles paralisem sua operação.</p>
-            
-            <div id="game-container" class="rounded-lg shadow-inner">
-                <canvas id="game-layer"></canvas>
-                <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20">
-                    <p class="retro-font text-[10px] mb-6 text-gray-500">SIMULADOR DE INCIDENTES V1.0</p>
-                    <button id="start-btn" class="retro-font text-xs border-2 border-[#00d1ff] p-4 text-[#00d1ff] hover:bg-[#00d1ff] hover:text-black transition-all">INICIAR DIAGNÓSTICO</button>
-                </div>
-            </div>
+    <a href="https://wa.me/5491136756375" target="_blank" class="float-whatsapp">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-16 h-16 shadow-2xl">
+    </a>
+
+    <nav class="py-6 px-8 flex justify-between items-center border-b border-white/10 sticky top-0 z-50 glass">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-gradient-to-tr from-[#00d1ff] to-[#00ff85] rounded-lg"></div>
+            <span class="font-extrabold text-xl tracking-tighter">JBRASIL LABS</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#servicos" class="hover:text-[#00d1ff] transition">Serviços</a>
+            <a href="#planos" class="hover:text-[#00d1ff] transition">Planos</a>
+            <a href="https://wa.me/5491136756375" class="hover:text-[#00d1ff] transition">Contato</a>
+        </div>
+    </nav>
+
+    <section class="py-24 px-8 max-w-6xl mx-auto text-center">
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            Suporte de TI que sua <br><span class="gradient-text">Empresa merece.</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+            Terceirize sua tecnologia com especialistas. Atendimento rápido, preventivo e focado em manter seu negócio rodando 24/7.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="#planos" class="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-[#00d1ff] hover:text-white transition">Ver Planos Mensais</a>
+            <a href="https://wa.me/5491136756375" class="border border-white/20 px-10 py-4 rounded-full font-bold text-lg hover:bg-white/5 transition">Falar com Consultor</a>
         </div>
     </section>
 
-    <section class="py-24 px-6 bg-white text-black">
+    <section id="servicos" class="py-20 px-8 bg-[#0f0f0f]">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-extrabold mb-4">Planos de Suporte Mensal</h2>
-                <p class="text-xl text-gray-600">Sua empresa focada no negócio, nós focados na tecnologia.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-10">
-                <div class="plan-card p-10 rounded-2xl text-white">
-                    <h3 class="retro-font text-[10px] mb-4 text-[#00d1ff]">SUPORTE REMOTO</h3>
-                    <p class="text-4xl font-bold mb-8 italic">R$ 590<span class="text-sm font-normal not-italic text-gray-500">/mês</span></p>
-                    <ul class="benefit-list space-y-4 mb-10 text-gray-400 text-sm">
-                        <li>Suporte Ilimitado via Chat/Telefone</li>
-                        <li>Configuração de Periféricos</li>
-                        <li>Limpeza de Software e Otimização</li>
-                        <li>Instalação de Aplicativos</li>
-                        <li>Atendimento em até 4h</li>
-                    </ul>
-                    <a href="https://wa.me/5491136756375" class="btn-whatsapp w-full justify-center">Contratar Plano</a>
+            <h2 class="text-3xl font-bold mb-12 text-center">Serviços Especializados</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 glass rounded-3xl">
+                    <div class="text-[#00d1ff] mb-4 text-3xl">💻</div>
+                    <h3 class="text-xl font-bold mb-3">Suporte Remoto</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Resolva travamentos, lentidão e erros de software em minutos com nossos técnicos via acesso seguro.</p>
                 </div>
-
-                <div class="plan-card p-10 rounded-2xl text-white border-[#00d1ff] bg-[#0f0f0f] shadow-2xl">
-                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#00d1ff] text-black text-[10px] font-bold py-1 px-4 rounded-full">RECOMENDADO</div>
-                    <h3 class="retro-font text-[10px] mb-4 text-[#00d1ff]">BUSINESS FULL</h3>
-                    <p class="text-4xl font-bold mb-8 italic">R$ 1.100<span class="text-sm font-normal not-italic text-gray-500">/mês</span></p>
-                    <ul class="benefit-list space-y-4 mb-10 text-gray-300 text-sm font-medium">
-                        <li>Tudo do Suporte Remoto</li>
-                        <li>Manutenção Preventiva Mensal</li>
-                        <li>Gestão de Backup e Nuvem</li>
-                        <li>Configuração de Redes e Wi-Fi</li>
-                        <li>Atendimento Prioritário em até 2h</li>
-                    </ul>
-                    <a href="https://wa.me/5491136756375" class="btn-whatsapp w-full justify-center">Quero este Plano</a>
+                <div class="p-8 glass rounded-3xl">
+                    <div class="text-[#00d1ff] mb-4 text-3xl">☁️</div>
+                    <h3 class="text-xl font-bold mb-3">Cloud & Backup</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Proteja os dados da sua empresa com rotinas de backup automatizadas e gestão de nuvem profissional.</p>
                 </div>
-
-                <div class="plan-card p-10 rounded-2xl text-white">
-                    <h3 class="retro-font text-[10px] mb-4 text-[#00d1ff]">ENTERPRISE</h3>
-                    <p class="text-3xl font-bold mb-8 italic">Customizado</p>
-                    <ul class="benefit-list space-y-4 mb-10 text-gray-400 text-sm">
-                        <li>Gestão de Servidores Dedicada</li>
-                        <li>Segurança de Dados Avançada</li>
-                        <li>Consultoria em Projetos de TI</li>
-                        <li>Visitas Presenciais Inclusas</li>
-                        <li>SLA Personalizado</li>
-                    </ul>
-                    <a href="https://wa.me/5491136756375" class="btn-whatsapp w-full justify-center">Solicitar Orçamento</a>
+                <div class="p-8 glass rounded-3xl">
+                    <div class="text-[#00d1ff] mb-4 text-3xl">🔌</div>
+                    <h3 class="text-xl font-bold mb-3">Gestão de Infra</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Configuração de roteadores, Wi-Fi corporativo, servidores e impressoras com foco em estabilidade.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-12 bg-[#050505] border-t border-gray-900 text-center">
-        <p class="retro-font text-[8px] text-gray-600 mb-6 uppercase tracking-widest">JBrasil Labs - Soluções em Tecnologia</p>
-        <div id="rank-list" class="text-gray-500 text-[10px] mb-4 flex justify-center gap-6">
-            <span>STABILITY MONITOR: ONLINE</span> | <span id="log-ip">IP: 0.0.0.0</span>
+    <section id="planos" class="py-24 px-8 max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold mb-4">Planos de Suporte TI</h2>
+            <p class="text-gray-400 italic">Transparência e eficiência para seu orçamento.</p>
         </div>
-        <p class="text-gray-700 text-[10px]">© 2026 JBrasil Labs. Todos os direitos reservados.</p>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="plan-card p-10 rounded-[2rem] bg-black">
+                <h4 class="text-gray-500 font-bold text-xs uppercase tracking-widest mb-2">Plano Inicial</h4>
+                <h3 class="text-2xl font-bold mb-6">REMOTO</h3>
+                <p class="text-4xl font-extrabold mb-8 italic">R$ 590<span class="text-sm font-light text-gray-500">/mês</span></p>
+                <ul class="space-y-4 mb-10 text-sm text-gray-400">
+                    <li class="flex items-center gap-2">✓ Suporte Remoto Ilimitado</li>
+                    <li class="flex items-center gap-2">✓ Inventário de Hardware</li>
+                    <li class="flex items-center gap-2">✓ Atendimento em até 4h</li>
+                    <li class="flex items-center gap-2">✓ Suporte Windows/Office</li>
+                </ul>
+                <a href="https://wa.me/5491136756375" class="block text-center border border-white/20 py-4 rounded-2xl font-bold hover:bg-white hover:text-black transition">Contratar</a>
+            </div>
+
+            <div class="plan-card p-10 rounded-[2rem] bg-white text-black scale-105 relative">
+                <div class="absolute -top-4 right-8 bg-[#00d1ff] text-white text-[10px] font-black px-4 py-1 rounded-full uppercase">Popular</div>
+                <h4 class="text-gray-500 font-bold text-xs uppercase tracking-widest mb-2">Ideal para Empresas</h4>
+                <h3 class="text-2xl font-bold mb-6">BUSINESS FULL</h3>
+                <p class="text-4xl font-extrabold mb-8 italic">R$ 1.100<span class="text-sm font-light text-gray-500">/mês</span></p>
+                <ul class="space-y-4 mb-10 text-sm text-gray-700">
+                    <li class="flex items-center gap-2">✓ Tudo do plano Remoto</li>
+                    <li class="flex items-center gap-2">✓ Gestão de Backups</li>
+                    <li class="flex items-center gap-2">✓ Manutenção Preventiva</li>
+                    <li class="flex items-center gap-2">✓ SLA Prioritário (2h)</li>
+                    <li class="flex items-center gap-2">✓ Segurança de Endpoint</li>
+                </ul>
+                <a href="https://wa.me/5491136756375" class="block text-center bg-black text-white py-4 rounded-2xl font-bold hover:bg-gray-800 transition">Assinar Agora</a>
+            </div>
+
+            <div class="plan-card p-10 rounded-[2rem] bg-black">
+                <h4 class="text-gray-500 font-bold text-xs uppercase tracking-widest mb-2">Corporativo</h4>
+                <h3 class="text-2xl font-bold mb-6">CUSTOM</h3>
+                <p class="text-4xl font-extrabold mb-8 italic">Sob Consulta</p>
+                <ul class="space-y-4 mb-10 text-sm text-gray-400">
+                    <li class="flex items-center gap-2">✓ Suporte Híbrido</li>
+                    <li class="flex items-center gap-2">✓ Gestão de Servidores</li>
+                    <li class="flex items-center gap-2">✓ Consultoria Estratégica</li>
+                    <li class="flex items-center gap-2">✓ SLA Personalizado</li>
+                </ul>
+                <a href="https://wa.me/5491136756375" class="block text-center border border-white/20 py-4 rounded-2xl font-bold hover:bg-white hover:text-black transition">Falar Conosco</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-20 px-8 border-t border-white/5 text-center">
+        <div class="mb-8 opacity-40 hover:opacity-100 transition duration-1000">
+            <p class="text-[10px] uppercase tracking-[0.5em] mb-4">Monitor de Disponibilidade SOC</p>
+            <div id="rank-display" class="text-xs text-gray-500 font-mono">
+                Puxando dados de integridade do servidor...
+            </div>
+        </div>
+        <p class="text-gray-600 text-sm italic">© 2026 JBrasil Labs - Buenos Aires / Brasil</p>
     </footer>
 
     <script>
-        // --- JOGO / SIMULADOR DE SUPORTE ---
-        const bgCanvas = document.getElementById("bg-space"), sCtx = bgCanvas.getContext("2d");
-        const gCanvas = document.getElementById("game-layer"), gCtx = gCanvas.getContext("2d");
-        const container = document.getElementById("game-container");
-        
-        let score=0, lives=5, gameRunning=false, tick=0, errors=[], bits=[], stars=[];
-        let mouseX=0, mouseY=0;
+        // --- SISTEMA DE LOGS E ANTI-HIBERNAÇÃO ---
+        const API_URL = 'https://jbrasillabs-1.onrender.com';
 
-        function init() {
-            bgCanvas.width = window.innerWidth;
-            bgCanvas.height = window.innerHeight;
-            gCanvas.width = container.offsetWidth;
-            gCanvas.height = container.offsetHeight;
-            stars = Array.from({length:80}, () => ({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*1.5}));
+        async function maintainServer() {
+            const display = document.getElementById("rank-display");
+            
+            const attemptPing = async () => {
+                try {
+                    const response = await fetch(`${API_URL}/leaderboard`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Exibe um resumo rápido do ranking como prova de vida do servidor
+                        display.innerHTML = `SERVER STATUS: ONLINE | UP-TIME OK | RECORDS: ${data.length}`;
+                        console.log("Servidor ativo.");
+                    }
+                } catch (error) {
+                    display.innerText = "ESTABLISHING CONNECTION TO SOC...";
+                    setTimeout(attemptPing, 5000); // Tenta de novo se falhar (servidor acordando)
+                }
+            };
+
+            attemptPing();
         }
 
-        window.addEventListener("resize", init);
-        init();
-
-        container.addEventListener("mousemove", (e) => {
-            const rect = container.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
-        });
-
-        document.getElementById("start-btn").onclick = () => {
-            document.getElementById("start-screen").style.display = "none";
-            gameRunning = true;
-            score = 0; lives = 5; errors = []; bits = [];
-        };
-
-        function loop() {
-            tick++;
-            // Fundo espacial estático
-            sCtx.fillStyle = "#0a0a0a"; sCtx.fillRect(0,0,innerWidth,innerHeight);
-            stars.forEach(s => { s.y += s.s; if(s.y > innerHeight) s.y = 0; sCtx.fillStyle="#1a1a1a"; sCtx.fillRect(s.x, s.y, 2, 2); });
-
-            if(gameRunning) {
-                gCtx.clearRect(0,0,gCanvas.width, gCanvas.height);
+        async function logVisit() {
+            try {
+                // Pega o IP primeiro
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
                 
-                // Spawn de "Erros de Sistema" (Quadrados vermelhos)
-                if(tick % Math.max(10, 40 - score/20) === 0) {
-                    errors.push({x: Math.random()*(gCanvas.width-40), y: -20, s: 2 + (score/100)});
-                }
-
-                errors.forEach((e, i) => {
-                    e.y += e.s;
-                    // Desenha o erro (ícone de alerta pixelado)
-                    gCtx.fillStyle = "#ff3b3b";
-                    gCtx.fillRect(e.x, e.y, 30, 10);
-                    gCtx.fillRect(e.x + 10, e.y - 5, 10, 20);
-
-                    if(e.y > gCanvas.height) { errors.splice(i, 1); lives--; }
-                    
-                    // Colisão com bits de reparo
-                    bits.forEach((b, bi) => {
-                        if(b.x > e.x && b.x < e.x+30 && b.y < e.y+15) {
-                            errors.splice(i, 1); bits.splice(bi, 1);
-                            score += 10;
-                        }
-                    });
+                // Envia o log para seu servidor no Render
+                await fetch(`${API_URL}/log`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        entry: `[LANDING PAGE] Acesso Suporte TI | IP: ${ipData.ip} | Argentina/Brasil` 
+                    })
                 });
-
-                // Bits de reparo (Tiros verdes)
-                bits.forEach((b, i) => { b.y -= 12; gCtx.fillStyle="#00d1ff"; gCtx.fillRect(b.x, b.y, 4, 12); if(b.y < 0) bits.splice(i,1); });
-
-                // Cursor/Nave de Suporte
-                gCtx.fillStyle = "#00d1ff";
-                gCtx.fillRect(mouseX-15, mouseY, 30, 4);
-                gCtx.fillRect(mouseX-2, mouseY-10, 4, 10);
-                
-                // Status HUD
-                gCtx.fillStyle = "#fff";
-                gCtx.font = "8px 'Press Start 2P'";
-                gCtx.fillText(`FIXED: ${score}`, 15, 25);
-                gCtx.fillText(`SYSTEM STABILITY: ${lives * 20}%`, 15, 45);
-                
-                if(lives <= 0) {
-                    gameRunning = false;
-                    document.getElementById("start-screen").style.display = "flex";
-                    document.getElementById("start-btn").innerHTML = "SISTEMA FORA DO AR<br><br>REINICIAR";
-                }
+            } catch (e) {
+                console.log("Log fail (server sleeping)");
             }
-            requestAnimationFrame(loop);
         }
 
-        container.addEventListener("mousedown", () => {
-            if(gameRunning) bits.push({x: mouseX, y: mouseY});
-        });
+        // Inicia processos
+        maintainServer();
+        logVisit();
 
-        // Identificação de IP para o log
-        fetch('https://api.ipify.org?format=json')
-            .then(r => r.json())
-            .then(d => { 
-                document.getElementById("log-ip").innerText = `IP: ${d.ip}`;
-                // Log de acesso ao backend
-                fetch('https://jbrasillabs-1.onrender.com/log', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({ entry: `[WEB] Visita Suporte TI | IP: ${d.ip}` }) 
-                }).catch(e=>{});
-            });
-
-        loop();
+        // Wake-up on mouse move (acorda o servidor assim que o usuário interage)
+        window.addEventListener('mousemove', () => {
+            fetch(`${API_URL}/leaderboard`).catch(()=>{});
+        }, { once: true });
     </script>
 </body>
 </html>
