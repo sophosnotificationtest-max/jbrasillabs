@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta property="og:title" content="JBrasil Labs | Suporte de TI Especializado">
+<meta property="og:description" content="TI especializada para clínicas, condomínios e pequenos negócios. Suporte ágil e monitoramento proativo.">
+<meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png">
+<meta property="og:url" content="https://jbrasillabs.com.br">
+<meta property="og:type" content="website">
+
 <title>JBrasil Labs | Suporte de TI Especializado</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -75,27 +82,40 @@ body {
     color: #9ca3af;
 }
 
+/* BOTÃO WHATSAPP COM LOGO */
 .wa-float {
     position:fixed;
     bottom:30px;
     right:30px;
     width:65px;
     height:65px;
-    background:#25d366;
+    background:#fff; /* Fundo branco para destacar o logo */
     border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
-    box-shadow:0 15px 40px rgba(37,211,102,.4);
+    box-shadow:0 15px 40px rgba(59,130,246,0.3);
     z-index:100;
+    transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid #25d366; /* Borda na cor do WhatsApp */
+}
+
+.wa-float:hover {
+    transform: scale(1.1);
+}
+
+.wa-logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
 }
 </style>
 </head>
 
 <body>
 
-<a href="https://wa.me/5541996186960?text=Olá!%20Vi%20que%20vocês%20atendem%20meu%20segmento.%20Quero%20saber%20mais%20sobre%20o%20suporte%20de%20TI." target="_blank" class="wa-float">
-<svg class="w-8 h-8 fill-white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+<a href="https://wa.me/5541996186960?text=Olá!%20Vi%20que%20vocês%20atendem%20meu%20segmento.%20Quero%20saber%20mais%20sobre%20o%20suporte%20de%20TI." target="_blank" class="wa-float" title="Falar no WhatsApp">
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs" class="wa-logo-img">
 </a>
 
 <nav class="nav-glass sticky top-0 py-5 px-6 z-50">
@@ -130,12 +150,8 @@ Seja você um consultório, uma administradora ou um comércio, nós garantimos 
 <div class="divider"></div>
 
 <section id="segmentos" class="py-24 px-6 bg-[#07070a]">
-<div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold mb-4 italic italic">Experiência em Diversos Segmentos</h2>
-        <p class="text-gray-500">Soluções personalizadas para as necessidades de cada setor:</p>
-    </div>
-    
+<div class="max-w-7xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10 italic">Experiência em Diversos Segmentos</h2>
     <div class="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
         <span class="segment-pill">Administradoras de Condomínios</span>
         <span class="segment-pill">Imobiliárias</span>
@@ -152,11 +168,11 @@ Seja você um consultório, uma administradora ou um comércio, nós garantimos 
         <span class="segment-pill">Bares & Restaurantes</span>
         <span class="segment-pill">Recarga de Extintores</span>
         <span class="segment-pill">Saúde Ocupacional</span>
-        <span class="segment-pill">Comércio Exterior (Exportação/Importação)</span>
+        <span class="segment-pill">Exportação & Importação</span>
         <span class="segment-pill">Sociedade de Advogados</span>
         <span class="segment-pill">Empreiteiras</span>
         <span class="segment-pill">Lojas de Autopeças</span>
-        <span class="segment-pill">Agências de Marketing & Publicidade</span>
+        <span class="segment-pill">Agências de Marketing</span>
         <span class="segment-pill">Estúdios Fotográficos</span>
         <span class="segment-pill">Portaria Eletrônica</span>
         <span class="segment-pill">Terceirização e Facilities</span>
@@ -169,60 +185,49 @@ Seja você um consultório, uma administradora ou um comércio, nós garantimos 
 <section id="planos" class="py-24 px-6">
 <div class="max-w-7xl mx-auto text-center mb-16">
 <h2 class="text-3xl md:text-5xl font-bold mb-4">Planos de Apoio Tecnológico</h2>
-<p class="text-gray-500 italic italic italic">O suporte certo para o tamanho da sua operação.</p>
 </div>
 
 <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
     <div class="plan-card p-8 flex flex-col">
         <h3 class="text-xl font-bold mb-2">Suporte Remoto</h3>
-        <p class="text-xs text-blue-400 font-semibold mb-4 uppercase tracking-wider italic italic italic">Ideal para pequenos escritórios</p>
         <p class="text-3xl font-bold mb-6">R$ 590<span class="text-sm text-gray-400 font-normal">/mês</span></p>
         <ul class="space-y-4 text-sm text-gray-400 mb-8 flex-grow">
             <li>✔ Até 5 estações de trabalho</li>
-            <li>✔ 05 horas mensais (Acumulativas)</li>
+            <li>✔ 05 horas mensais</li>
             <li>✔ SLA de resposta em até 4h</li>
-            <li>✔ Gestão de Softwares e Segurança</li>
         </ul>
-        <a href="https://wa.me/5541996186960?text=Olá!%20Desejo%20o%20Suporte%20Remoto%20para%20minha%20empresa." class="btn-base border border-white/10 hover:bg-white/5 w-full text-center">Contratar</a>
+        <a href="https://wa.me/5541996186960?text=Desejo%20o%20Suporte%20Remoto" class="btn-base border border-white/10 hover:bg-white/5 w-full text-center">Contratar</a>
     </div>
 
     <div class="plan-card featured p-8 flex flex-col">
         <div class="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full w-fit mb-4 uppercase">Mais Recomendado</div>
         <h3 class="text-xl font-bold mb-2 text-gray-900">Plano Business</h3>
-        <p class="text-xs text-blue-600 font-semibold mb-4 uppercase tracking-wider italic italic italic">Para Clínicas e Comércios</p>
         <p class="text-3xl font-bold mb-6 text-gray-900">R$ 1.100<span class="text-sm font-normal">/mês</span></p>
         <ul class="space-y-4 text-sm mb-8 flex-grow">
-            <li class="font-semibold text-gray-800 italic italic italic">✔ Gestão de até 15 dispositivos</li>
-            <li class="font-semibold text-gray-800 italic italic italic">✔ 10 horas de suporte/mês</li>
-            <li class="font-semibold text-blue-700 italic italic italic">✔ SLA de resposta em até 2h</li>
-            <li class="font-semibold text-gray-800 italic italic italic">✔ Suporte a Periféricos e Redes</li>
+            <li class="font-semibold text-gray-800">✔ Até 15 dispositivos</li>
+            <li class="font-semibold text-gray-800">✔ 10 horas de suporte/mês</li>
+            <li class="font-semibold text-blue-700">✔ SLA de resposta em até 2h</li>
         </ul>
-        <a href="https://wa.me/5541996186960?text=Olá!%20Quero%20o%20Plano%20Business%20Pro." class="btn-base btn-main w-full text-center">Assinar Agora</a>
+        <a href="https://wa.me/5541996186960?text=Quero%20o%20Plano%20Business" class="btn-base btn-main w-full text-center">Assinar Agora</a>
     </div>
 
     <div class="plan-card p-8 flex flex-col">
         <h3 class="text-xl font-bold mb-2">Customizado</h3>
-        <p class="text-xs text-blue-400 font-semibold mb-4 uppercase tracking-wider italic italic italic">Condomínios e Grandes Estruturas</p>
         <p class="text-3xl font-bold mb-6">Sob Medida</p>
-        <p class="text-sm text-gray-400 mb-8">Gestão completa de servidores, portaria eletrônica e facilities.</p>
-        <ul class="space-y-4 text-sm text-gray-400 mb-8 flex-grow">
-            <li>✔ Inventário sob demanda</li>
-            <li>✔ Consultoria para novos projetos</li>
-            <li>✔ Suporte 24/7 disponível</li>
-        </ul>
-        <a href="https://wa.me/5541996186960?text=Olá!%20Preciso%20de%20um%20projeto%20personalizado%20para%20minha%20empresa." class="btn-base border border-white/10 hover:bg-white/5 w-full text-center">Solicitar Proposta</a>
+        <p class="text-sm text-gray-400 mb-8">Gestão completa para estruturas maiores e complexas.</p>
+        <a href="https://wa.me/5541996186960?text=Preciso%20de%20proposta%20personalizada" class="btn-base border border-white/10 hover:bg-white/5 w-full text-center">Solicitar Proposta</a>
     </div>
 </div>
 </section>
 
 <footer class="py-12 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600">
-        <div class="text-center md:text-left">
-            <p class="font-bold text-sm text-gray-400 mb-1 tracking-widest uppercase">JBrasil Labs © 2026</p>
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-center md:text-left">
+        <div>
+            <p class="font-bold text-sm text-gray-400 tracking-widest uppercase">JBrasil Labs © 2026</p>
             <p class="text-[10px] opacity-70">CNPJ: 65.109.396/0001-55</p>
         </div>
-        <div class="text-[11px] text-center md:text-right uppercase tracking-tighter opacity-50">
-            Suporte TI para Clínicas, Condomínios, Escritórios e Varejo.
+        <div class="text-[11px] uppercase tracking-tighter opacity-50">
+            Suporte TI Especializado.
         </div>
     </div>
 </footer>
@@ -236,16 +241,12 @@ Seja você um consultório, uma administradora ou um comércio, nós garantimos 
             fetch(`${BACKEND}/log`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ entry: `[PRO] Visita Nichos TI | IP: ${ipData.ip}` })
+                body: JSON.stringify({ entry: `[PRO] Visita Logo-WA | IP: ${ipData.ip}` })
             }).catch(() => {});
-            fetch(`${BACKEND}/leaderboard`).catch(() => {});
-        } catch (e) { console.error("Sys log error"); }
+        } catch (e) { console.error("Log error"); }
     }
     initSystem();
 </script>
 
 </body>
 </html>
-
-
-
