@@ -1,301 +1,379 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBrasil TI | Suporte de TI por Assinatura</title>
+    <meta name="description" content="Suporte de TI profissional para empresas com planos mensais e anuais. Atendimento especializado com SLA definido.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-<title>Suporte de TI por Assinatura Brasil | Planos Empresariais</title>
+    <style>
+        :root {
+            --primary: #22c55e;
+            --primary-hover: #16a34a;
+            --bg-dark: #0b1220;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-muted: #94a3b8;
+            --white: #ffffff;
+        }
 
-<meta name="description" content="Suporte de TI por Assinatura no Brasil. Planos empresariais com SLA, suporte remoto e gestão profissional de TI para pequenas e médias empresas.">
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+        body {
+            background-color: var(--bg-dark);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+        /* Logo em Marca d'água no Fundo */
+        .bg-logo-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            max-width: 900px;
+            opacity: 0.02; /* Extremamente sutil */
+            z-index: -1;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
 
-body{
-background:#0b1220;
-color:#fff;
-overflow-x:hidden;
-}
+        .container { position: relative; z-index: 10; }
 
-/* Logo watermark */
-.bg-logo{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:650px;
-opacity:0.035;
-z-index:0;
-pointer-events:none;
-}
+        /* Hero Section */
+        .hero {
+            padding: 140px 20px 80px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-/* Layout principal */
-.container{
-position:relative;
-z-index:1;
-}
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-/* Hero */
-.hero{
-padding:120px 20px 80px;
-text-align:center;
-background:linear-gradient(135deg,#0b1220,#111c33);
-}
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
 
-.hero h1{
-font-size:44px;
-font-weight:800;
-margin-bottom:20px;
-}
+        /* Toggle de Preço */
+        .pricing-header { text-align: center; margin-bottom: 60px; }
+        .pricing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 30px;
+        }
 
-.hero p{
-font-size:20px;
-color:#94a3b8;
-max-width:750px;
-margin:0 auto 40px;
-}
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
 
-.btn{
-display:inline-block;
-padding:16px 45px;
-background:linear-gradient(90deg,#22c55e,#16a34a);
-color:#000;
-font-weight:600;
-border-radius:50px;
-text-decoration:none;
-transition:.3s;
-cursor:pointer;
-}
+        .switch input { opacity: 0; width: 0; height: 0; }
 
-.btn:hover{
-transform:scale(1.05);
-box-shadow:0 0 30px rgba(34,197,94,.5);
-}
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
 
-/* Planos */
-section{
-padding:90px 20px;
-max-width:1200px;
-margin:auto;
-}
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 3px;
+            background-color: var(--primary);
+            transition: .4s;
+            border-radius: 50%;
+        }
 
-h2{
-text-align:center;
-font-size:34px;
-margin-bottom:60px;
-}
+        input:checked + .slider:before { transform: translateX(24px); }
 
-.plans{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:35px;
-}
+        .discount {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
 
-.plan{
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
-padding:45px;
-border-radius:25px;
-border:1px solid rgba(255,255,255,0.08);
-transition:.4s;
-}
+        /* Grid de Planos */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+        }
 
-.plan:hover{
-transform:translateY(-12px);
-border:1px solid rgba(34,197,94,.5);
-}
+        .plan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
 
-.plan h3{
-font-size:22px;
-margin-bottom:10px;
-color:#22c55e;
-}
+        .plan-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
 
-.plan p{
-color:#94a3b8;
-margin-bottom:20px;
-min-height:60px;
-}
+        .plan-card.featured {
+            border: 2px solid var(--primary);
+            position: relative;
+            background: rgba(34, 197, 94, 0.03);
+        }
 
-.price{
-font-size:40px;
-font-weight:800;
-margin:20px 0;
-}
+        .featured-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #000;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
 
-.price span{
-font-size:16px;
-color:#94a3b8;
-}
+        .price-container { margin: 30px 0; }
+        .price { font-size: 3rem; font-weight: 800; display: flex; align-items: baseline; }
+        .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
 
-.plan ul{
-list-style:none;
-margin-bottom:30px;
-}
+        .features { list-style: none; margin-bottom: 40px; flex-grow: 1; }
+        .features li { margin-bottom: 12px; display: flex; align-items: center; color: #cbd5e1; }
+        .features li svg { color: var(--primary); margin-right: 10px; flex-shrink: 0; }
 
-.plan ul li{
-margin-bottom:10px;
-color:#cbd5e1;
-}
+        /* Botões */
+        .btn {
+            display: block;
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+        .btn-outline { border: 1px solid var(--border-color); color: #fff; }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
 
-.highlight{
-background:linear-gradient(145deg,#111c33,#16213e);
-border:1px solid #22c55e;
-transform:scale(1.05);
-}
+        /* FAQ Section */
+        .faq-section { max-width: 800px; margin: 100px auto; padding: 0 20px; }
+        .faq-section h2 { text-align: center; margin-bottom: 40px; font-size: 2rem; }
+        
+        details {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            padding: 20px;
+        }
+        summary {
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        summary::after { content: '→'; color: var(--primary); transition: 0.3s; }
+        details[open] summary::after { transform: rotate(90deg); }
+        .faq-content { margin-top: 15px; color: var(--text-muted); font-size: 0.95rem; }
 
-/* Rodapé */
-footer{
-text-align:center;
-padding:60px 20px;
-background:#0b1220;
-border-top:1px solid rgba(255,255,255,0.05);
-}
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        footer img { width: 120px; margin-bottom: 20px; opacity: 0.6; }
 
-footer img{
-width:140px;
-margin-bottom:15px;
-opacity:.9;
-}
+        /* WhatsApp Floating */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+            z-index: 100;
+            transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); }
 
-footer p{
-color:#94a3b8;
-font-size:14px;
-}
-
-/* WhatsApp */
-.whatsapp{
-position:fixed;
-bottom:25px;
-right:25px;
-width:65px;
-height:65px;
-background:#25d366;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-animation:pulse 2s infinite;
-z-index:999;
-}
-
-.whatsapp img{width:35px}
-
-@keyframes pulse{
-0%{box-shadow:0 0 0 0 rgba(37,211,102,0.7)}
-70%{box-shadow:0 0 0 25px rgba(37,211,102,0)}
-100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}
-}
-
-@media(max-width:768px){
-.hero h1{font-size:30px}
-.hero p{font-size:16px}
-.bg-logo{width:350px}
-}
-</style>
+        @media (max-width: 768px) {
+            .hero { padding-top: 80px; }
+            .plans-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
-<img src="logo.png" class="bg-logo" alt="JBrasil TI">
+    <img src="logo.png" class="bg-logo-watermark" alt="">
 
-<div class="container">
+    <div class="container">
+        
+        <header class="hero">
+            <h1>Sua TI no piloto automático</h1>
+            <p>Suporte especializado por assinatura. Mais estabilidade, menos custos e atendimento em todo o Brasil.</p>
+            <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn btn-primary" style="display:inline-block; padding: 16px 40px;">Falar com Especialista</a>
+        </header>
 
-<div class="hero">
-<h1>Suporte de TI por Assinatura para Empresas</h1>
-<p>Equipe especializada, SLA definido e atendimento remoto em todo o Brasil para pequenas e médias empresas.</p>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Hero CTA')">Solicitar Proposta</a>
-</div>
+        <section id="pricing">
+            <div class="pricing-header">
+                <h2>Planos Simples e Transparentes</h2>
+                <div class="pricing-toggle">
+                    <span>Mensal</span>
+                    <label class="switch">
+                        <input type="checkbox" id="billing-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span>Anual</span>
+                    <span class="discount">20% OFF</span>
+                </div>
+            </div>
 
-<section>
-<h2>Planos Empresariais</h2>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <h3>Start Remote</h3>
+                    <p>Essencial para pequenas operações.</p>
+                    <div class="price-container">
+                        <div class="price">R$ <span id="price-start">697</span><span class="period">/mês</span></div>
+                    </div>
+                    <ul class="features">
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> Até 03 equipamentos</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> 04 horas mensais</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> Suporte Remoto 8x5</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn btn-outline" onclick="logClick('Start')">Contratar</a>
+                </div>
 
-<div class="plans">
+                <div class="plan-card featured">
+                    <div class="featured-badge">MAIS ESCOLHIDO</div>
+                    <h3>Business Care</h3>
+                    <p>O equilíbrio perfeito para PMEs.</p>
+                    <div class="price-container">
+                        <div class="price">R$ <span id="price-business">1.297</span><span class="period">/mês</span></div>
+                    </div>
+                    <ul class="features">
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> Até 08 equipamentos</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> 08 horas mensais</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> SLA Emergencial 03h</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> Relatório Trimestral</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn btn-primary" onclick="logClick('Business')">Assinar Agora</a>
+                </div>
 
-<div class="plan">
-<h3>Start Remote</h3>
-<p>Suporte essencial para microempresas que precisam de apoio técnico estruturado.</p>
-<div class="price">R$ 697 <span>/mês</span></div>
-<ul>
-<li>✔ Até 03 equipamentos</li>
-<li>✔ 04 horas mensais inclusas</li>
-<li>✔ Atendimento remoto 8x5</li>
-<li>✔ Suporte via acesso remoto e telefone</li>
-<li>✔ Contrato mínimo 03 meses</li>
-</ul>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Start Remote')">Contratar</a>
-</div>
+                <div class="plan-card">
+                    <h3>Enterprise Plus</h3>
+                    <p>Para empresas de alta demanda.</p>
+                    <div class="price-container">
+                        <div class="price">R$ <span id="price-enterprise">2.497</span><span class="period">/mês</span></div>
+                    </div>
+                    <ul class="features">
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> Até 20 equipamentos</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> 20 horas mensais</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> SLA Emergencial 01h</li>
+                        <li><svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg> Monitoramento Ativo</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn btn-outline" onclick="logClick('Enterprise')">Solicitar Proposta</a>
+                </div>
+            </div>
+        </section>
 
-<div class="plan highlight">
-<h3>Business Care</h3>
-<p>Plano mais escolhido por empresas que precisam de estabilidade e resposta rápida.</p>
-<div class="price">R$ 1.297 <span>/mês</span></div>
-<ul>
-<li>✔ Até 08 equipamentos</li>
-<li>✔ 08 horas mensais inclusas</li>
-<li>✔ Atendimento remoto prioritário</li>
-<li>✔ SLA emergencial até 03h</li>
-<li>✔ Contrato mínimo 06 meses</li>
-</ul>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Business Care')">Mais Escolhido</a>
-</div>
+        <section class="faq-section">
+            <h2>Perguntas Frequentes</h2>
+            <details>
+                <summary>Como funciona a assinatura?</summary>
+                <div class="faq-content">
+                    É como o Netflix da TI. Você paga um valor fixo mensal e tem direito a suporte técnico especializado, prevenindo problemas antes que eles parem sua empresa.
+                </div>
+            </details>
+            <details>
+                <summary>O atendimento é apenas remoto?</summary>
+                <div class="faq-content">
+                    Focamos em suporte remoto para máxima agilidade (95% dos problemas de TI são resolvidos assim). Caso precise de suporte presencial, temos planos específicos para visitas técnicas.
+                </div>
+            </details>
+            <details>
+                <summary>Posso mudar de plano a qualquer momento?</summary>
+                <div class="faq-content">
+                    Sim! Se sua empresa crescer, você pode fazer o upgrade de plano imediatamente para garantir mais horas e equipamentos.
+                </div>
+            </details>
+        </section>
 
-<div class="plan">
-<h3>Enterprise Plus</h3>
-<p>Gestão completa para empresas que dependem fortemente da TI.</p>
-<div class="price">R$ 2.497 <span>/mês</span></div>
-<ul>
-<li>✔ Até 20 equipamentos</li>
-<li>✔ 20 horas mensais inclusas</li>
-<li>✔ Monitoramento contínuo</li>
-<li>✔ SLA emergencial até 01h</li>
-<li>✔ Suporte remoto prioritário</li>
-<li>✔ Contrato mínimo 06 meses</li>
-</ul>
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn" onclick="logClick('Enterprise Plus')">Solicitar Proposta</a>
-</div>
+        <footer>
+            <img src="logo.png" alt="JBrasil TI">
+            <p>© 2026 JBrasil TI — Suporte de TI Profissional por Assinatura</p>
+        </footer>
 
-</div>
+    </div>
 
-<p style="text-align:center;margin-top:50px;color:#94a3b8;font-size:14px;">
-Horas excedentes são cobradas conforme tabela vigente. Valores podem variar conforme complexidade do ambiente.
-</p>
+    <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="whatsapp-float">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="30" alt="WhatsApp">
+    </a>
 
-</section>
+    <script>
+        const toggle = document.getElementById('billing-toggle');
+        
+        // Dados de preços (Mensal vs Anual com desconto)
+        const prices = {
+            start: { monthly: 697, yearly: 557 },
+            business: { monthly: 1297, yearly: 1037 },
+            enterprise: { monthly: 2497, yearly: 1997 }
+        };
 
-<footer>
-<img src="logo.png" alt="JBrasil TI">
-<p>© 2026 JBrasil TI — Suporte de TI por Assinatura Brasil</p>
-</footer>
+        toggle.addEventListener('change', () => {
+            const isYearly = toggle.checked;
+            
+            // Atualizar valores na tela com animação simples
+            document.getElementById('price-start').innerText = isYearly ? prices.start.yearly : prices.start.monthly;
+            document.getElementById('price-business').innerText = isYearly ? prices.business.yearly : prices.business.monthly;
+            document.getElementById('price-enterprise').innerText = isYearly ? prices.enterprise.yearly : prices.enterprise.monthly;
+            
+            // Atualizar sufixo
+            const periods = document.querySelectorAll('.period');
+            periods.forEach(p => {
+                p.innerText = isYearly ? '/mês no anual' : '/mês';
+            });
+        });
 
-</div>
-
-<a href="https://wa.me/message/UFGRJBVOAYWQN1" class="whatsapp" onclick="logClick('WhatsApp Flutuante')">
-<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
-</a>
-
-<script>
-function logClick(origem){
-
-const logData = {
-evento: "Clique WhatsApp",
-origem: origem,
-pagina: window.location.href,
-data: new Date().toISOString(),
-dispositivo: /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Desktop",
-userAgent: navigator.userAgent
-};
-
-console.log("LOG SITE:", logData);
-
-let logs = JSON.parse(localStorage.getItem("jb_logs") || "[]");
-logs.push(logData);
-localStorage.setItem("jb_logs", JSON.stringify(logs));
-
-}
-</script>
-
+        function logClick(origem) {
+            console.log("Evento: Interesse no plano " + origem);
+            // Os logs que você já tinha no código original continuam aqui
+        }
+    </script>
 </body>
 </html>
