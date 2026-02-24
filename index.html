@@ -158,7 +158,16 @@
         }
 
         .price { font-size: 3rem; font-weight: 800; }
-        .price span { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+        
+        /* AJUSTE DO R$ AQUI */
+        .price .currency { 
+            font-size: 1.2rem; 
+            vertical-align: super; 
+            margin-right: 4px;
+            color: #fff;
+        }
+
+        .price span.period { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
 
         .features { list-style: none; margin-bottom: 30px; flex-grow: 1; margin-top: 20px; }
         .features li { margin-bottom: 12px; display: flex; align-items: center; color: #cbd5e1; font-size: 0.95rem; }
@@ -247,7 +256,7 @@
                 <h3>Start Remote</h3>
                 <p>Suporte essencial para microempresas.</p>
                 <div class="price-container">
-                    <div class="price">R$ <span id="price-start">697</span><span class="period">/mês</span></div>
+                    <div class="price"><span class="currency">R$</span><span id="price-start">697</span><span class="period">/mês</span></div>
                 </div>
                 <ul class="features">
                     <li>Até 03 equipamentos</li>
@@ -263,7 +272,7 @@
                 <h3>Business Care</h3>
                 <p>Estabilidade para empresas em crescimento.</p>
                 <div class="price-container">
-                    <div class="price">R$ <span id="price-business">1.297</span><span class="period">/mês</span></div>
+                    <div class="price"><span class="currency">R$</span><span id="price-business">1.297</span><span class="period">/mês</span></div>
                 </div>
                 <ul class="features">
                     <li>Até 08 equipamentos</li>
@@ -278,7 +287,7 @@
                 <h3>Enterprise Plus</h3>
                 <p>Gestão completa de TI e infraestrutura.</p>
                 <div class="price-container">
-                    <div class="price">R$ <span id="price-enterprise">2.497</span><span class="period">/mês</span></div>
+                    <div class="price"><span class="currency">R$</span><span id="price-enterprise">2.497</span><span class="period">/mês</span></div>
                 </div>
                 <ul class="features">
                     <li>Até 20 equipamentos</li>
