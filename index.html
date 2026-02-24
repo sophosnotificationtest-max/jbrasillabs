@@ -4,230 +4,178 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta property="og:title" content="JBrasil Labs | Suporte de TI Especializado">
-<meta property="og:description" content="TI especializada para clínicas, condomínios e pequenos negócios. Suporte ágil e monitoramento proativo.">
-<meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png">
-<meta property="og:url" content="https://jbrasillabs.com.br">
-<meta property="og:type" content="website">
-
 <title>JBrasil Labs | Suporte de TI Especializado</title>
+<meta name="description" content="Suporte técnico para empresas, clínicas e administradoras.">
+
+<meta property="og:site_name" content="JBrasil Labs">
+<meta property="og:title" content="JBrasil Labs - Outsourcing de TI">
+<meta property="og:description" content="Atendimento especializado 8x5 para o seu negócio.">
+<meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png">
+<meta property="og:type" content="website">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-* { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body {
-    font-family: 'Inter', sans-serif;
-    background: radial-gradient(circle at 50% -20%, rgba(59,130,246,0.15), transparent 60%), #050507;
-    color: #e5e7eb;
-    overflow-x: hidden;
-}
+    * { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: radial-gradient(circle at 50% -20%, rgba(59,130,246,0.15), transparent 60%), #050507;
+        color: #e5e7eb;
+        overflow-x: hidden;
+    }
 
-.nav-glass {
-    background: rgba(5,5,7,0.7);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
+    .nav-glass {
+        background: rgba(5,5,7,0.7);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
 
-.accent-text {
-    background: linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+    .accent-text {
+        background: linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-.divider {
-    background: linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);
-    height:1px;
-}
+    .plan-card {
+        background:#111115;
+        border:1px solid rgba(255,255,255,0.06);
+        border-radius:24px;
+        transition: all .4s ease;
+    }
 
-.plan-card {
-    background:#111115;
-    border:1px solid rgba(255,255,255,0.06);
-    border-radius:24px;
-    transition: all .4s ease;
-}
+    .plan-card:hover {
+        transform: translateY(-10px);
+        border-color:#3b82f6;
+        box-shadow:0 25px 60px rgba(59,130,246,0.15);
+    }
 
-.plan-card:hover {
-    transform: translateY(-10px);
-    border-color:#3b82f6;
-    box-shadow:0 25px 60px rgba(59,130,246,0.15);
-}
+    /* BOTÃO FLUTUANTE COM LOGO */
+    .wa-float {
+        position:fixed;
+        bottom:30px;
+        right:30px;
+        width:65px;
+        height:65px;
+        background:#ffffff;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-shadow:0 15px 40px rgba(59,130,246,0.3);
+        z-index:100;
+        transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid #25d366;
+    }
 
-.plan-card.featured {
-    background:linear-gradient(145deg,#ffffff,#f3f4f6);
-    color:#111;
-    transform:scale(1.05);
-}
+    .wa-float:hover { transform: scale(1.1); }
+    .wa-logo-img { width: 40px; height: 40px; object-fit: contain; }
 
-.btn-base {
-    border-radius:14px;
-    font-weight:600;
-    padding:.9rem 2rem;
-    transition:.3s;
-    display: inline-block;
-}
-
-.btn-main {
-    background:linear-gradient(135deg,#3b82f6,#6366f1);
-    color:white;
-}
-
-.segment-pill {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 6px 14px;
-    border-radius: 100px;
-    font-size: 13px;
-    color: #9ca3af;
-}
-
-/* BOTÃO WHATSAPP COM LOGO */
-.wa-float {
-    position:fixed;
-    bottom:30px;
-    right:30px;
-    width:65px;
-    height:65px;
-    background:#fff; /* Fundo branco para destacar o logo */
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 15px 40px rgba(59,130,246,0.3);
-    z-index:100;
-    transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 2px solid #25d366; /* Borda na cor do WhatsApp */
-}
-
-.wa-float:hover {
-    transform: scale(1.1);
-}
-
-.wa-logo-img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-}
+    .segment-pill {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 6px 14px;
+        border-radius: 100px;
+        font-size: 11px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
 </style>
 </head>
 
 <body>
 
-<a href="https://wa.me/5541996186960?text=Olá!%20Vi%20que%20vocês%20atendem%20meu%20segmento.%20Quero%20saber%20mais%20sobre%20o%20suporte%20de%20TI." target="_blank" class="wa-float" title="Falar no WhatsApp">
+<a href="https://wa.me/5541996186960?text=Olá%20JBrasil%20Labs!%20Gostaria%20de%20consultar%20as%20soluções%20de%20TI%20para%20minha%20empresa." target="_blank" class="wa-float">
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="JBrasil Labs" class="wa-logo-img">
 </a>
 
-<nav class="nav-glass sticky top-0 py-5 px-6 z-50">
-<div class="max-w-7xl mx-auto flex justify-between items-center">
-<div class="flex items-center gap-3">
-<img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="h-9">
-<span class="font-bold text-lg tracking-tight">JBrasil Labs</span>
-</div>
-<a href="#planos" class="btn-base btn-main text-sm py-2 px-6">Ver Planos</a>
-</div>
+<nav class="nav-glass sticky top-0 py-5 px-6 z-40">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="h-9">
+            <span class="font-bold text-lg tracking-tight">JBrasil Labs</span>
+        </div>
+        <a href="#planos" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl text-sm transition">Ver Planos</a>
+    </div>
 </nav>
 
 <header class="pt-28 pb-20 text-center px-6">
-<div class="max-w-4xl mx-auto">
-<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black mb-6 uppercase tracking-widest">
-    Suporte Ágil para Negócios que não podem parar
-</div>
-<h1 class="text-4xl md:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">
-TI especializada para <br>
-<span class="accent-text">o seu modelo de negócio.</span>
-</h1>
-<p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-Seja você um consultório, uma administradora ou um comércio, nós garantimos que sua tecnologia funcione enquanto você foca no lucro.
-</p>
-<div class="flex flex-col sm:flex-row gap-4 justify-center">
-<a href="#planos" class="btn-base btn-main px-10">Conhecer Planos</a>
-<a href="#segmentos" class="btn-base border border-white/10 bg-white/5 text-white hover:bg-white/10 px-10">Quem atendemos</a>
-</div>
-</div>
+    <div class="max-w-4xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black mb-6 uppercase tracking-widest">
+            Tecnologia de Alta Disponibilidade
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+            Sua operação blindada,<br>
+            <span class="accent-text">seu foco no lucro.</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+            Suporte de TI estratégico para administradoras, clínicas e escritórios. Atendimento ágil e consultoria especializada.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#planos" class="bg-white text-black font-bold py-4 px-10 rounded-2xl hover:bg-gray-200 transition">Ver Planos e Preços</a>
+            <a href="https://wa.me/5541996186960" class="border border-white/20 bg-white/5 text-white font-bold py-4 px-10 rounded-2xl hover:bg-white/10 transition">Falar com JBrasil Labs</a>
+        </div>
+    </div>
 </header>
 
-<div class="divider"></div>
-
-<section id="segmentos" class="py-24 px-6 bg-[#07070a]">
-<div class="max-w-7xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-10 italic">Experiência em Diversos Segmentos</h2>
-    <div class="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
-        <span class="segment-pill">Administradoras de Condomínios</span>
-        <span class="segment-pill">Imobiliárias</span>
-        <span class="segment-pill">Gestoras de Negócios</span>
+<section class="py-12 bg-[#07070a] px-6">
+    <div class="max-w-5xl mx-auto flex flex-wrap justify-center gap-2 opacity-80">
+        <span class="segment-pill">Administradoras</span>
+        <span class="segment-pill">Clínicas Médicas</span>
         <span class="segment-pill">Contabilidade</span>
-        <span class="segment-pill">Consultórios Médicos</span>
-        <span class="segment-pill">Clínicas de Estética</span>
-        <span class="segment-pill">Cirurgia Plástica</span>
-        <span class="segment-pill">Consultórios Odontológicos</span>
-        <span class="segment-pill">Lojas de Roupas & Calçados</span>
-        <span class="segment-pill">Lojas de Conveniência</span>
-        <span class="segment-pill">Mini Mercados</span>
-        <span class="segment-pill">Estacionamentos & Vallet</span>
-        <span class="segment-pill">Bares & Restaurantes</span>
-        <span class="segment-pill">Recarga de Extintores</span>
-        <span class="segment-pill">Saúde Ocupacional</span>
-        <span class="segment-pill">Exportação & Importação</span>
-        <span class="segment-pill">Sociedade de Advogados</span>
-        <span class="segment-pill">Empreiteiras</span>
-        <span class="segment-pill">Lojas de Autopeças</span>
-        <span class="segment-pill">Agências de Marketing</span>
-        <span class="segment-pill">Estúdios Fotográficos</span>
-        <span class="segment-pill">Portaria Eletrônica</span>
-        <span class="segment-pill">Terceirização e Facilities</span>
+        <span class="segment-pill">Advogados</span>
+        <span class="segment-pill">Varejo</span>
+        <span class="segment-pill">Condomínios</span>
+        <span class="segment-pill">Facilities</span>
+        <span class="segment-pill">Marketing</span>
     </div>
-</div>
 </section>
 
-<div class="divider"></div>
-
 <section id="planos" class="py-24 px-6">
-<div class="max-w-7xl mx-auto text-center mb-16">
-<h2 class="text-3xl md:text-5xl font-bold mb-4">Planos de Apoio Tecnológico</h2>
-</div>
+    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
+        <div class="plan-card p-8 flex flex-col border-white/5">
+            <h3 class="text-xl font-bold mb-4">Support Lite</h3>
+            <p class="text-3xl font-bold mb-6 italic">R$ 590<span class="text-sm text-gray-400 font-normal">/mês</span></p>
+            <ul class="space-y-4 text-sm text-gray-400 mb-8 flex-grow">
+                <li>✔ Suporte Remoto Ágil</li>
+                <li>✔ Até 5 estações</li>
+                <li>✔ SLA de 4 horas</li>
+            </ul>
+            <a href="https://wa.me/5541996186960" class="text-center py-3 border border-white/10 rounded-xl hover:bg-white/5 transition">Contratar</a>
+        </div>
 
-<div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-    <div class="plan-card p-8 flex flex-col">
-        <h3 class="text-xl font-bold mb-2">Suporte Remoto</h3>
-        <p class="text-3xl font-bold mb-6">R$ 590<span class="text-sm text-gray-400 font-normal">/mês</span></p>
-        <ul class="space-y-4 text-sm text-gray-400 mb-8 flex-grow">
-            <li>✔ Até 5 estações de trabalho</li>
-            <li>✔ 05 horas mensais</li>
-            <li>✔ SLA de resposta em até 4h</li>
-        </ul>
-        <a href="https://wa.me/5541996186960?text=Desejo%20o%20Suporte%20Remoto" class="btn-base border border-white/10 hover:bg-white/5 w-full text-center">Contratar</a>
-    </div>
+        <div class="plan-card p-8 flex flex-col border-blue-500/30 relative bg-gradient-to-b from-[#16161c] to-[#111115]">
+            <div class="absolute -top-3 left-6 bg-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Recomendado</div>
+            <h3 class="text-xl font-bold mb-4 text-white">Business Pro</h3>
+            <p class="text-3xl font-bold mb-6 text-white italic">R$ 1.100<span class="text-sm text-gray-400 font-normal">/mês</span></p>
+            <ul class="space-y-4 text-sm text-gray-300 mb-8 flex-grow">
+                <li>✔ Até 15 dispositivos</li>
+                <li>✔ Backup Cloud Automatizado</li>
+                <li>✔ Resposta Prioritária</li>
+            </ul>
+            <a href="https://wa.me/5541996186960" class="text-center py-3 bg-blue-600 rounded-xl font-bold hover:bg-blue-700 transition">Assinar Agora</a>
+        </div>
 
-    <div class="plan-card featured p-8 flex flex-col">
-        <div class="bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full w-fit mb-4 uppercase">Mais Recomendado</div>
-        <h3 class="text-xl font-bold mb-2 text-gray-900">Plano Business</h3>
-        <p class="text-3xl font-bold mb-6 text-gray-900">R$ 1.100<span class="text-sm font-normal">/mês</span></p>
-        <ul class="space-y-4 text-sm mb-8 flex-grow">
-            <li class="font-semibold text-gray-800">✔ Até 15 dispositivos</li>
-            <li class="font-semibold text-gray-800">✔ 10 horas de suporte/mês</li>
-            <li class="font-semibold text-blue-700">✔ SLA de resposta em até 2h</li>
-        </ul>
-        <a href="https://wa.me/5541996186960?text=Quero%20o%20Plano%20Business" class="btn-base btn-main w-full text-center">Assinar Agora</a>
+        <div class="plan-card p-8 flex flex-col border-white/5">
+            <h3 class="text-xl font-bold mb-4">Enterprise</h3>
+            <p class="text-3xl font-bold mb-6 italic">Customizado</p>
+            <p class="text-sm text-gray-400 mb-8 leading-relaxed">Gestão completa de servidores e infraestruturas complexas.</p>
+            <a href="https://wa.me/5541996186960" class="text-center py-3 border border-white/10 rounded-xl hover:bg-white/5 transition">Consultar</a>
+        </div>
     </div>
-
-    <div class="plan-card p-8 flex flex-col">
-        <h3 class="text-xl font-bold mb-2">Customizado</h3>
-        <p class="text-3xl font-bold mb-6">Sob Medida</p>
-        <p class="text-sm text-gray-400 mb-8">Gestão completa para estruturas maiores e complexas.</p>
-        <a href="https://wa.me/5541996186960?text=Preciso%20de%20proposta%20personalizada" class="btn-base border border-white/10 hover:bg-white/5 w-full text-center">Solicitar Proposta</a>
-    </div>
-</div>
 </section>
 
 <footer class="py-12 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-center md:text-left">
-        <div>
-            <p class="font-bold text-sm text-gray-400 tracking-widest uppercase">JBrasil Labs © 2026</p>
-            <p class="text-[10px] opacity-70">CNPJ: 65.109.396/0001-55</p>
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="text-center md:text-left">
+            <p class="font-bold text-gray-400 text-lg">JBrasil Labs</p>
+            <p class="text-[10px] text-gray-600 uppercase tracking-widest mt-1">CNPJ: 65.109.396/0001-55</p>
         </div>
-        <div class="text-[11px] uppercase tracking-tighter opacity-50">
-            Suporte TI Especializado.
+        <div class="flex items-center gap-4 text-xs text-gray-500 italic">
+            <span>Operação 8x5</span>
+            <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
+            <span>Atendimento Prioritário</span>
         </div>
     </div>
 </footer>
@@ -241,9 +189,9 @@ Seja você um consultório, uma administradora ou um comércio, nós garantimos 
             fetch(`${BACKEND}/log`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ entry: `[PRO] Visita Logo-WA | IP: ${ipData.ip}` })
+                body: JSON.stringify({ entry: `[PRO] Visita Business-Ready | IP: ${ipData.ip}` })
             }).catch(() => {});
-        } catch (e) { console.error("Log error"); }
+        } catch (e) {}
     }
     initSystem();
 </script>
