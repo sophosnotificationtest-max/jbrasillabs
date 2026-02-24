@@ -3,276 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil Labs - SOC Level System</title>
+    <title>JBrasil Labs - Suporte de TI Especializado</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Press Start 2P', cursive; cursor: none; color: #00ff00; }
-        canvas { position: fixed; inset: 0; }
-        #bg-space { z-index: 0; }
-        #game-layer { z-index: 1; image-rendering: pixelated; }
-        .shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-2px, -2px, 0); } 20%, 80% { transform: translate3d(4px, 4px, 0); } 30%, 50%, 70% { transform: translate3d(-6px, -6px, 0); } }
-        .hud { position: fixed; top: 20px; left: 20px; z-index: 100; font-size: 10px; color: #fff; text-shadow: 0 0 10px #00ff00; line-height: 1.8; pointer-events: none; }
-        #leaderboard-fixed { position: fixed; top: 20px; right: 20px; z-index: 100; font-size: 8px; color: #4e9eff; background: rgba(0,0,0,0.85); padding: 15px; border: 1px solid rgba(0,255,0,0.3); text-align: right; backdrop-filter: blur(5px); pointer-events: none; }
-        .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); z-index: 300; }
-        .btn-ui { font-size: 12px; cursor: pointer; border: 3px solid #00ff00; padding: 15px 30px; background: transparent; color: #00ff00; transition: 0.3s; pointer-events: auto; }
-        .btn-ui:hover:not(.disabled) { background: #00ff00; color: #000; }
-        .btn-ui.disabled { opacity: 0.3; cursor: wait; }
+        :root { --neon-blue: #00d1ff; --dark-bg: #0a0a0a; }
+        body { background: var(--dark-bg); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .retro-font { font-family: 'Press Start 2P', cursive; }
+        
+        canvas { position: absolute; top: 0; left: 0; z-index: 0; }
+        .hero-section { height: 75vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-bottom: 2px solid #1a1a1a; }
+        
+        .content-overlay { z-index: 10; text-align: center; background: rgba(0,0,0,0.85); padding: 2.5rem; border: 1px solid #333; border-radius: 12px; backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        
+        .plan-card { background: #161616; border: 1px solid #222; transition: 0.3s; position: relative; }
+        .plan-card:hover { border-color: var(--neon-blue); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 209, 255, 0.1); }
+        
+        #game-container { height: 350px; width: 100%; max-width: 700px; position: relative; margin: 25px auto; border: 2px solid #222; cursor: crosshair; background: #000; overflow: hidden; }
+        .btn-whatsapp { background: #25d366; color: white; padding: 14px 28px; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-whatsapp:hover { transform: scale(1.03); background: #20ba5a; }
+        
+        .benefit-list li::before { content: "✓"; color: var(--neon-blue); margin-right: 10px; font-weight: bold; }
     </style>
 </head>
-<body id="main-body">
+<body>
 
-<canvas id="bg-space"></canvas>
-<canvas id="game-layer"></canvas>
-
-<div class="hud">
-    SCORE: <span id="score-val">0000</span><br>
-    LEVEL: <span id="level-val">1</span><br>
-    SHIELD: <span id="lives-val">100%</span><br>
-    WEAPON: <span id="weapon-status" style="color: #0ff;">STANDARD</span>
-</div>
-
-<div id="leaderboard-fixed">
-    <div style="font-weight: bold; margin-bottom: 10px; color: #00ff00;">TOP DEFENDERS</div>
-    <div id="rank-list">WAITING...</div>
-</div>
-
-<div id="start-screen" class="overlay">
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" style="width:300px; margin-bottom:30px;">
-    <div id="start-btn" class="btn-ui disabled">ESTABLISHING LINK...</div>
-</div>
-
-<div id="game-over-screen" class="overlay" style="display:none;">
-    <h1 style="color: #f33; font-size: 24px; margin-bottom: 20px;">BREACH DETECTED</h1>
-    <div class="btn-ui" onclick="location.reload()">REBOOT</div>
-</div>
-
-<script>
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function sfx(f, t, d, v=0.05) {
-    try {
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-        g.gain.setValueAtTime(v, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination);
-        o.start(); o.stop(audioCtx.currentTime + d);
-    } catch(e) {}
-}
-
-const bgCanvas = document.getElementById("bg-space"), sCtx = bgCanvas.getContext("2d");
-const gCanvas = document.getElementById("game-layer"), gCtx = gCanvas.getContext("2d");
-let score=0, lives=3, level=1, gameRunning=false, tick=0;
-let enemies=[], bullets=[], stars=[], boss=null, overdrive=0, enemyBullets=[], powerups=[];
-let mouseX=innerWidth/2, mouseY=innerHeight/2;
-let tripleShotTimer = 0;
-let userLoc="BR", userIP="0.0.0.0";
-
-const ALIEN = [ [0,1,1,1,0],[1,1,0,1,1],[1,1,1,1,1],[0,1,0,1,0] ];
-const BOSS_SHAPE = [
-    [0,0,1,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,1,0],
-    [1,1,0,1,1,1,0,1,1],
-    [1,1,1,1,1,1,1,1,1],
-    [0,1,0,1,0,1,0,1,0]
-];
-
-function init() {
-    bgCanvas.width = gCanvas.width = innerWidth;
-    bgCanvas.height = gCanvas.height = innerHeight;
-    stars = Array.from({length:200}, () => ({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*2}));
-}
-window.addEventListener("resize", init);
-init();
-
-async function fetchRank() {
-    const list = document.getElementById("rank-list");
-    try {
-        const r = await fetch('https://jbrasillabs-1.onrender.com/leaderboard', { signal: AbortSignal.timeout(5000) });
-        const d = await r.json();
-        if(d && d.length > 0) {
-            list.innerHTML = d.slice(0,8).map((x,i)=>`${i+1}º ${x.score} [${x.country||'BR'}]`).join("<br>");
-        } else { list.innerText = "NO RECORDS"; }
-    } catch(e) { list.innerText = "SOC OFFLINE"; }
-}
-
-function takeDamage() {
-    lives = Math.max(0, lives - 0.4);
-    document.getElementById("main-body").classList.add("shake");
-    sfx(80, 'sawtooth', 0.2, 0.1);
-    setTimeout(()=>document.getElementById("main-body").classList.remove("shake"), 200);
-    if(lives <= 0) endGame();
-}
-
-function spawnPowerup(x, y) {
-    const rand = Math.random();
-    if (rand < 0.15) { 
-        let type = 'shield';
-        if (rand < 0.05) type = 'triple';
-        else if (rand < 0.10) type = 'bomb';
-        powerups.push({ x, y, type, speed: 2 });
-    }
-}
-
-function loop() {
-    tick++;
-    sCtx.fillStyle = "#000"; sCtx.fillRect(0,0,innerWidth,innerHeight);
-    stars.forEach(s => {
-        s.y += s.s; if(s.y > innerHeight) s.y = 0;
-        sCtx.fillStyle = "rgba(255,255,255,0.4)"; sCtx.fillRect(s.x, s.y, s.s, s.s);
-    });
-
-    gCtx.clearRect(0,0,innerWidth,innerHeight);
-
-    if(gameRunning) {
-        // Boss a cada 200 pontos
-        if(score > 0 && score % 200 === 0 && !boss) {
-            boss = { x: innerWidth/2, y: -100, hp: 120 * level, maxHp: 120 * level, size: 12, dir: 1 };
-            sfx(100, 'square', 1);
-        }
-
-        // Inimigos contínuos
-        if(tick % Math.max(5, 45 - (level * 4)) === 0) {
-            enemies.push({ x: Math.random()*(innerWidth-40), y: -40, speed: 2 + (level*0.6) });
-        }
-
-        // Lógica Power-ups
-        powerups.forEach((p, pi) => {
-            p.y += p.speed;
-            let colors = { shield: '#0f0', triple: '#0cf', bomb: '#f90' };
-            gCtx.fillStyle = colors[p.type];
-            gCtx.beginPath(); gCtx.arc(p.x, p.y, 10, 0, Math.PI*2); gCtx.fill();
-            if (Math.hypot(p.x - mouseX, p.y - mouseY) < 35) {
-                if (p.type === 'shield') { lives = Math.min(3, lives + 1); sfx(800, 'sine', 0.2); }
-                if (p.type === 'triple') { tripleShotTimer = 500; sfx(1200, 'sine', 0.2); }
-                if (p.type === 'bomb') { enemies = []; sfx(100, 'sawtooth', 0.5, 0.2); document.getElementById("main-body").classList.add("shake"); }
-                powerups.splice(pi, 1);
-            }
-            if (p.y > innerHeight) powerups.splice(pi, 1);
-        });
-
-        // Lógica Boss
-        if(boss) {
-            boss.y = Math.min(boss.y + 1, 80);
-            boss.x += (2 + level) * boss.dir;
-            if(boss.x > innerWidth - 100 || boss.x < 100) boss.dir *= -1;
-            BOSS_SHAPE.forEach((row, ri) => row.forEach((p, ci) => {
-                if(p) {
-                    gCtx.fillStyle = `hsl(${(tick%360)}, 100%, 50%)`;
-                    gCtx.fillRect(boss.x + (ci*boss.size) - 50, boss.y + (ri*boss.size), boss.size, boss.size);
-                }
-            }));
-            if(tick % Math.max(10, 45 - (level*5)) === 0) {
-                enemyBullets.push({x: boss.x, y: boss.y + 60, speed: 5 + level});
-                sfx(300, 'triangle', 0.1);
-            }
-            gCtx.fillStyle = "#330000"; gCtx.fillRect(innerWidth/2 - 100, 20, 200, 10);
-            gCtx.fillStyle = "#ff0000"; gCtx.fillRect(innerWidth/2 - 100, 20, (boss.hp/boss.maxHp)*200, 10);
-        }
-
-        // Tiros Inimigos
-        enemyBullets.forEach((eb, ebi) => {
-            eb.y += eb.speed;
-            gCtx.fillStyle = "#f00"; gCtx.fillRect(eb.x-4, eb.y, 8, 12);
-            if(Math.hypot(eb.x - mouseX, eb.y - mouseY) < 30) { enemyBullets.splice(ebi, 1); takeDamage(); }
-            if(eb.y > innerHeight) enemyBullets.splice(ebi, 1);
-        });
-
-        // Inimigos Comuns
-        enemies.forEach((e, i) => {
-            e.y += e.speed;
-            gCtx.fillStyle = "#f33";
-            ALIEN.forEach((row, ri) => row.forEach((p, ci) => { if(p) gCtx.fillRect(e.x+ci*8, e.y+ri*8, 8, 8); }));
-            if(e.y > innerHeight) { enemies.splice(i, 1); takeDamage(); }
-        });
-
-        // Tiros Jogador
-        bullets.forEach((b, bi) => {
-            b.y -= 18;
-            gCtx.fillStyle = (tripleShotTimer > 0) ? "#0cf" : (overdrive > 0 ? "#ff0" : "#0ff");
-            gCtx.fillRect(b.x-2, b.y, 4, 15);
+    <section class="hero-section">
+        <canvas id="bg-space"></canvas>
+        <div class="content-overlay max-w-3xl mx-auto border-t-4 border-t-[#00d1ff]">
+            <h1 class="retro-font text-xl mb-4 text-[#00d1ff]">JBrasil Labs TI</h1>
+            <p class="text-lg mb-2 font-bold">Problemas de TI não avisam quando vão chegar.</p>
+            <p class="text-gray-400 text-sm mb-6">No simulador abaixo, tente conter os erros de sistema antes que eles paralisem sua operação.</p>
             
-            if(boss && b.x > boss.x - 60 && b.x < boss.x + 60 && b.y < boss.y + 70) {
-                boss.hp -= 2; bullets.splice(bi, 1);
-                if(boss.hp <= 0) { score += 500; level++; boss = null; overdrive = 400; sfx(500, 'sine', 0.5); }
-            }
-            
-            enemies.forEach((e, ei) => {
-                if(b.x > e.x && b.x < e.x+40 && b.y > e.y && b.y < e.y+32) {
-                    spawnPowerup(e.x + 20, e.y + 16);
-                    score += 10; enemies.splice(ei, 1); bullets.splice(bi, 1);
-                    sfx(600, 'triangle', 0.05);
+            <div id="game-container" class="rounded-lg shadow-inner">
+                <canvas id="game-layer"></canvas>
+                <div id="start-screen" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 z-20">
+                    <p class="retro-font text-[10px] mb-6 text-gray-500">SIMULADOR DE INCIDENTES V1.0</p>
+                    <button id="start-btn" class="retro-font text-xs border-2 border-[#00d1ff] p-4 text-[#00d1ff] hover:bg-[#00d1ff] hover:text-black transition-all">INICIAR DIAGNÓSTICO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 bg-white text-black">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold mb-4">Planos de Suporte Mensal</h2>
+                <p class="text-xl text-gray-600">Sua empresa focada no negócio, nós focados na tecnologia.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="plan-card p-10 rounded-2xl text-white">
+                    <h3 class="retro-font text-[10px] mb-4 text-[#00d1ff]">SUPORTE REMOTO</h3>
+                    <p class="text-4xl font-bold mb-8 italic">R$ 590<span class="text-sm font-normal not-italic text-gray-500">/mês</span></p>
+                    <ul class="benefit-list space-y-4 mb-10 text-gray-400 text-sm">
+                        <li>Suporte Ilimitado via Chat/Telefone</li>
+                        <li>Configuração de Periféricos</li>
+                        <li>Limpeza de Software e Otimização</li>
+                        <li>Instalação de Aplicativos</li>
+                        <li>Atendimento em até 4h</li>
+                    </ul>
+                    <a href="https://wa.me/5491136756375" class="btn-whatsapp w-full justify-center">Contratar Plano</a>
+                </div>
+
+                <div class="plan-card p-10 rounded-2xl text-white border-[#00d1ff] bg-[#0f0f0f] shadow-2xl">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#00d1ff] text-black text-[10px] font-bold py-1 px-4 rounded-full">RECOMENDADO</div>
+                    <h3 class="retro-font text-[10px] mb-4 text-[#00d1ff]">BUSINESS FULL</h3>
+                    <p class="text-4xl font-bold mb-8 italic">R$ 1.100<span class="text-sm font-normal not-italic text-gray-500">/mês</span></p>
+                    <ul class="benefit-list space-y-4 mb-10 text-gray-300 text-sm font-medium">
+                        <li>Tudo do Suporte Remoto</li>
+                        <li>Manutenção Preventiva Mensal</li>
+                        <li>Gestão de Backup e Nuvem</li>
+                        <li>Configuração de Redes e Wi-Fi</li>
+                        <li>Atendimento Prioritário em até 2h</li>
+                    </ul>
+                    <a href="https://wa.me/5491136756375" class="btn-whatsapp w-full justify-center">Quero este Plano</a>
+                </div>
+
+                <div class="plan-card p-10 rounded-2xl text-white">
+                    <h3 class="retro-font text-[10px] mb-4 text-[#00d1ff]">ENTERPRISE</h3>
+                    <p class="text-3xl font-bold mb-8 italic">Customizado</p>
+                    <ul class="benefit-list space-y-4 mb-10 text-gray-400 text-sm">
+                        <li>Gestão de Servidores Dedicada</li>
+                        <li>Segurança de Dados Avançada</li>
+                        <li>Consultoria em Projetos de TI</li>
+                        <li>Visitas Presenciais Inclusas</li>
+                        <li>SLA Personalizado</li>
+                    </ul>
+                    <a href="https://wa.me/5491136756375" class="btn-whatsapp w-full justify-center">Solicitar Orçamento</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 bg-[#050505] border-t border-gray-900 text-center">
+        <p class="retro-font text-[8px] text-gray-600 mb-6 uppercase tracking-widest">JBrasil Labs - Soluções em Tecnologia</p>
+        <div id="rank-list" class="text-gray-500 text-[10px] mb-4 flex justify-center gap-6">
+            <span>STABILITY MONITOR: ONLINE</span> | <span id="log-ip">IP: 0.0.0.0</span>
+        </div>
+        <p class="text-gray-700 text-[10px]">© 2026 JBrasil Labs. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // --- JOGO / SIMULADOR DE SUPORTE ---
+        const bgCanvas = document.getElementById("bg-space"), sCtx = bgCanvas.getContext("2d");
+        const gCanvas = document.getElementById("game-layer"), gCtx = gCanvas.getContext("2d");
+        const container = document.getElementById("game-container");
+        
+        let score=0, lives=5, gameRunning=false, tick=0, errors=[], bits=[], stars=[];
+        let mouseX=0, mouseY=0;
+
+        function init() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            gCanvas.width = container.offsetWidth;
+            gCanvas.height = container.offsetHeight;
+            stars = Array.from({length:80}, () => ({x:Math.random()*innerWidth, y:Math.random()*innerHeight, s:Math.random()*1.5}));
+        }
+
+        window.addEventListener("resize", init);
+        init();
+
+        container.addEventListener("mousemove", (e) => {
+            const rect = container.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+
+        document.getElementById("start-btn").onclick = () => {
+            document.getElementById("start-screen").style.display = "none";
+            gameRunning = true;
+            score = 0; lives = 5; errors = []; bits = [];
+        };
+
+        function loop() {
+            tick++;
+            // Fundo espacial estático
+            sCtx.fillStyle = "#0a0a0a"; sCtx.fillRect(0,0,innerWidth,innerHeight);
+            stars.forEach(s => { s.y += s.s; if(s.y > innerHeight) s.y = 0; sCtx.fillStyle="#1a1a1a"; sCtx.fillRect(s.x, s.y, 2, 2); });
+
+            if(gameRunning) {
+                gCtx.clearRect(0,0,gCanvas.width, gCanvas.height);
+                
+                // Spawn de "Erros de Sistema" (Quadrados vermelhos)
+                if(tick % Math.max(10, 40 - score/20) === 0) {
+                    errors.push({x: Math.random()*(gCanvas.width-40), y: -20, s: 2 + (score/100)});
                 }
+
+                errors.forEach((e, i) => {
+                    e.y += e.s;
+                    // Desenha o erro (ícone de alerta pixelado)
+                    gCtx.fillStyle = "#ff3b3b";
+                    gCtx.fillRect(e.x, e.y, 30, 10);
+                    gCtx.fillRect(e.x + 10, e.y - 5, 10, 20);
+
+                    if(e.y > gCanvas.height) { errors.splice(i, 1); lives--; }
+                    
+                    // Colisão com bits de reparo
+                    bits.forEach((b, bi) => {
+                        if(b.x > e.x && b.x < e.x+30 && b.y < e.y+15) {
+                            errors.splice(i, 1); bits.splice(bi, 1);
+                            score += 10;
+                        }
+                    });
+                });
+
+                // Bits de reparo (Tiros verdes)
+                bits.forEach((b, i) => { b.y -= 12; gCtx.fillStyle="#00d1ff"; gCtx.fillRect(b.x, b.y, 4, 12); if(b.y < 0) bits.splice(i,1); });
+
+                // Cursor/Nave de Suporte
+                gCtx.fillStyle = "#00d1ff";
+                gCtx.fillRect(mouseX-15, mouseY, 30, 4);
+                gCtx.fillRect(mouseX-2, mouseY-10, 4, 10);
+                
+                // Status HUD
+                gCtx.fillStyle = "#fff";
+                gCtx.font = "8px 'Press Start 2P'";
+                gCtx.fillText(`FIXED: ${score}`, 15, 25);
+                gCtx.fillText(`SYSTEM STABILITY: ${lives * 20}%`, 15, 45);
+                
+                if(lives <= 0) {
+                    gameRunning = false;
+                    document.getElementById("start-screen").style.display = "flex";
+                    document.getElementById("start-btn").innerHTML = "SISTEMA FORA DO AR<br><br>REINICIAR";
+                }
+            }
+            requestAnimationFrame(loop);
+        }
+
+        container.addEventListener("mousedown", () => {
+            if(gameRunning) bits.push({x: mouseX, y: mouseY});
+        });
+
+        // Identificação de IP para o log
+        fetch('https://api.ipify.org?format=json')
+            .then(r => r.json())
+            .then(d => { 
+                document.getElementById("log-ip").innerText = `IP: ${d.ip}`;
+                // Log de acesso ao backend
+                fetch('https://jbrasillabs-1.onrender.com/log', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({ entry: `[WEB] Visita Suporte TI | IP: ${d.ip}` }) 
+                }).catch(e=>{});
             });
-            if(b.y < 0) bullets.splice(bi, 1);
-        });
 
-        if(overdrive > 0) overdrive--;
-        if(tripleShotTimer > 0) tripleShotTimer--;
-    }
-
-    // Render Player
-    gCtx.fillStyle = "#0f0";
-    gCtx.fillRect(mouseX-20, mouseY, 40, 6); 
-    gCtx.fillRect(mouseX-4, mouseY-12, 8, 12);
-
-    // Update HUD
-    document.getElementById("score-val").innerText = score.toString().padStart(4, '0');
-    document.getElementById("level-val").innerText = level;
-    document.getElementById("lives-val").innerText = Math.max(0, (lives*33.4)).toFixed(0) + "%";
-    let status = tripleShotTimer > 0 ? "TRIPLE SHOT" : (overdrive > 0 ? "OVERDRIVE" : "STANDARD");
-    document.getElementById("weapon-status").innerText = status;
-    document.getElementById("weapon-status").style.color = tripleShotTimer > 0 ? "#0cf" : (overdrive > 0 ? "#ff0" : "#0ff");
-
-    requestAnimationFrame(loop);
-}
-
-window.addEventListener("mousemove", e => { mouseX=e.clientX; mouseY=e.clientY; });
-window.addEventListener("mousedown", () => {
-    if(gameRunning) {
-        if(tripleShotTimer > 0) {
-            bullets.push({x: mouseX, y: mouseY}, {x: mouseX-20, y: mouseY+10}, {x: mouseX+20, y: mouseY+10});
-        } else {
-            bullets.push({x: mouseX, y: mouseY});
-        }
-        sfx(tripleShotTimer > 0 ? 1100 : 800, 'sine', 0.05);
-    }
-});
-
-function startGame() {
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    document.getElementById("start-screen").style.display="none";
-    gameRunning=true;
-    fetch('https://jbrasillabs-1.onrender.com/log', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ entry: `[SOC] START_GAME | IP: ${userIP}` }) }).catch(e=>{});
-}
-
-function endGame() {
-    gameRunning = false;
-    document.getElementById("game-over-screen").style.display="flex";
-    fetch('https://jbrasillabs-1.onrender.com/score', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ score, country: userLoc }) }).catch(e=>{});
-}
-
-const unlock = () => {
-    const b = document.getElementById("start-btn");
-    b.innerText = "INITIALIZE SYSTEM";
-    b.classList.remove("disabled");
-    b.onclick = startGame;
-};
-
-fetch('https://api.ipify.org?format=json')
-    .then(r => r.json())
-    .then(d => {
-        userIP = d.ip;
-        return fetch(`https://ipapi.co/${d.ip}/json/`);
-    })
-    .then(r => r.json())
-    .then(d => {
-        userLoc = d.country_code || "BR";
-        unlock();
-    })
-    .catch(() => unlock());
-
-fetchRank();
-loop();
-</script>
+        loop();
+    </script>
 </body>
 </html>
