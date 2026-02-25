@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil TI | Módulo MSP Tech - Piçarras e Vale do Itajaí</title>
+    <title>JBrasil TI | TI por Assinatura - Vale do Itajaí</title>
     
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -11,8 +11,9 @@
     <style>
         :root {
             --primary: #22c55e;
+            --primary-glow: rgba(34, 197, 94, 0.4);
             --bg-dark: #020617;
-            --card-bg: rgba(15, 23, 42, 0.45);
+            --card-bg: rgba(15, 23, 42, 0.7);
             --border: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
         }
@@ -27,176 +28,211 @@
             position: relative;
         }
 
-        /* FUNDO DINÂMICO MSP STYLE */
-        .animated-bg {
+        /* LOGO FLUTUANTE AUMENTADO */
+        .floating-header {
+            position: fixed;
+            top: 30px;
+            left: 40px;
+            z-index: 1000;
+        }
+
+        .floating-logo {
+            width: 85px; /* Tamanho aumentado conforme solicitado */
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+            animation: pulseLogo 3s ease-in-out infinite;
+            transition: 0.3s ease;
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px var(--primary-glow)); }
+            50% { transform: translateY(-10px) scale(1.05); filter: drop-shadow(0 0 30px var(--primary)); }
+        }
+
+        /* FUNDO DE CIRCUITOS DINÂMICOS */
+        .circuit-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2;
-            background: linear-gradient(125deg, #020617 0%, #064e3b 50%, #020617 100%);
-            background-size: 400% 400%;
-            animation: gradientMove 15s ease infinite;
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(34, 197, 94, 0.15) 1px, transparent 0);
+            background-size: 40px 40px;
         }
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .logo-fixed-bg {
+        .circuit-lines {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 45vw;
-            max-width: 550px;
-            opacity: 0.06;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            pointer-events: none;
+            background: 
+                linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px) 0 0 / 100px 100px,
+                linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px) 0 0 / 100px 100px;
+            mask-image: radial-gradient(ellipse at center, black, transparent 80%);
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
+        /* TÍTULO */
+        .hero h1 { 
+            font-size: clamp(2.8rem, 7vw, 4.5rem); 
+            font-weight: 800; 
+            letter-spacing: -3px; 
+            margin-bottom: 20px;
+            line-height: 1;
+        }
 
-        .header-nav { padding: 40px 0; text-align: center; }
-        .top-logo { width: 160px; filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.3)); }
+        .hero h1 span {
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
 
-        .hero { text-align: center; padding: 20px 0 60px; }
-        .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 15px; }
-        .hero h1 span { color: var(--primary); }
-        
+        .container { max-width: 1200px; margin: 0 auto; padding: 140px 24px 60px; position: relative; }
+
         .location-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             background: rgba(34, 197, 94, 0.1);
             color: var(--primary);
-            padding: 8px 20px;
+            padding: 10px 22px;
             border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 25px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            border: 1px solid var(--primary-glow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .hero p { color: #94a3b8; font-size: 1.2rem; max-width: 750px; margin: 0 auto; font-weight: 300; line-height: 1.6; }
+        .hero { text-align: center; padding-bottom: 80px; }
+        .hero p { color: #94a3b8; font-size: 1.2rem; max-width: 700px; margin: 0 auto; font-weight: 300; line-height: 1.6; }
 
-        .msp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 100px; }
+        /* CARDS */
+        .msp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         
         .msp-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 40px;
-            backdrop-filter: blur(12px);
-            transition: all 0.4s ease;
+            border-radius: 28px;
+            padding: 50px 40px;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
-            text-align: center;
+            position: relative;
         }
 
-        .msp-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .msp-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(34, 197, 94, 0.1);
+        }
 
-        .msp-card h3 { font-size: 1.6rem; color: var(--primary); margin-bottom: 10px; font-weight: 700; }
-        .price { font-size: 3rem; font-weight: 800; margin: 15px 0; }
-        .price span { font-size: 1rem; color: #64748b; font-weight: 400; }
+        .msp-card h3 { font-size: 1.8rem; color: var(--primary); margin-bottom: 10px; font-weight: 800; }
+        .price { font-size: 3.2rem; font-weight: 800; margin: 20px 0; letter-spacing: -2px; }
+        .price span { font-size: 1.1rem; color: #64748b; font-weight: 400; letter-spacing: 0; }
 
-        .feature-list { list-style: none; margin: 25px 0; text-align: left; flex-grow: 1; }
-        .feature-list li { margin-bottom: 12px; font-size: 0.95rem; color: #cbd5e1; display: flex; align-items: center; gap: 10px; }
-        .feature-list li::before { content: '✓'; color: var(--primary); font-weight: 900; }
+        .feature-list { list-style: none; margin: 30px 0; text-align: left; flex-grow: 1; }
+        .feature-list li { margin-bottom: 14px; font-size: 0.95rem; color: #cbd5e1; display: flex; align-items: center; gap: 12px; }
+        .feature-list li::before { content: '→'; color: var(--primary); font-weight: 900; }
         
-        /* DESTAQUE ESTRATÉGICO */
-        .li-ilimitado { color: #fff !important; font-weight: 700; }
-        .li-horas { background: rgba(34, 197, 94, 0.15); padding: 6px 12px; border-radius: 8px; border: 1px dashed var(--primary); margin-top: 15px !important; color: #fff; font-size: 0.9rem !important; }
+        .li-ilimitado { color: #fff !important; font-weight: 700; text-transform: uppercase; font-size: 0.85rem !important; }
+        .li-horas { 
+            background: rgba(34, 197, 94, 0.12); 
+            padding: 10px 15px; 
+            border-radius: 12px; 
+            border: 1px dashed var(--primary);
+            margin-top: 20px !important; 
+            color: #fff; 
+            font-size: 0.9rem !important;
+        }
 
         .btn-msp {
-            display: block; width: 100%; padding: 18px; border-radius: 14px;
-            text-decoration: none; font-weight: 700; text-align: center;
-            transition: 0.3s; background: var(--primary); color: #000;
-            margin-top: 10px;
+            display: block; width: 100%; padding: 20px; border-radius: 18px;
+            text-decoration: none; font-weight: 800; text-align: center;
+            transition: 0.3s; background: var(--primary); color: #020617;
+            text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn-msp:hover { background: #4ade80; transform: scale(1.02); }
+        .btn-msp:hover { background: #fff; transform: scale(1.03); }
 
         .whatsapp-float {
             position: fixed; bottom: 30px; right: 30px;
             background: #25d366; width: 65px; height: 65px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            z-index: 1000; box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             transition: 0.3s;
         }
-        .whatsapp-float:hover { transform: translateY(-5px) scale(1.1); }
+        .whatsapp-float:hover { transform: rotate(15deg) scale(1.1); }
 
-        footer { text-align: center; padding: 60px 0; border-top: 1px solid var(--border); font-size: 0.85rem; color: #475569; line-height: 1.8; }
+        footer { text-align: center; padding: 100px 0 50px; border-top: 1px solid var(--border); font-size: 0.85rem; color: #475569; }
         .footer-highlight { color: var(--text-main); font-weight: 600; }
     </style>
 </head>
 <body>
 
-    <div class="animated-bg"></div>
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="logo-fixed-bg" alt="JBrasil TI Background">
+    <div class="circuit-bg"></div>
+    <div class="circuit-lines"></div>
+
+    <div class="floating-header">
+        <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="floating-logo" alt="Logo">
+    </div>
 
     <div class="container">
-        <nav class="header-nav">
-            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo JBrasil" class="top-logo">
-        </nav>
-
         <header class="hero">
             <div class="location-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Balneário Piçarras e Vale do Itajaí
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Piçarras e Vale do Itajaí
             </div>
-            <h1>TI Gerenciada e <span>Ilimitada.</span></h1>
-            <p>Sua empresa livre de problemas técnicos. Suporte remoto constante e consultoria mensal para evolução do seu negócio.</p>
+            <h1>TI por <span>Assinatura</span></h1>
+            <p>Sua infraestrutura monitorada em tempo real com suporte ilimitado. Tecnologia de ponta para empresas que não podem parar.</p>
         </header>
 
         <div class="msp-grid">
             <div class="msp-card">
                 <h3>Start Remote</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Essencial para micro empresas.</p>
+                <p style="color: #64748b; font-size: 0.9rem;">Ideal para pequenos escritórios.</p>
                 <div class="price">R$ 697<span>/mês</span></div>
                 <ul class="feature-list">
                     <li class="li-ilimitado">Suporte Remoto Ilimitado</li>
                     <li>Até 03 Dispositivos Inclusos</li>
-                    <li>Antivírus Profissional</li>
-                    <li>Monitoramento 24/7</li>
-                    <li class="li-horas">Bônus: 04h de Suporte Presencial</li>
+                    <li>Antivírus Enterprise</li>
+                    <li>Monitoramento Ativo</li>
+                    <li class="li-horas">Bônus: 04h Suporte Presencial</li>
                 </ul>
-                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Start">Contratar Plano</a>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Start">Ativar Plano</a>
             </div>
 
-            <div class="msp-card" style="border-color: var(--primary); background: rgba(34, 197, 94, 0.08);">
-                <div style="color: var(--primary); font-size: 0.7rem; font-weight: 800; margin-bottom: 10px;">MAIS PROCURADO</div>
+            <div class="msp-card" style="border-color: var(--primary); background: rgba(34, 197, 94, 0.05);">
+                <div style="color: var(--primary); font-size: 0.7rem; font-weight: 900; margin-bottom: 15px; letter-spacing: 2px;">RECOMENDADO</div>
                 <h3>Business Care</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Foco em estabilidade e segurança.</p>
+                <p style="color: #64748b; font-size: 0.9rem;">Segurança e performance total.</p>
                 <div class="price">R$ 1.297<span>/mês</span></div>
                 <ul class="feature-list">
                     <li class="li-ilimitado">Suporte Remoto Ilimitado</li>
                     <li>Até 08 Dispositivos Inclusos</li>
-                    <li>Backup em Nuvem Gerenciado</li>
-                    <li>SLA Emergencial Prioritário</li>
-                    <li class="li-horas">Bônus: 10h de Suporte Presencial</li>
+                    <li>Cloud Backup Gerenciado</li>
+                    <li>SLA de Resposta Prioritário</li>
+                    <li class="li-horas">Bônus: 10h Suporte Presencial</li>
                 </ul>
-                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Business" style="background: #fff;">Contratar Plano</a>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Business" style="background: #fff;">Ativar Plano</a>
             </div>
 
             <div class="msp-card">
                 <h3>Enterprise Plus</h3>
-                <p style="color: #64748b; font-size: 0.9rem;">Gestão de TI nível corporativo.</p>
+                <p style="color: #64748b; font-size: 0.9rem;">Gestão completa de TI.</p>
                 <div class="price">R$ 2.497<span>/mês</span></div>
                 <ul class="feature-list">
                     <li class="li-ilimitado">Suporte Remoto Ilimitado</li>
                     <li>Até 20 Dispositivos Inclusos</li>
                     <li>Gestão de Firewall e Redes</li>
-                    <li>Inventário e Consultoria Estratégica</li>
-                    <li class="li-horas">Bônus: 25h de Suporte Presencial</li>
+                    <li>Consultoria de TI Mensal</li>
+                    <li class="li-horas">Bônus: 25h Suporte Presencial</li>
                 </ul>
-                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Enterprise">Falar com Especialista</a>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Enterprise">Falar com Consultor</a>
             </div>
         </div>
 
         <footer>
-            <p>© 2026 <span class="footer-highlight">JBrasil TI</span> — Soluções em Tecnologia</p>
-            <p>Atendimento especializado em <span class="footer-highlight">Balneário Piçarras e Vale do Itajaí.</span></p>
-            <p style="margin-top: 10px; opacity: 0.4;">CNPJ: 65.109.396/0001-55</p>
+            <p>© 2026 <span class="footer-highlight">JBrasil TI</span> — Tecnologia Gerenciada</p>
+            <p>Soluções em <span class="footer-highlight">Balneário Piçarras e Vale do Itajaí.</span></p>
+            <p style="margin-top: 15px; opacity: 0.3; font-size: 0.7rem;">CNPJ: 65.109.396/0001-55</p>
         </footer>
     </div>
 
@@ -214,10 +250,9 @@
             }).catch(e => {});
         }
         document.querySelectorAll('.btn-log').forEach(btn => {
-            btn.addEventListener('click', () => logToSheet(`CLICK_PLAN_${btn.getAttribute('data-plan')}`));
+            btn.addEventListener('click', () => logToSheet(`CLI_PLAN_${btn.getAttribute('data-plan')}`));
         });
         window.onload = () => logToSheet("SITE_OPEN");
     </script>
 </body>
 </html>
-
