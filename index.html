@@ -1,232 +1,190 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suporte de TI por Assinatura | JBrasil TI - Balneário Piçarras</title>
 
-<title>Suporte de TI por Assinatura em Balneário Piçarras | JBrasil TI</title>
+    <meta name="description" content="Suporte de TI por Assinatura em Balneário Piçarras SC e Vale do Itajaí. Planos mensais com horas inclusas, atendimento remoto e presencial para empresas.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<meta name="description" content="Suporte de TI por Assinatura em Balneário Piçarras SC e Vale do Itajaí. Planos mensais com 4h e 8h inclusas, suporte remoto e presencial para empresas.">
-<meta name="keywords" content="suporte de TI por assinatura Balneário Piçarras, suporte TI mensal Vale do Itajaí, TI empresarial SC, suporte TI Itajaí, suporte TI Navegantes">
+    <style>
+        :root {
+            --primary: #22c55e;
+            --primary-dark: #16a34a;
+            --bg-dark: #050505;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; line-height: 1.6; }
 
-<style>
-:root {
---primary:#22c55e;
---primary-dark:#16a34a;
---bg-dark:#050505;
---card-bg:rgba(15,23,42,0.6);
---border-color:rgba(255,255,255,0.08);
---text-main:#f8fafc;
---text-muted:#94a3b8;
-}
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.15), transparent 70%);
+            z-index: -2; pointer-events: none;
+        }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:var(--bg-dark);color:var(--text-main);line-height:1.6}
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; opacity: 0; animation: fadeIn 0.8s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
 
-.container{max-width:1200px;margin:auto;padding:0 24px}
+        header.hero { padding: 140px 0 60px; text-align: center; }
+        
+        .badge {
+            display: inline-block; padding: 6px 16px; background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 100px;
+            color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 24px;
+        }
 
-header{padding:120px 0 60px;text-align:center}
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; letter-spacing: -0.04em;
+            line-height: 1.1; margin-bottom: 24px;
+            background: linear-gradient(180deg, #fff 50%, #94a3b8 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
 
-h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:800;margin-bottom:20px}
-.subtitle{color:var(--text-muted);max-width:750px;margin:auto}
+        .subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 750px; margin: 0 auto 48px; }
 
-.plans-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:32px;
-margin:80px 0;
-}
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 80px; }
 
-.plan-card{
-background:var(--card-bg);
-border:1px solid var(--border-color);
-padding:40px;
-border-radius:24px;
-text-align:center;
-}
+        .plan-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 40px; border-radius: 24px; backdrop-filter: blur(12px);
+            transition: var(--transition); display: flex; flex-direction: column; text-align: center;
+        }
 
-.plan-card.featured{
-border:2px solid var(--primary);
-box-shadow:0 0 40px -15px rgba(34,197,94,0.4);
-}
+        .plan-card.featured { border: 2px solid var(--primary); box-shadow: 0 0 40px -15px rgba(34, 197, 94, 0.3); }
 
-.price{
-margin:24px 0;
-}
+        .price { margin: 24px 0; color: var(--text-main); display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+        .price .currency { font-size: 1.1rem; font-weight: 500; color: var(--text-muted); }
+        .price .amount { font-size: 3.8rem; font-weight: 800; color: var(--primary); letter-spacing: -2px; }
+        .price .period { font-size: 0.9rem; color: var(--text-muted); }
 
-.price .amount{
-font-size:3.5rem;
-font-weight:800;
-color:var(--primary);
-}
+        .hours-box { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 24px; }
+        .hours-box strong { color: var(--primary); font-size: 1.2rem; display: block; }
 
-.hours-box{
-background:rgba(34,197,94,0.1);
-border:1px solid rgba(34,197,94,0.3);
-padding:18px;
-border-radius:14px;
-margin-bottom:24px;
-}
+        .features-list { list-style: none; margin-bottom: 32px; flex-grow: 1; text-align: left; }
+        .features-list li { display: flex; align-items: center; margin-bottom: 14px; font-size: 0.95rem; color: #cbd5e1; }
+        .features-list li::before { content: "✓"; color: var(--primary); margin-right: 10px; font-weight: bold; }
 
-.hours-box strong{
-color:var(--primary);
-font-size:1.4rem;
-display:block;
-}
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 700; transition: var(--transition); }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-.features-list{
-list-style:none;
-margin-bottom:30px;
-text-align:left;
-}
+        footer { padding: 60px 0; text-align: center; border-top: 1px solid var(--border-color); opacity: 0.8; }
 
-.features-list li{
-margin-bottom:12px;
-}
-
-.features-list li::before{
-content:"✓ ";
-color:var(--primary);
-font-weight:bold;
-}
-
-.btn{
-display:inline-block;
-padding:16px 32px;
-background:var(--primary);
-color:#000;
-font-weight:700;
-border-radius:12px;
-text-decoration:none;
-transition:0.3s;
-}
-
-.btn:hover{
-transform:translateY(-3px);
-filter:brightness(1.1);
-}
-
-/* WhatsApp */
-.whatsapp-float{
-position:fixed;
-bottom:25px;
-right:25px;
-background:#25D366;
-width:60px;
-height:60px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-box-shadow:0 10px 25px rgba(0,0,0,0.3);
-z-index:9999;
-}
-
-/* Dialogflow posição esquerda */
-df-messenger{
---mw-messenger-button-bottom:30px;
---mw-messenger-button-left:30px;
---mw-messenger-button-right:auto;
-
---df-messenger-button-titlebar-color:#22c55e;
---df-messenger-chat-background-color:#050505;
---df-messenger-font-color:#ffffff;
---df-messenger-user-message:#16a34a;
---df-messenger-bot-message:#0f172a;
-
-font-family:'Inter',sans-serif;
-}
-
-footer{
-text-align:center;
-padding:60px 0;
-border-top:1px solid var(--border-color);
-color:var(--text-muted);
-}
-</style>
+        /* --- CHAT WIDGET CUSTOMIZADO --- */
+        .chat-widget { position: fixed; bottom: 25px; right: 25px; z-index: 9999; }
+        .chat-button { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(34,197,94,0.4); transition: 0.3s; }
+        .chat-button:hover { transform: scale(1.1); }
+        .chat-button span { font-size: 28px; }
+        .chat-box { width: 320px; background: #0f172a; border-radius: 20px; padding: 20px; position: absolute; bottom: 80px; right: 0; display: none; border: 1px solid var(--border-color); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .chat-box h4 { margin-bottom: 10px; color: var(--primary); }
+        .chat-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; }
+        .chat-box a { display: block; background: var(--primary); color: #000; text-align: center; padding: 12px; border-radius: 10px; font-weight: 600; text-decoration: none; margin-top: 10px; transition: 0.3s; }
+        
+        /* Ajuste do Dialogflow para não sobrepor */
+        df-messenger {
+            --df-messenger-button-bottom: 25px;
+            --df-messenger-button-left: 25px; /* Lado oposto ao widget principal */
+        }
+    </style>
 </head>
-
 <body>
+    <div class="bg-glow"></div>
+    
+    <div class="container">
+        <header class="hero">
+            <span class="badge">ASSINATURA DE TI • BALNEÁRIO PIÇARRAS E REGIÃO</span>
+            <h1>Suporte de TI Profissional por Assinatura Mensal</h1>
+            <p class="subtitle">Planos com horas técnicas inclusas para empresas em Balneário Piçarras, Itajaí, Penha e Navegantes. Tecnologia sem sustos.</p>
+        </header>
 
-<div class="container">
+        <section id="planos">
+            <div class="plans-grid">
+                <article class="plan-card">
+                    <h3 style="color: var(--primary); font-size: 1.3rem;">Assinatura Start</h3>
+                    <div class="price">
+                        <span class="currency">R$</span>
+                        <span class="amount">697</span>
+                        <span class="period">/mês</span>
+                    </div>
+                    <div class="hours-box">
+                        <strong>4 HORAS INCLUSAS</strong>
+                        <span style="font-size: 0.8rem; color: var(--text-muted)">Suporte Remoto e Prevenção</span>
+                    </div>
+                    <ul class="features-list">
+                        <li>Até 03 equipamentos monitorados</li>
+                        <li>Monitoramento Preventivo 24/7</li>
+                        <li>Suporte Remoto Ilimitado</li>
+                        <li>Gestão de Segurança</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1?text=Olá, quero assinar o plano Start" class="btn btn-primary">Assinar Start</a>
+                </article>
 
-<header>
-<h1>Suporte de TI por Assinatura em Balneário Piçarras</h1>
-<p class="subtitle">
-Planos mensais com horas técnicas inclusas para empresas do Vale do Itajaí.
-Atendimento remoto e presencial especializado.
-</p>
-</header>
+                <article class="plan-card featured">
+                    <h3 style="color: var(--primary); font-size: 1.3rem;">Assinatura Business</h3>
+                    <div class="price">
+                        <span class="currency">R$</span>
+                        <span class="amount">1.297</span>
+                        <span class="period">/mês</span>
+                    </div>
+                    <div class="hours-box">
+                        <strong>8 HORAS INCLUSAS</strong>
+                        <span style="font-size: 0.8rem; color: var(--text-muted)">Remoto e Presencial Programado</span>
+                    </div>
+                    <ul class="features-list">
+                        <li>Até 08 equipamentos monitorados</li>
+                        <li>Suporte Remoto e Presencial</li>
+                        <li>SLA Emergencial Prioritário</li>
+                        <li>Gestão de Redes e DVRs</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1?text=Olá, quero assinar o plano Business" class="btn btn-primary">Assinar Business</a>
+                </article>
+            </div>
+        </section>
 
-<section class="plans-grid">
+        <footer>
+            <p>© 2026 JBrasil TI — Especialista em Suporte por Assinatura</p>
+            <p style="font-size: 0.75rem; margin-top: 8px;">CNPJ: 65.109.396/0001-55 | Itapema e Balneário Piçarras</p>
+        </footer>
+    </div>
 
-<div class="plan-card">
-<h3>Plano Start</h3>
-<div class="price">
-<span class="amount">R$ 697</span>/mês
-</div>
+    <div class="chat-widget">
+        <div class="chat-box" id="chatBox">
+            <h4>👋 Atendimento JBrasil TI</h4>
+            <p>Precisa de Suporte de TI por Assinatura em Balneário Piçarras ou Vale do Itajaí?</p>
+            <a href="https://wa.me/message/UFGRJBVOAYWQN1?text=Olá, quero informações sobre Suporte de TI por Assinatura">
+                Falar no WhatsApp
+            </a>
+        </div>
+        <div class="chat-button" onclick="toggleChat()">
+            <span>💬</span>
+        </div>
+    </div>
 
-<div class="hours-box">
-<strong>4 HORAS MENSAIS INCLUSAS</strong>
-<span>Suporte Remoto e Manutenção Preventiva</span>
-</div>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      chat-title="JBrasil_TI"
+      agent-id="3c988f33-3ec0-4794-b3ce-86e399146c7f"
+      language-code="pt-br"
+    ></df-messenger>
 
-<ul class="features-list">
-<li>Até 03 equipamentos</li>
-<li>Monitoramento 24/7</li>
-<li>Gestão de antivírus</li>
-<li>Relatório mensal</li>
-</ul>
-
-<a href="https://wa.me/5547999999999?text=Olá,%20quero%20o%20Plano%20Start" class="btn">Assinar Start</a>
-</div>
-
-<div class="plan-card featured">
-<h3>Plano Business</h3>
-<div class="price">
-<span class="amount">R$ 1.297</span>/mês
-</div>
-
-<div class="hours-box">
-<strong>8 HORAS MENSAIS INCLUSAS</strong>
-<span>Remoto + Presencial Programado</span>
-</div>
-
-<ul class="features-list">
-<li>Até 08 equipamentos</li>
-<li>SLA prioritário</li>
-<li>Gestão de redes</li>
-<li>Backup estratégico</li>
-</ul>
-
-<a href="https://wa.me/5547999999999?text=Olá,%20quero%20o%20Plano%20Business" class="btn">Assinar Business</a>
-</div>
-
-</section>
-
-</div>
-
-<footer>
-© 2026 JBrasil TI — Suporte de TI por Assinatura  
-<br>
-Balneário Piçarras SC • Vale do Itajaí
-</footer>
-
-<!-- WhatsApp -->
-<a href="https://wa.me/5547999999999?text=Olá,%20preciso%20de%20Suporte%20de%20TI%20por%20Assinatura" target="_blank" class="whatsapp-float">
-<img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="28">
-</a>
-
-<!-- Dialogflow -->
-<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-
-<df-messenger
-chat-title="JBrasil TI"
-agent-id="3c988f33-3ec0-4794-b3ce-86e399146c7f"
-language-code="pt-br">
-</df-messenger>
-
+    <script>
+    function toggleChat() {
+        const box = document.getElementById("chatBox");
+        box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+    // Fecha o chat se clicar fora dele
+    window.onclick = function(event) {
+        if (!event.target.closest('.chat-widget')) {
+            document.getElementById("chatBox").style.display = "none";
+        }
+    }
+    </script>
 </body>
 </html>
