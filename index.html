@@ -3,382 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JBrasil TI | Suporte de TI por Assinatura</title>
-    <meta name="description" content="Suporte de TI empresarial com planos flexíveis, suporte remoto e gestão profissional para PMEs.">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+    <title>JBrasil TI | Suporte de TI Gerenciado em Itapema e Região</title>
+    <meta name="description" content="Suporte de TI especializado no Vale do Itajaí: Itapema, Balneário Camboriú e Itajaí. Atendimento remoto e presencial proativo para PMEs, farmácias e condomínios. Evite downtime com gestão de redes e segurança.">
+    <meta name="keywords" content="suporte TI Itapema, suporte TI Balneário Camboriú, suporte TI Itajaí, suporte TI Vale do Itajaí, TI gerenciado PMEs, suporte remoto TI, suporte presencial TI, gestão redes corporativas, segurança TI farmácias, TI condomínios">
+    <meta property="og:title" content="JBrasil TI | Suporte de TI Gerenciado em Itapema e Região">
+    <meta property="og:description" content="Suporte técnico proativo no Vale do Itajaí. Atendimento remoto e presencial para PMEs sem interrupções.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png">
+    <meta property="og:url" content="https://yourwebsite.com"> <!-- Substitua pela URL real -->
+    <meta name="robots" content="index, follow">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "JBrasil TI",
+      "image": "https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png",
+      "telephone": "+55-47-XXXX-XXXX", <!-- Adicione telefone real -->
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua Exemplo",
+        "addressLocality": "Itapema",
+        "addressRegion": "SC",
+        "postalCode": "XXXXX-XXX",
+        "addressCountry": "BR"
+      },
+      "priceRange": "$$",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "18:00"
+      }
+    }
+    </script>
+   
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #22c55e;
-            --primary-glow: rgba(34, 197, 94, 0.4);
-            --bg-dark: #000000;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --primary-dark: #16a34a;
+            --bg-dark: #050505;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         body {
             background-color: var(--bg-dark);
-            color: #ffffff;
+            color: var(--text-main);
             overflow-x: hidden;
             line-height: 1.6;
         }
-
+        /* Background Dinâmico Refinado */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.15), transparent 70%);
+            z-index: -2;
+            pointer-events: none;
+            animation: glowPulse 10s infinite alternate;
+        }
+        @keyframes glowPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
         .bg-logo-watermark {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 70vw;
-            max-width: 800px;
-            opacity: 0.03;
-            z-index: -1;
+            width: 60vw; max-width: 600px;
+            opacity: 0.02; z-index: -1;
             pointer-events: none;
-            filter: grayscale(1) brightness(1.5);
         }
-
-        .container { position: relative; z-index: 10; padding: 0 20px; }
-
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; opacity: 0; animation: fadeIn 0.8s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        /* HERO SECTION Melhorada para Conversão */
         header.hero {
-            padding: 140px 0 80px;
+            padding: 160px 0 80px;
             text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
         }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 100px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
             margin-bottom: 24px;
-            background: linear-gradient(180deg, #fff 0%, #22c55e 100%);
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, #fff 50%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .hero p {
-            font-size: 1.2rem;
+        .subtitle {
+            font-size: 1.25rem;
             color: var(--text-muted);
-            margin-bottom: 40px;
+            max-width: 700px;
+            margin: 0 auto 48px;
         }
-
+        /* BUTTONS Melhorados para CTA */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 10px 20px -10px rgba(34, 197, 94, 0.5);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(34, 197, 94, 0.6);
+        }
+        /* PRICING TOGGLE */
         .pricing-toggle {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
-            margin: 40px 0;
+            gap: 12px;
+            margin: 60px 0 40px;
         }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--card-bg);
+        .switch-container {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 4px;
+            border-radius: 50px;
             border: 1px solid var(--border-color);
-            transition: .4s;
-            border-radius: 34px;
         }
-
+        .switch {
+            position: relative; width: 48px; height: 24px;
+            cursor: pointer;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: #1e293b; border-radius: 20px; transition: .3s;
+        }
         .slider:before {
-            position: absolute; content: "";
-            height: 18px; width: 18px;
-            left: 4px; bottom: 3px;
-            background-color: var(--primary);
-            transition: .4s;
-            border-radius: 50%;
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background: var(--primary);
+            border-radius: 50%; transition: .3s;
         }
-
         input:checked + .slider:before { transform: translateX(24px); }
-
+        /* PLANS GRID Melhorada para SEO e Conversão */
         .plans-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
-            max-width: 1200px;
-            margin: 0 auto 100px;
+            margin-bottom: 100px;
         }
-
         .plan-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
             padding: 40px;
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(15px);
-            transition: 0.3s;
-        }
-
-        .plan-card h3 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 8px;
-            letter-spacing: -0.01em;
-            color: #fff;
-        }
-
-        .plan-card > p {
-            text-align: center;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .plan-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .plan-card.featured {
-            border: 2px solid var(--primary);
             position: relative;
         }
-
-        .price-container {
+        .plan-card:hover {
+            border-color: rgba(34, 197, 94, 0.4);
+            background: rgba(15, 23, 42, 0.8);
+        }
+        .plan-card.featured {
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 40px -15px rgba(34, 197, 94, 0.2);
+        }
+        .plan-card.featured::before {
+            content: "MAIS ESCOLHIDO";
+            position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: #000; font-size: 0.7rem;
+            font-weight: 800; padding: 4px 12px; border-radius: 20px;
+        }
+        .price { font-size: 3rem; font-weight: 800; margin: 16px 0; letter-spacing: -0.02em; }
+        .price span { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
+        .features-list { list-style: none; margin-bottom: 32px; flex-grow: 1; }
+        .features-list li {
+            display: flex; align-items: center;
+            margin-bottom: 12px; font-size: 0.95rem; color: #cbd5e1;
+        }
+        .features-list li::before {
+            content: "→"; color: var(--primary); margin-right: 10px; font-weight: bold;
+        }
+        /* Seção de Conteúdo para Marketing (Blog Teaser) */
+        .content-section {
+            padding: 80px 0;
             text-align: center;
-            margin: 20px 0;
-        }
-
-        .price { font-size: 3rem; font-weight: 800; }
-        .price .currency { 
-            font-size: 1.2rem; 
-            vertical-align: super; 
-            margin-right: 4px;
-            color: #fff;
-        }
-
-        .price span.period { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
-
-        .features { list-style: none; margin-bottom: 30px; flex-grow: 1; margin-top: 20px; }
-        .features li { margin-bottom: 12px; display: flex; align-items: center; color: #cbd5e1; font-size: 0.95rem; }
-        .features li::before { content: "✓"; color: var(--primary); margin-right: 10px; font-weight: bold; }
-
-        .btn {
-            display: block;
-            text-align: center;
-            padding: 16px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-        .btn-primary { background: var(--primary); color: #000; }
-        .btn-primary:hover { transform: scale(1.02); filter: brightness(1.1); }
-        .btn-outline { border: 1px solid var(--border-color); color: #fff; }
-
-        .faq-section { max-width: 800px; margin: 0 auto 100px; }
-        .faq-section h2 { text-align: center; margin-bottom: 40px; }
-        details {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            padding: 20px;
-        }
-        summary { font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-        summary::after { content: "+"; color: var(--primary); }
-
-        footer {
-            text-align: center;
-            padding: 60px 20px;
             border-top: 1px solid var(--border-color);
-            font-size: 0.8rem;
-            color: var(--text-muted);
         }
-        .footer-info { margin-top: 10px; opacity: 0.8; letter-spacing: 0.05em; }
-
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .content-card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 16px;
+            transition: var(--transition);
+        }
+        .content-card:hover {
+            transform: translateY(-4px);
+        }
+        .content-card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        /* FAQ Melhorada para GEO (Respostas Conversacionais) */
+        .faq-section { max-width: 800px; margin: 0 auto 100px; border-top: 1px solid var(--border-color); padding-top: 80px; }
+        .faq-section h2 { text-align: center; margin-bottom: 40px; font-size: 2rem; }
+        details {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+            cursor: pointer;
+        }
+        summary {
+            list-style: none; font-weight: 600; font-size: 1.1rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: "+"; color: var(--primary); font-size: 1.4rem; transition: transform 0.3s; }
+        details[open] summary::after { transform: rotate(45deg); }
+        details p { padding-top: 12px; color: var(--text-muted); font-size: 1rem; }
+        /* Lead Capture Form (para Nutrição de Leads) */
+        .lead-form {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            max-width: 600px;
+            margin: 0 auto 100px;
+            text-align: center;
+        }
+        .lead-form h2 { margin-bottom: 24px; }
+        .lead-form input, .lead-form button { width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); }
+        .lead-form button { background: var(--primary); color: #000; border: none; cursor: pointer; }
+        /* FOOTER Melhorado para SEO */
+        footer {
+            padding: 60px 0; text-align: center; border-top: 1px solid var(--border-color);
+        }
+        .footer-logo { width: 100px; opacity: 0.3; margin-bottom: 20px; }
+        .footer-links { margin-top: 16px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; margin: 0 8px; }
         .whatsapp-float {
-            position: fixed;
-            bottom: 30px; right: 30px;
-            background: #25d366;
-            width: 60px; height: 60px;
-            border-radius: 50%;
+            position: fixed; bottom: 32px; right: 32px;
+            background: #25d366; width: 56px; height: 56px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-            transition: 0.3s;
+            z-index: 1000; transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
         }
-        .whatsapp-float:hover { transform: scale(1.1); }
-
+        .whatsapp-float:hover { transform: scale(1.1) rotate(5deg); }
+        /* Customização para Dialogflow Messenger - Ícone à direita, acima do WhatsApp, e mais variáveis */
+        df-messenger {
+            --mw-messenger-button-bottom: 100px; /* Posição acima do WhatsApp */
+            --mw-messenger-button-right: 32px; /* Manter à direita */
+            z-index: 999;
+            --df-messenger-bot-message: var(--card-bg); /* Cor de fundo das mensagens do bot */
+            --df-messenger-button-titlebar-color: var(--primary); /* Cor da barra de título */
+            --df-messenger-chat-background-color: var(--bg-dark); /* Fundo do chat */
+            --df-messenger-font-color: var(--text-main); /* Cor da fonte */
+            --df-messenger-send-icon: var(--primary); /* Ícone de envio */
+            --df-messenger-user-message: var(--primary-dark); /* Cor de fundo das mensagens do usuário */
+            --df-messenger-font-family: 'Inter', sans-serif; /* Fonte personalizada */
+            --df-messenger-font-size: 14px; /* Tamanho da fonte */
+            --df-messenger-input-background-color: var(--card-bg); /* Fundo do input */
+            --df-messenger-input-font-color: var(--text-main); /* Cor da fonte do input */
+            --df-messenger-input-placeholder-font-color: var(--text-muted); /* Placeholder */
+            --df-messenger-minimized-chat-close-icon-color: var(--text-main); /* Ícone de fechar minimizado */
+        }
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
+            header.hero { padding: 120px 0 60px; }
+            .hero h1 { font-size: 2.5rem; }
             .plans-grid { grid-template-columns: 1fr; }
+            .content-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-
-    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="bg-logo-watermark" alt="Logo de Fundo">
-
+    <div class="bg-glow"></div>
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="bg-logo-watermark" alt="Logotipo JBrasil TI em fundo">
     <div class="container">
         <header class="hero">
-            <h1>Sua TI no Piloto Automático</h1>
-            <p>Suporte técnico especializado por assinatura para Condomínios, Farmácias e PMEs em todo o Brasil.</p>
-
-            <div class="pricing-toggle">
-                <span>Mensal</span>
-                <label class="switch">
-                    <input type="checkbox" id="billing-toggle">
-                    <span class="slider"></span>
-                </label>
-                <span>Anual</span>
-                <span style="color: var(--primary); font-size: 0.8rem; font-weight: 700;">(20% OFF)</span>
+            <span class="badge">Itapema • Balneário Camboriú • Itajaí</span>
+            <h1>TI Sem Interrupções para Sua Empresa Escalar no Vale do Itajaí</h1>
+            <p class="subtitle">Suporte técnico proativo que o Vale do Itajaí confia. Gestão de redes, segurança e atendimento imediato remoto ou presencial para PMEs, farmácias e condomínios.</p>
+            <div class="cta-buttons">
+                <a href="#planos" class="btn btn-primary">Conhecer Planos Gerenciados</a>
             </div>
         </header>
-
-        <main class="plans-grid">
-            <div class="plan-card">
-                <h3>Start Remote</h3>
-                <p>Ideal para micro-negócios e consultórios.</p>
-                <div class="price-container">
-                    <div class="price"><span class="currency">R$</span><span id="price-start">697</span><span class="period">/mês</span></div>
+        <section id="planos">
+            <div class="pricing-toggle">
+                <span>Mensal</span>
+                <div class="switch-container">
+                    <label class="switch">
+                        <input type="checkbox" id="billing-toggle">
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <ul class="features">
-                    <li>Até 03 equipamentos</li>
-                    <li>Suporte Remoto Ilimitado</li>
-                    <li>Gestão de Antivírus</li>
-                    <li>Ideal para 01 Farmácia ou Loja</li>
-                </ul>
-                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" rel="noopener" class="btn btn-outline" onclick="logClick('Plano Start')">Contratar</a>
+                <span>Anual <span style="color: var(--primary); font-weight: 700;">(20% OFF)</span></span>
             </div>
-
-            <div class="plan-card featured">
-                <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--primary); color:#000; padding:2px 12px; border-radius:20px; font-size:10px; font-weight:800;">MAIS ESCOLHIDO</div>
-                <h3>Business Care</h3>
-                <p>Foco em Condomínios e Empresas em crescimento.</p>
-                <div class="price-container">
-                    <div class="price"><span class="currency">R$</span><span id="price-business">1.297</span><span class="period">/mês</span></div>
+            <div class="plans-grid">
+                <article class="plan-card">
+                    <h3 style="color: var(--primary); font-size: 1.2rem;">Start Remote</h3>
+                    <div class="price">R$ <span id="price-start">697</span><span class="period">/mês</span></div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Eficiência remota para microempresas no Vale do Itajaí.</p>
+                    <ul class="features-list">
+                        <li>Até 03 equipamentos monitorados</li>
+                        <li>Suporte Remoto 8x5 ilimitado</li>
+                        <li>Segurança Gerenciada Básica</li>
+                        <li>Tempo de resposta rápido para PMEs</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1?text=Quero%20assinar%20o%20plano%20Start" class="btn btn-primary">Assinar Start</a>
+                </article>
+                <article class="plan-card featured">
+                    <h3 style="color: var(--primary); font-size: 1.2rem;">Business Care</h3>
+                    <div class="price">R$ <span id="price-business">1.297</span><span class="period">/mês</span></div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Padrão ouro para PMEs em escala no Vale do Itajaí.</p>
+                    <ul class="features-list">
+                        <li>Até 08 equipamentos monitorados</li>
+                        <li>Suporte Remoto e Presencial</li>
+                        <li>SLA Emergencial 03h</li>
+                        <li>Gestão Avançada de Redes e DVRs</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1?text=Quero%20assinar%20o%20plano%20Business" class="btn btn-primary">Assinar Business</a>
+                </article>
+            </div>
+        </section>
+        <section class="content-section">
+            <h2>Dicas de TI para Seu Negócio</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <h3>Como Evitar Downtime em Farmácias</h3>
+                    <p>Descubra estratégias proativas para manter sua farmácia online 24/7 com suporte TI gerenciado.</p>
+                    <a href="#contact" class="btn btn-primary" style="margin-top: 16px; font-size: 0.9rem;">Saiba Mais</a>
                 </div>
-                <ul class="features">
-                    <li>Até 08 equipamentos</li>
-                    <li>Gestão de Câmeras e DVRs</li>
-                    <li>Suporte a Sistemas de Gestão</li>
-                    <li>SLA Emergencial 03h</li>
-                </ul>
-                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" rel="noopener" class="btn btn-primary" onclick="logClick('Plano Business')">Assinar Agora</a>
-            </div>
-
-            <div class="plan-card">
-                <h3>Enterprise Plus</h3>
-                <p>Gestão total para Redes e Condomínios de Grande Porte.</p>
-                <div class="price-container">
-                    <div class="price"><span class="currency">R$</span><span id="price-enterprise">2.497</span><span class="period">/mês</span></div>
+                <div class="content-card">
+                    <h3>Gestão de Redes para Condomínios</h3>
+                    <p>Otimize a segurança e performance de DVRs e redes em condomínios com nosso suporte especializado.</p>
+                    <a href="#contact" class="btn btn-primary" style="margin-top: 16px; font-size: 0.9rem;">Saiba Mais</a>
                 </div>
-                <ul class="features">
-                    <li>Até 20 equipamentos</li>
-                    <li>Monitoramento Ativo 24/7</li>
-                    <li>Suporte a Interfonia IP e Servidores</li>
-                    <li>Backup em Nuvem Incluso</li>
-                </ul>
-                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" rel="noopener" class="btn btn-outline" onclick="logClick('Plano Enterprise')">Solicitar Proposta</a>
+                <div class="content-card">
+                    <h3>TI Escalável para PMEs</h3>
+                    <p>Cresça sem preocupações: custos fixos e suporte personalizado para empresas no Vale do Itajaí.</p>
+                    <a href="#contact" class="btn btn-primary" style="margin-top: 16px; font-size: 0.9rem;">Saiba Mais</a>
+                </div>
             </div>
-        </main>
-
+        </section>
         <section class="faq-section">
-            <h2>Dúvidas Frequentes</h2>
-            
+            <h2>Dúvidas Frequentes sobre Suporte TI no Vale do Itajaí</h2>
             <details>
-                <summary>A JBrasil atende sistemas de farmácias (Linx, Softpharma, etc)?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">Sim. Atuamos como ponte entre a sua farmácia e a softwarehouse, resolvendo problemas de banco de dados, instalação de terminais e configuração de impressoras fiscais.</div>
+                <summary>Vocês atendem presencialmente em Itapema, Balneário Camboriú ou Itajaí? <span></span></summary>
+                <p>Sim! Oferecemos atendimento presencial proativo em Itapema, Balneário Camboriú, Itajaí, Camboriú, Porto Belo e toda a região do Vale do Itajaí. Nosso suporte remoto cobre todo o Brasil para máxima eficiência.</p>
             </details>
-
             <details>
-                <summary>Como o suporte auxilia Condomínios?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">Cuidamos de toda a infraestrutura do síndico e da administração: desde a manutenção do acesso remoto das câmeras (CFTV) até a configuração da rede Wi-Fi e interfonia IP das portarias.</div>
+                <summary>Como funciona o desconto de 20% no plano anual de suporte TI? <span></span></summary>
+                <p>No plano anual, você economiza 20% no total, ideal para PMEs que buscam estabilidade financeira e suporte contínuo sem surpresas. Perfeito para escalar seu negócio no Vale do Itajaí.</p>
             </details>
-
             <details>
-                <summary>O atendimento remoto é seguro para dados sensíveis?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">Totalmente. Utilizamos ferramentas de acesso criptografadas e gravamos os acessos para auditoria, garantindo conformidade com a LGPD para clínicas e escritórios.</div>
-            </details>
-
-            <details>
-                <summary>Existe fidelidade no contrato?</summary>
-                <div style="padding-top:15px; color:var(--text-muted);">Nossos planos padrão têm fidelidade mínima de 3 meses. No plano anual, você recebe 20% de desconto e congela o preço por 12 meses.</div>
+                <summary>Qual o foco da JBrasil TI em tipos de empresas? <span></span></summary>
+                <p>Focamos em PMEs em crescimento, farmácias, condomínios e escritórios no Vale do Itajaí que precisam de TI confiável para evitar interrupções e impulsionar operações.</p>
             </details>
         </section>
-
+        <section class="lead-form" id="contact">
+            <h2>Receba Dicas Exclusivas de TI</h2>
+            <p>Assine nossa newsletter para conteúdos sobre segurança TI e gestão de redes no Vale do Itajaí.</p>
+            <form action="/subscribe" method="post"> <!-- Integre com backend real -->
+                <input type="email" placeholder="Seu e-mail" required>
+                <input type="text" placeholder="Seu nome" required>
+                <button type="submit" class="btn btn-primary">Assinar Gratuitamente</button>
+            </form>
+        </section>
         <footer>
-            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" style="width:100px; opacity:0.3; margin-bottom:20px;">
-            <p>© 2026 JBrasil TI — Especialistas em Suporte de TI por Assinatura</p>
-            <div class="footer-info">CNPJ: 65.109.396/0001-55</div>
+            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="footer-logo" alt="Logotipo JBrasil TI">
+            <p>© 2026 JBrasil TI — Suporte Gerenciado de TI no Vale do Itajaí</p>
+            <p style="font-size: 0.75rem; margin-top: 8px;">CNPJ: 65.109.396/0001-55 | Itapema - SC</p>
+            <div class="footer-links">
+                <a href="/blog">Blog</a>
+                <a href="/contato">Contato</a>
+                <a href="/termos">Termos de Serviço</a>
+            </div>
         </footer>
     </div>
-
-    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" rel="noopener" class="whatsapp-float" onclick="logClick('WhatsApp Flutuante')">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="30" style="filter: brightness(0);">
+    <a href="https://wa.me/message/UFGRJBVOAYWQN1?text=Olá%2C%20quero%20saber%20mais%20sobre%20suporte%20TI" target="_blank" class="whatsapp-float" aria-label="Falar no WhatsApp">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="28" style="filter: brightness(0);" alt="Ícone WhatsApp">
     </a>
-
     <script>
         const API_URL = "https://jbrasillabs-1.onrender.com";
-        let userIP = "0.0.0.0";
-
-        async function wakeUpRender() {
-            try {
-                await fetch(`${API_URL}/`, { mode: 'no-cors' });
-            } catch (e) {}
-        }
-
-        async function initAnalytics() {
-            wakeUpRender();
-            try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                userIP = ipData.ip;
-                sendLog(`[SaaS] VISIT_LOG | IP: ${userIP}`);
-            } catch (e) {}
-        }
-
-        async function sendLog(msg) {
-            try {
-                await fetch(`${API_URL}/log`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ entry: msg })
-                });
-            } catch(e) {}
-        }
-
-        function logClick(origem) {
-            sendLog(`[SaaS] CTA_CLICK | ORIGEM: ${origem} | IP: ${userIP}`);
-        }
-
-        // CORREÇÃO DO BUG DO SWITCH DE PREÇO
         const toggle = document.getElementById('billing-toggle');
+       
         const prices = {
-            start: { m: 697, y: 557 },
-            business: { m: 1297, y: 1037 },
-            enterprise: { m: 2497, y: 1997 }
+            start: { monthly: 697, annual: 557 },
+            business: { monthly: 1297, annual: 1037 }
         };
-
         toggle.addEventListener('change', () => {
-            const isY = toggle.checked;
-            document.getElementById('price-start').innerText = isY ? prices.start.y : prices.start.m;
-            document.getElementById('price-business').innerText = isY ? prices.business.y : prices.business.m;
-            document.getElementById('price-enterprise').innerText = isY ? prices.enterprise.y : prices.enterprise.m;
-            
-            const p = document.querySelectorAll('.period');
-            p.forEach(el => el.innerText = isY ? '/mês no anual' : '/mês');
-            
-            sendLog(`[SaaS] BILLING_SWITCH: ${isY ? 'ANUAL' : 'MENSAL'}`);
+            const isAnnual = toggle.checked;
+            document.getElementById('price-start').innerText = isAnnual ? prices.start.annual : prices.start.monthly;
+            document.getElementById('price-business').innerText = isAnnual ? prices.business.annual : prices.business.monthly;
+            document.querySelectorAll('.period').forEach(el => el.innerText = isAnnual ? '/mês (anual)' : '/mês');
         });
-
-        setInterval(wakeUpRender, 300000);
-        initAnalytics();
+        async function wakeUp() { try { await fetch(`${API_URL}/`, { mode: 'no-cors' }); } catch(e) {} }
+        setInterval(wakeUp, 300000);
+        wakeUp();
     </script>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      chat-title="JBrasil_TI"
+      agent-id="3c988f33-3ec0-4794-b3ce-86e399146c7f"
+      language-code="pt-br"
+    ></df-messenger>
 </body>
 </html>
