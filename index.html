@@ -27,7 +27,6 @@
             line-height: 1.6;
         }
 
-        /* Logo Watermark de Fundo */
         .bg-logo-watermark {
             position: fixed;
             top: 50%;
@@ -43,7 +42,6 @@
 
         .container { position: relative; z-index: 10; padding: 0 20px; }
 
-        /* Hero Section */
         header.hero {
             padding: 140px 0 80px;
             text-align: center;
@@ -67,7 +65,6 @@
             margin-bottom: 40px;
         }
 
-        /* Toggle de Preço */
         .pricing-toggle {
             display: flex;
             align-items: center;
@@ -106,7 +103,6 @@
 
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* Grid de Planos */
         .plans-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -158,8 +154,6 @@
         }
 
         .price { font-size: 3rem; font-weight: 800; }
-        
-        /* AJUSTE DO R$ AQUI */
         .price .currency { 
             font-size: 1.2rem; 
             vertical-align: super; 
@@ -173,7 +167,6 @@
         .features li { margin-bottom: 12px; display: flex; align-items: center; color: #cbd5e1; font-size: 0.95rem; }
         .features li::before { content: "✓"; color: var(--primary); margin-right: 10px; font-weight: bold; }
 
-        /* Botões */
         .btn {
             display: block;
             text-align: center;
@@ -187,7 +180,6 @@
         .btn-primary:hover { transform: scale(1.02); filter: brightness(1.1); }
         .btn-outline { border: 1px solid var(--border-color); color: #fff; }
 
-        /* FAQ Section */
         .faq-section { max-width: 800px; margin: 0 auto 100px; }
         .faq-section h2 { text-align: center; margin-bottom: 40px; }
         details {
@@ -200,7 +192,6 @@
         summary { font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
         summary::after { content: "+"; color: var(--primary); }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 60px 20px;
@@ -210,7 +201,6 @@
         }
         .footer-info { margin-top: 10px; opacity: 0.8; letter-spacing: 0.05em; }
 
-        /* WhatsApp */
         .whatsapp-float {
             position: fixed;
             bottom: 30px; right: 30px;
@@ -235,7 +225,6 @@
     <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="bg-logo-watermark" alt="Logo de Fundo">
 
     <div class="container">
-        
         <header class="hero">
             <h1>Sua TI no Piloto Automático</h1>
             <p>Suporte técnico especializado por assinatura. Mais estabilidade, menos custos e atendimento em todo o Brasil.</p>
@@ -316,7 +305,6 @@
             <p>© 2026 JBrasil TI — Suporte de TI por Assinatura Brasil</p>
             <div class="footer-info">CNPJ: 65.109.396/0001-55</div>
         </footer>
-
     </div>
 
     <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" rel="noopener" class="whatsapp-float" onclick="logClick('WhatsApp Flutuante')">
@@ -324,10 +312,25 @@
     </a>
 
     <script>
+        const API_URL = "https://jbrasillabs-1.onrender.com"; // URL do seu Web Service da Evolution
         let userIP = "0.0.0.0";
         let userLoc = "BR";
 
+        // Função para manter o Render acordado (Ping)
+        async function wakeUpRender() {
+            try {
+                // Tenta acessar a rota de saúde ou a raiz da API para forçar o spin-up
+                await fetch(`${API_URL}/`, { mode: 'no-cors' });
+                console.log("Wake-up signal sent to Evolution API");
+            } catch (e) {
+                console.log("Wake-up call error.");
+            }
+        }
+
         async function initAnalytics() {
+            // Acorda a API imediatamente ao carregar
+            wakeUpRender();
+            
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
@@ -346,7 +349,8 @@
         async function sendLog(msg) {
             console.log("%c" + msg, "color: #22c55e; font-weight: bold;");
             try {
-                await fetch('https://jbrasillabs-1.onrender.com/log', {
+                // Envia logs para a API, mantendo-a ativa com tráfego
+                await fetch(`${API_URL}/log`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ entry: msg })
@@ -361,8 +365,7 @@
         const toggle = document.getElementById('billing-toggle');
         const prices = {
             start: { m: 697, y: 557 },
-            business: { m: 1297, y: 1037 },
-            enterprise: { m: 2497, y: 1997 }
+            business: { m: 1297, y: 1037 },<br>            enterprise: { m: 2497, y: 1997 }
         };
 
         toggle.addEventListener('change', () => {
@@ -376,6 +379,9 @@
             
             sendLog(`[SaaS] BILLING_SWITCH: ${isY ? 'ANUAL' : 'MENSAL'}`);
         });
+
+        // Loop para manter o Render ativo enquanto a aba estiver aberta (a cada 5 min)
+        setInterval(wakeUpRender, 300000);
 
         initAnalytics();
     </script>
