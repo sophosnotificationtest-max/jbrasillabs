@@ -57,14 +57,31 @@
         summary { list-style: none; font-weight: 600; display: flex; justify-content: space-between; }
         summary::after { content: "+"; color: var(--primary); }
 
-        footer { padding: 40px 0; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
-
         /* WIDGET CHAT */
         .chat-widget { position: fixed; bottom: 25px; right: 25px; z-index: 9999; }
-        .chat-button { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(34,197,94,0.4); transition: 0.3s; }
+        .chat-button { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(34,197,94,0.4); }
         .chat-box { width: 280px; background: #0f172a; border-radius: 20px; padding: 20px; position: absolute; bottom: 80px; right: 0; display: none; border: 1px solid var(--border-color); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
         .chat-box h4 { color: var(--primary); margin-bottom: 8px; }
         .chat-box a { display: block; background: var(--primary); color: #000; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 10px; }
+
+        /* POP-UP COOKIES */
+        .cookie-banner {
+            position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 600px;
+            background: #111827; border: 1px solid var(--border-color);
+            padding: 20px; border-radius: 16px; z-index: 10000;
+            display: flex; align-items: center; gap: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transform: translateY(150%); transition: transform 0.5s ease-in-out;
+        }
+        .cookie-banner.active { transform: translateY(0); }
+        .cookie-text { font-size: 0.9rem; color: var(--text-muted); flex: 1; }
+        .cookie-btn { background: var(--primary); color: #000; padding: 8px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+        @media (max-width: 600px) {
+            .cookie-banner { flex-direction: column; text-align: center; bottom: 10px; left: 10px; right: 10px; }
+        }
+
+        footer { padding: 40px 0; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -95,7 +112,7 @@
                         <li>Monitoramento 24/7</li>
                         <li>Suporte Remoto</li>
                     </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn btn-primary btn-log" data-plan="Start">Assinar Start</a>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-primary btn-log" data-plan="Start">Assinar Start</a>
                 </article>
 
                 <article class="plan-card featured">
@@ -107,7 +124,7 @@
                         <li>Suporte Remoto e Presencial</li>
                         <li>SLA Prioritário</li>
                     </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn btn-primary btn-log" data-plan="Business">Assinar Business</a>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-primary btn-log" data-plan="Business">Assinar Business</a>
                 </article>
             </div>
         </section>
@@ -115,7 +132,6 @@
         <section class="faq-section">
             <h2>Dúvidas Frequentes</h2>
             <details><summary>Como funcionam as horas?<span></span></summary><p>As horas são utilizadas para atendimentos solicitados ou manutenções preventivas mensais.</p></details>
-            <details><summary>Qual a abrangência do atendimento?<span></span></summary><p>Atendemos presencialmente em Balneário Piçarras, Penha, Navegantes e Itajaí.</p></details>
         </section>
 
         <footer>
@@ -123,11 +139,16 @@
         </footer>
     </div>
 
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-text">Nós utilizamos cookies para melhorar sua experiência e registrar seu interesse em nossos serviços de TI.</div>
+        <button class="cookie-btn" onclick="acceptCookies()">Aceitar</button>
+    </div>
+
     <div class="chat-widget">
         <div class="chat-box" id="chatBox">
             <h4>👋 JBrasil TI</h4>
             <p>Dúvidas sobre os planos?</p>
-            <a href="https://wa.me/message/UFGRJBVOAYWQN1" class="btn-log" data-plan="WhatsApp-Floating">Falar no WhatsApp</a>
+            <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-log" data-plan="WhatsApp-Floating">Falar no WhatsApp</a>
         </div>
         <div class="chat-button" onclick="toggleChat()"><span>💬</span></div>
     </div>
@@ -136,25 +157,24 @@
         const API_URL = "https://jbrasillabs-1.onrender.com/log";
         const billingToggle = document.getElementById('billing-toggle');
 
-        // FUNÇÃO DE LOG (PADRÃO ANTIGO QUE FUNCIONA)
+        // LOGS
         function logToSheet(action) {
             const entryText = `[TI-ASSINATURA] ${action} | ${new Date().toLocaleString("pt-BR")}`;
-            
             fetch(API_URL, { 
                 method: 'POST', 
                 headers: {'Content-Type': 'application/json'}, 
                 body: JSON.stringify({ entry: entryText }) 
-            }).catch(e => console.log("Erro log"));
+            }).catch(e => {});
         }
 
-        // Monitor de cliques nos botões
+        // BOTOES
         document.querySelectorAll('.btn-log').forEach(btn => {
             btn.addEventListener('click', () => {
                 logToSheet(`CLIQUE_BOTAO: ${btn.getAttribute('data-plan')}`);
             });
         });
 
-        // Toggle de Preços
+        // PRECOS
         const prices = { start: { m: 697, a: 557 }, business: { m: 1297, a: 1037 } };
         billingToggle.addEventListener('change', () => {
             const isA = billingToggle.checked;
@@ -164,15 +184,27 @@
             logToSheet(isA ? "MUDOU_PARA_ANUAL" : "MUDOU_PARA_MENSUAL");
         });
 
-        // Chat Toggle
+        // COOKIES
+        function acceptCookies() {
+            localStorage.setItem("cookiesAccepted", "true");
+            document.getElementById("cookie-banner").classList.remove("active");
+            logToSheet("ACEITOU_COOKIES");
+        }
+
+        // CHAT
         function toggleChat() {
             const box = document.getElementById("chatBox");
             box.style.display = box.style.display === "block" ? "none" : "block";
         }
 
-        // Keep-alive e Log Inicial
+        // LOAD
         window.addEventListener('load', () => {
             logToSheet("PAGINA_CARREGADA");
+            if (!localStorage.getItem("cookiesAccepted")) {
+                setTimeout(() => {
+                    document.getElementById("cookie-banner").classList.add("active");
+                }, 1000);
+            }
             setInterval(() => { fetch(API_URL, { method: 'POST', mode: 'no-cors' }).catch(e=>{}); }, 300000);
         });
     </script>
