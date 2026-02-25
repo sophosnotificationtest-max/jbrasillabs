@@ -3,247 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBrasil TI | MSPtech</title>
     
-    <title>JBrasil TI | Suporte de TI Profissional por Assinatura</title>
-    <meta name="description" content="Planos de suporte de TI profissional para empresas em Balneário Piçarras e região. Suporte remoto e presencial com horas inclusas e 20% de desconto no plano anual.">
-    <meta name="keywords" content="suporte ti, piçarras, ti por assinatura, consultoria ti, itajaí, suporte remoto">
-    <link rel="canonical" href="https://jbrasil.com.br" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #22c55e;
-            --primary-dark: #16a34a;
-            --bg-dark: #050505;
-            --card-bg: rgba(15, 23, 42, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.45);
+            --border: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            line-height: 1.6; 
-            overflow-x: hidden; 
+        /* FUNDO ANIMADO ESTILO MSP */
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
             min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* LOGO NO FUNDO (Background Watermark) */
-        body::before {
-            content: "JBRASIL";
+        .animated-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: linear-gradient(125deg, #020617 0%, #052e16 50%, #020617 100%);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* LOGO FIXO NO CENTRO (Imóvel ao Scroll) */
+        .logo-fixed-bg {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            font-size: 15vw;
-            font-weight: 900;
-            color: rgba(34, 197, 94, 0.03); /* Bem sutil para não atrapalhar */
+            transform: translate(-50%, -50%);
+            width: 40vw;
+            max-width: 550px;
+            opacity: 0.05;
             z-index: -1;
-            white-space: nowrap;
             pointer-events: none;
         }
 
-        .bg-glow { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.15), transparent 70%); 
-            z-index: -2; pointer-events: none; 
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; }
+
+        /* NAV */
+        .header-nav { padding: 40px 0; text-align: center; }
+        .top-logo { width: 150px; filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.3)); }
+
+        /* HERO */
+        .hero { text-align: center; padding: 40px 0 80px; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; letter-spacing: -2px; line-height: 1; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { color: #94a3b8; font-size: 1.2rem; max-width: 700px; margin: 25px auto; font-weight: 300; }
+
+        /* GRID MSP */
+        .msp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 100px; }
+        
+        .msp-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(12px);
+            transition: all 0.4s ease;
+            position: relative;
         }
 
-        .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; position: relative; }
-        
-        header.hero { padding: 80px 0 40px; text-align: center; }
-        .badge { display: inline-block; padding: 6px 16px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 100px; color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 24px; }
-        h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 20px; background: linear-gradient(180deg, #fff 50%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .msp-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
 
-        /* TOGGLE ANUAL */
-        .pricing-toggle { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 40px; }
-        .switch-container { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 50px; border: 1px solid var(--border-color); }
-        .switch { position: relative; width: 48px; height: 24px; cursor: pointer; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #1e293b; border-radius: 20px; transition: .3s; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--primary); border-radius: 50%; transition: .3s; }
-        input:checked + .slider:before { transform: translateX(24px); }
+        .msp-card h3 { font-size: 1.5rem; color: var(--primary); margin-bottom: 15px; }
+        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; }
+        .price span { font-size: 1rem; color: #64748b; font-weight: 400; }
 
-        /* CARDS */
-        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 80px; align-items: stretch; }
-        .plan-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 32px; border-radius: 24px; backdrop-filter: blur(12px); text-align: center; display: flex; flex-direction: column; transition: 0.3s; position: relative; }
-        .plan-card.featured { border: 2px solid var(--primary); transform: scale(1.05); z-index: 1; box-shadow: 0 0 40px -15px rgba(34, 197, 94, 0.3); }
-        
-        .most-chosen { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 4px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .feature-list { list-style: none; margin: 30px 0; }
+        .feature-list li { margin-bottom: 12px; font-size: 0.95rem; color: #cbd5e1; display: flex; align-items: center; gap: 10px; }
+        .feature-list li::before { content: '✓'; color: var(--primary); font-weight: 900; }
 
-        .plan-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
-        .plan-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; min-height: 45px; }
-        
-        .price { margin-bottom: 24px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
-        .price .amount { font-size: 2.8rem; font-weight: 800; color: var(--primary); }
-        
-        .features-list { list-style: none; margin-bottom: 30px; text-align: left; flex-grow: 1; border-top: 1px solid var(--border-color); padding-top: 20px; }
-        .features-list li { margin-bottom: 12px; font-size: 0.9rem; display: flex; align-items: center; color: #cbd5e1; }
-        .features-list li::before { content: "✓"; color: var(--primary); margin-right: 10px; font-weight: bold; }
+        .btn-msp {
+            display: block; width: 100%; padding: 16px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; text-align: center;
+            transition: 0.3s; background: var(--primary); color: #000;
+        }
 
-        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.3s; width: 100%; border: none; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: #000; }
-        .btn-outline { border: 1px solid var(--border-color); color: #fff; }
-        .btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        /* WHATSAPP FLOAT */
+        .whatsapp-float {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #25d366; width: 65px; height: 65px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); }
 
-        /* FAQ */
-        .faq-section { max-width: 800px; margin: 0 auto 100px; border-top: 1px solid var(--border-color); padding-top: 60px; }
-        details { border-bottom: 1px solid var(--border-color); padding: 16px 0; cursor: pointer; }
-        summary { list-style: none; font-weight: 600; display: flex; justify-content: space-between; }
-        summary::after { content: "+"; color: var(--primary); }
+        /* COOKIE BANNER */
+        .cookie-banner {
+            position: fixed; bottom: 25px; left: 25px; right: 25px; max-width: 400px;
+            background: #0f172a; border: 1px solid var(--border); padding: 25px;
+            border-radius: 20px; z-index: 10000; display: none;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
 
-        /* COOKIES, CHAT & FOOTER */
-        .cookie-banner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 500px; background: #111827; border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; z-index: 10000; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: translateY(200%); transition: 0.5s; }
-        .cookie-banner.active { transform: translateY(0); }
-        .chat-widget { position: fixed; bottom: 25px; right: 25px; z-index: 9999; }
-        .chat-button { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(34,197,94,0.4); }
-        .chat-box { width: 280px; background: #0f172a; border-radius: 20px; padding: 20px; position: absolute; bottom: 80px; right: 0; display: none; border: 1px solid var(--border-color); }
-        footer { padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
-
-        @media (max-width: 900px) { .plan-card.featured { transform: scale(1); margin: 10px 0; } }
+        footer { text-align: center; padding: 60px 0; border-top: 1px solid var(--border); margin-top: 50px; font-size: 0.8rem; color: #475569; }
     </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
+
+    <div class="animated-bg"></div>
+    
+    <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" class="logo-fixed-bg" alt="JBrasil TI">
+
     <div class="container">
+        <nav class="header-nav">
+            <img src="https://raw.githubusercontent.com/sophosnotificationtest-max/jbrasillabs/main/logo.png" alt="Logo Topo" class="top-logo">
+        </nav>
+
         <header class="hero">
-            <span class="badge">JBrasil TI • BALNEÁRIO PIÇARRAS</span>
-            <h1>Suporte de TI Profissional por Assinatura</h1>
+            <div style="background: rgba(34, 197, 94, 0.1); display: inline-block; padding: 6px 16px; border-radius: 50px; color: var(--primary); font-weight: 700; font-size: 0.8rem; margin-bottom: 20px;">
+                MÓDULO MSP TECH
+            </div>
+            <h1>Gestão de TI <span>Inteligente.</span></h1>
+            <p>Leve sua empresa para o próximo nível com suporte gerenciado por assinatura. Segurança, estabilidade e valor fixo mensal.</p>
         </header>
 
-        <section id="planos">
-            <div class="pricing-toggle">
-                <span>Mensal</span>
-                <div class="switch-container">
-                    <label class="switch"><input type="checkbox" id="billing-toggle"><span class="slider"></span></label>
-                </div>
-                <span>Anual <span style="color: var(--primary); font-weight: 700;">(20% OFF)</span></span>
+        <div class="msp-grid">
+            <div class="msp-card">
+                <h3>Start Remote</h3>
+                <p style="color: #64748b;">Essencial para micro empresas.</p>
+                <div class="price">R$ 697<span>/mês</span></div>
+                <ul class="feature-list">
+                    <li>Até 03 Dispositivos</li>
+                    <li>Suporte Remoto limitado dentro das horas contratadas</li>
+                    <li>Monitoramento 24/7</li>
+                </ul>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Start">Assinar Módulo</a>
             </div>
 
-            <div class="plans-grid">
-                <article class="plan-card">
-                    <div class="plan-name">Start Remote</div>
-                    <p class="plan-desc">Suporte essencial para microempresas.</p>
-                    <div class="price">R$ <span class="amount" id="price-start">697</span><span class="period">/mês</span></div>
-                    <ul class="features-list">
-                        <li>Até 03 equipamentos</li>
-                        <li><strong>04 horas mensais inclusas</strong></li>
-                        <li>Suporte Remoto 8x5</li>
-                        <li>Contrato Trimestral</li>
-                    </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-outline btn-log" data-plan="Start">Contratar</a>
-                </article>
-
-                <article class="plan-card featured">
-                    <div class="most-chosen">MAIS ESCOLHIDO</div>
-                    <div class="plan-name">Business Care</div>
-                    <p class="plan-desc">Estabilidade para empresas em crescimento.</p>
-                    <div class="price">R$ <span class="amount" id="price-business">1.297</span><span class="period">/mês</span></div>
-                    <ul class="features-list">
-                        <li>Até 08 equipamentos</li>
-                        <li><strong>08 horas mensais inclusas</strong></li>
-                        <li>SLA Emergencial 03h</li>
-                        <li>Relatório Mensal</li>
-                    </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-primary btn-log" data-plan="Business">Assinar Agora</a>
-                </article>
-
-                <article class="plan-card">
-                    <div class="plan-name">Enterprise Plus</div>
-                    <p class="plan-desc">Gestão completa de TI e infraestrutura.</p>
-                    <div class="price">R$ <span class="amount" id="price-enterprise">2.497</span><span class="period">/mês</span></div>
-                    <ul class="features-list">
-                        <li>Até 20 equipamentos</li>
-                        <li><strong>20 horas mensais inclusas</strong></li>
-                        <li>SLA Prioritário 01h</li>
-                        <li>Gestão de Infraestrutura</li>
-                    </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-outline btn-log" data-plan="Enterprise">Contratar</a>
-                </article>
+            <div class="msp-card" style="border-color: var(--primary); background: rgba(34, 197, 94, 0.05);">
+                <div style="position: absolute; top: 15px; right: 25px; color: var(--primary); font-size: 0.7rem; font-weight: 800;">RECOMENDADO</div>
+                <h3>Business Care</h3>
+                <p style="color: #64748b;">O equilíbrio entre custo e performance.</p>
+                <div class="price">R$ 1.297<span>/mês</span></div>
+                <ul class="feature-list">
+                    <li>Até 08 Dispositivos</li>
+                    <li>Suporte Híbrido (Local+Remoto) Programado</li>
+                    <li>SLA de 03 Horas</li>
+                </ul>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Business" style="background: #fff;">Assinar Módulo</a>
             </div>
-        </section>
 
-        <section class="faq-section">
-            <h2>Dúvidas Frequentes</h2>
-            <details><summary>O suporte presencial está incluso?<span></span></summary><p>Sim, os planos Business e Enterprise possuem suporte presencial programado em Balneário Piçarras e região.</p></details>
-            <details><summary>Como funciona o cancelamento?<span></span></summary><p>Trabalhamos com transparência. O plano Start tem fidelidade trimestral, enquanto os demais seguem o modelo de assinatura mensal ou anual.</p></details>
-        </section>
+            <div class="msp-card">
+                <h3>Enterprise Plus</h3>
+                <p style="color: #64748b;">Gestão completa de infraestrutura.</p>
+                <div class="price">R$ 2.497<span>/mês</span></div>
+                <ul class="feature-list">
+                    <li>Até 20 Dispositivos</li>
+                    <li>Suporte Prioritário 1h</li>
+                    <li>Suporte Híbrido (Local+Remoto) Programado</li>
+                    <li>Consultoria Estratégica</li>
+                </ul>
+                <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-msp btn-log" data-plan="Enterprise">Falar com Consultor</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 JBrasil TI — CNPJ: 65.109.396/0001-55<br>Especialistas em Suporte Gerenciado MSP</p>
+        </footer>
     </div>
+
+    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="whatsapp-float">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412 0 6.556-5.338 11.892-11.893 11.892-1.997 0-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.113l.354.21c1.425.848 3.067 1.297 4.756 1.297 5.145 0 9.335-4.19 9.337-9.335.001-2.496-.972-4.842-2.74-6.61s-4.114-2.741-6.611-2.741c-5.145 0-9.335 4.19-9.337 9.336 0 1.761.492 3.475 1.424 4.965l.23.367-1.01 3.693 3.784-.992zm11.332-5.46c-.08-.13-.294-.21-.617-.372-.323-.162-1.908-.942-2.203-1.048-.293-.107-.508-.162-.723.162-.215.324-.836 1.048-1.025 1.264-.188.216-.377.243-.7.08-.324-.162-1.366-.503-2.603-1.608-.962-.858-1.611-1.917-1.8-2.24-.188-.325-.02-.501.142-.662.146-.144.323-.377.485-.566.161-.188.215-.323.323-.539.108-.216.054-.404-.027-.565s-.723-1.742-1.012-2.433c-.27-.648-.544-.56-.723-.568h-.617c-.215 0-.565.08-.862.404-.296.324-1.131 1.105-1.131 2.694s1.158 3.128 1.32 3.344c.161.216 2.278 3.48 5.518 4.881.77.333 1.373.532 1.842.682.774.246 1.478.212 2.036.128.621-.094 1.908-.78 2.177-1.535.27-.754.27-1.4.188-1.535z"/></svg>
+    </a>
 
     <div id="cookie-banner" class="cookie-banner">
-        <div style="font-size: 0.85rem; color: #94a3b8;">Usamos cookies para melhorar sua experiência.</div>
-        <button onclick="acceptCookies()" style="background: var(--primary); border:none; padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer;">Aceitar</button>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">Utilizamos cookies para oferecer a melhor experiência em nosso módulo de serviços.</p>
+        <button onclick="acceptCookies()" style="background:var(--primary); border:none; width:100%; padding:12px; border-radius:10px; font-weight:700; cursor:pointer;">Aceitar</button>
     </div>
-
-    <div class="chat-widget">
-        <div class="chat-box" id="chatBox">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">👋 JBrasil TI</h4>
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 15px;">Dúvidas sobre os planos? Fale conosco!</p>
-            <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-primary btn-log" data-plan="WhatsApp-Chat" style="text-decoration:none; display:block; text-align:center; padding:10px; border-radius:8px; color:#000; font-weight:700;">WhatsApp</a>
-        </div>
-        <div class="chat-button" onclick="toggleChat()"><span>💬</span></div>
-    </div>
-
-    <footer>
-        <p>© 2026 JBrasil TI | CNPJ: 65.109.396/0001-55 | Vale do Itajaí - SC</p>
-    </footer>
 
     <script>
         const API_URL = "https://jbrasillabs-1.onrender.com/log";
-        const billingToggle = document.getElementById('billing-toggle');
 
         function logToSheet(action) {
-            const entryText = `[TI-ASSINATURA] ${action} | ${new Date().toLocaleString("pt-BR")}`;
             fetch(API_URL, { 
                 method: 'POST', 
                 headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify({ entry: entryText }) 
+                body: JSON.stringify({ entry: `[MSPTECH-DYNAMIC] ${action} | ${new Date().toLocaleString()}` }) 
             }).catch(e => {});
         }
 
-        document.querySelectorAll('.btn-log').forEach(btn => {
-            btn.addEventListener('click', () => {
-                logToSheet(`CLIQUE: ${btn.getAttribute('data-plan')}`);
-            });
-        });
-
-        const prices = { 
-            start: { m: 697, a: 557 }, 
-            business: { m: 1297, a: 1037 },
-            enterprise: { m: 2497, a: 1997 }
-        };
-
-        billingToggle.addEventListener('change', () => {
-            const isA = billingToggle.checked;
-            document.getElementById('price-start').innerText = isA ? prices.start.a : prices.start.m;
-            document.getElementById('price-business').innerText = isA ? prices.business.a : prices.business.m;
-            document.getElementById('price-enterprise').innerText = isA ? prices.enterprise.a : prices.enterprise.m;
-            document.querySelectorAll('.period').forEach(p => p.innerText = isA ? '/mês (anual)' : '/mês');
-            logToSheet(isA ? "VIU_ANUAL" : "VIU_MENSUAL");
-        });
-
         function acceptCookies() {
-            localStorage.setItem("cookiesAccepted", "true");
-            document.getElementById("cookie-banner").classList.remove("active");
+            localStorage.setItem("cookie_ok", "true");
+            document.getElementById('cookie-banner').style.display = 'none';
             logToSheet("ACEITOU_COOKIES");
         }
 
-        function toggleChat() {
-            const box = document.getElementById("chatBox");
-            box.style.display = box.style.display === "block" ? "none" : "block";
-        }
-
-        window.addEventListener('load', () => {
-            logToSheet("PAGINA_ABERTA");
-            if (!localStorage.getItem("cookiesAccepted")) {
-                setTimeout(() => document.getElementById("cookie-banner").classList.add("active"), 1500);
-            }
-            setInterval(() => { fetch(API_URL, { method: 'POST', mode: 'no-cors' }).catch(e=>{}); }, 300000);
+        document.querySelectorAll('.btn-log').forEach(btn => {
+            btn.addEventListener('click', () => logToSheet(`CLIQUE_ASSINATURA_${btn.getAttribute('data-plan')}`));
         });
+
+        window.onload = () => {
+            logToSheet("SESSÃO_INICIADA");
+            if (!localStorage.getItem("cookie_ok")) {
+                setTimeout(() => { document.getElementById('cookie-banner').style.display = 'block'; }, 2000);
+            }
+        };
     </script>
 </body>
 </html>
