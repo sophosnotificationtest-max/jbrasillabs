@@ -19,14 +19,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
         .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.15), transparent 70%); z-index: -2; pointer-events: none; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
         
-        header.hero { padding: 120px 0 60px; text-align: center; }
+        header.hero { padding: 100px 0 50px; text-align: center; }
         .badge { display: inline-block; padding: 6px 16px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 100px; color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 24px; }
-        h1 { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 24px; background: linear-gradient(180deg, #fff 50%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 750px; margin: 0 auto 48px; }
+        h1 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 20px; background: linear-gradient(180deg, #fff 50%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* TOGGLE ANUAL */
         .pricing-toggle { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 40px; }
         .switch-container { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 50px; border: 1px solid var(--border-color); }
         .switch { position: relative; width: 48px; height: 24px; cursor: pointer; }
@@ -35,62 +33,43 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: var(--primary); border-radius: 50%; transition: .3s; }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 80px; }
-        .plan-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 24px; backdrop-filter: blur(12px); text-align: center; display: flex; flex-direction: column; transition: 0.3s; }
-        .plan-card.featured { border: 2px solid var(--primary); box-shadow: 0 0 40px -15px rgba(34, 197, 94, 0.3); }
-        .price { margin: 24px 0; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
-        .price .amount { font-size: 3.5rem; font-weight: 800; color: var(--primary); }
-        .hours-box { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 24px; }
-        .hours-box strong { color: var(--primary); font-size: 1.1rem; display: block; }
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 80px; align-items: stretch; }
+        .plan-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 32px; border-radius: 24px; backdrop-filter: blur(12px); text-align: center; display: flex; flex-direction: column; transition: 0.3s; position: relative; }
+        .plan-card.featured { border: 2px solid var(--primary); transform: scale(1.05); z-index: 1; box-shadow: 0 0 40px -15px rgba(34, 197, 94, 0.3); }
+        
+        .most-chosen { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 4px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
 
-        .features-list { list-style: none; margin-bottom: 32px; text-align: left; flex-grow: 1; }
-        .features-list li { margin-bottom: 12px; font-size: 0.95rem; display: flex; align-items: center; }
+        .plan-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .plan-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; min-height: 45px; }
+        
+        .price { margin-bottom: 24px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
+        .price .amount { font-size: 2.8rem; font-weight: 800; color: var(--primary); }
+        
+        .features-list { list-style: none; margin-bottom: 30px; text-align: left; flex-grow: 1; border-top: 1px solid var(--border-color); padding-top: 20px; }
+        .features-list li { margin-bottom: 12px; font-size: 0.9rem; display: flex; align-items: center; color: #cbd5e1; }
         .features-list li::before { content: "✓"; color: var(--primary); margin-right: 10px; font-weight: bold; }
 
-        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.3s; border: none; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: #000; width: 100%; }
-        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 700; transition: 0.3s; width: 100%; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-outline { border: 1px solid var(--border-color); color: #fff; }
+        .btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
-        /* FAQ */
-        .faq-section { max-width: 800px; margin: 0 auto 100px; border-top: 1px solid var(--border-color); padding-top: 60px; }
-        details { border-bottom: 1px solid var(--border-color); padding: 16px 0; cursor: pointer; }
-        summary { list-style: none; font-weight: 600; display: flex; justify-content: space-between; }
-        summary::after { content: "+"; color: var(--primary); }
-
-        /* WIDGET CHAT */
+        /* COOKIE & CHAT */
+        .cookie-banner { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 500px; background: #111827; border: 1px solid var(--border-color); padding: 20px; border-radius: 16px; z-index: 10000; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: translateY(200%); transition: 0.5s; }
+        .cookie-banner.active { transform: translateY(0); }
         .chat-widget { position: fixed; bottom: 25px; right: 25px; z-index: 9999; }
         .chat-button { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 30px rgba(34,197,94,0.4); }
-        .chat-box { width: 280px; background: #0f172a; border-radius: 20px; padding: 20px; position: absolute; bottom: 80px; right: 0; display: none; border: 1px solid var(--border-color); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .chat-box h4 { color: var(--primary); margin-bottom: 8px; }
-        .chat-box a { display: block; background: var(--primary); color: #000; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 10px; }
+        .chat-box { width: 280px; background: #0f172a; border-radius: 20px; padding: 20px; position: absolute; bottom: 80px; right: 0; display: none; border: 1px solid var(--border-color); }
 
-        /* POP-UP COOKIES */
-        .cookie-banner {
-            position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 600px;
-            background: #111827; border: 1px solid var(--border-color);
-            padding: 20px; border-radius: 16px; z-index: 10000;
-            display: flex; align-items: center; gap: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transform: translateY(150%); transition: transform 0.5s ease-in-out;
-        }
-        .cookie-banner.active { transform: translateY(0); }
-        .cookie-text { font-size: 0.9rem; color: var(--text-muted); flex: 1; }
-        .cookie-btn { background: var(--primary); color: #000; padding: 8px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; white-space: nowrap; }
-
-        @media (max-width: 600px) {
-            .cookie-banner { flex-direction: column; text-align: center; bottom: 10px; left: 10px; right: 10px; }
-        }
-
-        footer { padding: 40px 0; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.9rem; }
+        @media (max-width: 900px) { .plan-card.featured { transform: scale(1); margin: 10px 0; } }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
     <div class="container">
         <header class="hero">
-            <span class="badge">ASSINATURA DE TI • BALNEÁRIO PIÇARRAS</span>
-            <h1>Suporte de TI Profissional por Assinatura</h1>
-            <p class="subtitle">Planos mensais com horas técnicas inclusas para sua empresa. Previsibilidade e eficiência.</p>
+            <span class="badge">PLANOS DE ASSINATURA JBrasil TI</span>
+            <h1>Sua TI sob controle, com preço fixo.</h1>
         </header>
 
         <section id="planos">
@@ -104,51 +83,58 @@
 
             <div class="plans-grid">
                 <article class="plan-card">
-                    <h3>Start Remote</h3>
+                    <div class="plan-name">Start Remote</div>
+                    <p class="plan-desc">Suporte essencial para microempresas.</p>
                     <div class="price">R$ <span class="amount" id="price-start">697</span><span class="period">/mês</span></div>
-                    <div class="hours-box"><strong>4 HORAS INCLUSAS</strong></div>
                     <ul class="features-list">
                         <li>Até 03 equipamentos</li>
-                        <li>Monitoramento 24/7</li>
-                        <li>Suporte Remoto</li>
+                        <li><strong>04 horas mensais inclusas</strong></li>
+                        <li>Suporte Remoto 8x5</li>
+                        <li>Contrato Trimestral</li>
                     </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-primary btn-log" data-plan="Start">Assinar Start</a>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-outline btn-log" data-plan="Start">Contratar</a>
                 </article>
 
                 <article class="plan-card featured">
-                    <h3>Business Care</h3>
+                    <div class="most-chosen">MAIS ESCOLHIDO</div>
+                    <div class="plan-name">Business Care</div>
+                    <p class="plan-desc">Estabilidade para empresas em crescimento.</p>
                     <div class="price">R$ <span class="amount" id="price-business">1.297</span><span class="period">/mês</span></div>
-                    <div class="hours-box"><strong>8 HORAS INCLUSAS</strong></div>
                     <ul class="features-list">
                         <li>Até 08 equipamentos</li>
-                        <li>Suporte Remoto e Presencial</li>
-                        <li>SLA Prioritário</li>
+                        <li><strong>08 horas mensais inclusas</strong></li>
+                        <li>SLA Emergencial 03h</li>
+                        <li>Relatório Mensal</li>
                     </ul>
-                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-primary btn-log" data-plan="Business">Assinar Business</a>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-primary btn-log" data-plan="Business">Assinar Agora</a>
+                </article>
+
+                <article class="plan-card">
+                    <div class="plan-name">Enterprise Plus</div>
+                    <p class="plan-desc">Gestão completa de TI e infraestrutura.</p>
+                    <div class="price">R$ <span class="amount" id="price-enterprise">2.497</span><span class="period">/mês</span></div>
+                    <ul class="features-list">
+                        <li>Até 20 equipamentos</li>
+                        <li><strong>20 horas mensais inclusas</strong></li>
+                        <li>SLA Prioritário 01h</li>
+                        <li>Suporte Full Stack</li>
+                    </ul>
+                    <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn btn-outline btn-log" data-plan="Enterprise">Contratar</a>
                 </article>
             </div>
         </section>
-
-        <section class="faq-section">
-            <h2>Dúvidas Frequentes</h2>
-            <details><summary>Como funcionam as horas?<span></span></summary><p>As horas são utilizadas para atendimentos solicitados ou manutenções preventivas mensais.</p></details>
-        </section>
-
-        <footer>
-            <p>© 2026 JBrasil TI | CNPJ: 65.109.396/0001-55</p>
-        </footer>
     </div>
 
     <div id="cookie-banner" class="cookie-banner">
-        <div class="cookie-text">Nós utilizamos cookies para melhorar sua experiência e registrar seu interesse em nossos serviços de TI.</div>
-        <button class="cookie-btn" onclick="acceptCookies()">Aceitar</button>
+        <div style="font-size: 0.85rem; color: #94a3b8;">Utilizamos cookies para personalizar sua experiência. Ao continuar, você concorda com nossa política.</div>
+        <button onclick="acceptCookies()" style="background: var(--primary); border:none; padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer;">OK</button>
     </div>
 
     <div class="chat-widget">
         <div class="chat-box" id="chatBox">
-            <h4>👋 JBrasil TI</h4>
-            <p>Dúvidas sobre os planos?</p>
-            <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-log" data-plan="WhatsApp-Floating">Falar no WhatsApp</a>
+            <h4 style="color: var(--primary); margin-bottom: 10px;">👋 Atendimento TI</h4>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 15px;">Como podemos ajudar sua empresa hoje?</p>
+            <a href="https://wa.me/message/UFGRJBVOAYWQN1" target="_blank" class="btn-primary btn-log" data-plan="WhatsApp-Chat" style="text-decoration:none; display:block; text-align:center; padding:10px; border-radius:8px; color:#000; font-weight:700;">Falar no WhatsApp</a>
         </div>
         <div class="chat-button" onclick="toggleChat()"><span>💬</span></div>
     </div>
@@ -157,7 +143,6 @@
         const API_URL = "https://jbrasillabs-1.onrender.com/log";
         const billingToggle = document.getElementById('billing-toggle');
 
-        // LOGS
         function logToSheet(action) {
             const entryText = `[TI-ASSINATURA] ${action} | ${new Date().toLocaleString("pt-BR")}`;
             fetch(API_URL, { 
@@ -167,44 +152,44 @@
             }).catch(e => {});
         }
 
-        // BOTOES
         document.querySelectorAll('.btn-log').forEach(btn => {
             btn.addEventListener('click', () => {
-                logToSheet(`CLIQUE_BOTAO: ${btn.getAttribute('data-plan')}`);
+                logToSheet(`CLIQUE: ${btn.getAttribute('data-plan')}`);
             });
         });
 
-        // PRECOS
-        const prices = { start: { m: 697, a: 557 }, business: { m: 1297, a: 1037 } };
+        const prices = { 
+            start: { m: 697, a: 557 }, 
+            business: { m: 1297, a: 1037 },
+            enterprise: { m: 2497, a: 1997 }
+        };
+
         billingToggle.addEventListener('change', () => {
             const isA = billingToggle.checked;
             document.getElementById('price-start').innerText = isA ? prices.start.a : prices.start.m;
             document.getElementById('price-business').innerText = isA ? prices.business.a : prices.business.m;
+            document.getElementById('price-enterprise').innerText = isA ? prices.enterprise.a : prices.enterprise.m;
             document.querySelectorAll('.period').forEach(p => p.innerText = isA ? '/mês (anual)' : '/mês');
-            logToSheet(isA ? "MUDOU_PARA_ANUAL" : "MUDOU_PARA_MENSUAL");
+            logToSheet(isA ? "VIOU_ANUAL" : "VIOU_MENSUAL");
         });
 
-        // COOKIES
         function acceptCookies() {
             localStorage.setItem("cookiesAccepted", "true");
             document.getElementById("cookie-banner").classList.remove("active");
             logToSheet("ACEITOU_COOKIES");
         }
 
-        // CHAT
         function toggleChat() {
             const box = document.getElementById("chatBox");
             box.style.display = box.style.display === "block" ? "none" : "block";
         }
 
-        // LOAD
         window.addEventListener('load', () => {
             logToSheet("PAGINA_CARREGADA");
             if (!localStorage.getItem("cookiesAccepted")) {
-                setTimeout(() => {
-                    document.getElementById("cookie-banner").classList.add("active");
-                }, 1000);
+                setTimeout(() => document.getElementById("cookie-banner").classList.add("active"), 1500);
             }
+            // Keep-alive a cada 5 minutos
             setInterval(() => { fetch(API_URL, { method: 'POST', mode: 'no-cors' }).catch(e=>{}); }, 300000);
         });
     </script>
